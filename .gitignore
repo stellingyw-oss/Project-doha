@@ -1,0 +1,3 @@
+# build inputs & high-res sources are not needed for the published page
+src/
+assets/*.png
