@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="theme-color" content="#120F0B">
+<meta name="doha-version" content="0.1.1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>PROJECT DOHA · 아이는 자라고, 상상은 남습니다</title>
@@ -384,6 +385,25 @@ img{display:block}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 #toast.err{border-color:rgba(233,137,106,.5)}
 
+/* ---------- v0.1.1: album sections / mic states ---------- */
+.al-sec-head{display:flex;flex-direction:column;gap:6px;margin:2px 2px 0}
+.al-sec-head h2{margin:0;font-size:13.5px;font-weight:800;letter-spacing:-.01em;color:#F0E4CE;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.al-sec-head h2 b{color:var(--amber);font-weight:800}
+.al-sec-head p{margin:0;font-size:11px;line-height:1.65;color:var(--dim-2)}
+.al-sec-head.sample{margin-top:8px;border-top:1px solid rgba(248,240,226,.08);padding-top:14px}
+.al-ex{font-size:9px;letter-spacing:.1em;font-weight:800;color:#CBBBA1;background:rgba(248,240,226,.07);
+  border:1px dashed rgba(248,240,226,.32);padding:3px 7px;border-radius:6px}
+.al-grid-samples .al-card{border-style:dashed;opacity:.9}
+.al-audio{position:absolute;left:8px;bottom:8px;z-index:2;font-size:8.5px;font-weight:800;color:#0F2A18;
+  background:rgba(155,224,178,.92);padding:3px 7px;border-radius:5px}
+.al-name{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:#D8C9B0;
+  background:rgba(248,240,226,.06);border:1px solid rgba(248,240,226,.16);padding:6px 11px;border-radius:999px;
+  width:fit-content;margin-top:2px}
+.al-name:active{transform:scale(.97)}
+.mic.off{background:linear-gradient(180deg,#4A4033,#2B241B);color:#C9BBA4;box-shadow:inset 0 0 0 1px rgba(248,240,226,.16)}
+.mic.pending{background:linear-gradient(180deg,#E8D4B0,#C9A874);color:#3A2A12;animation:micBreathe 1.4s ease-in-out infinite}
+@keyframes micBreathe{0%,100%{transform:scale(1)}50%{transform:scale(.93)}}
+
 /* ---------- responsive ---------- */
 @media (max-width:1024px){
   .home-main{grid-template-columns:1fr .9fr;gap:24px}
@@ -458,7 +478,7 @@ img{display:block}
         <header class="topbar">
           <div class="brand">
             <span class="brand-mark">little worlds.</span>
-            <span class="brand-sub">PROJECT DOHA · v0.1</span>
+            <span class="brand-sub">PROJECT DOHA · v0.1.1</span>
           </div>
           <div class="topbar-right">
             <span class="badge-soft">🛡 광고 없음 · 가족만</span>
@@ -470,9 +490,9 @@ img{display:block}
 
         <main class="home-main">
           <div class="home-copy">
-            <p class="eyebrow">도하의 상상은 현실이 된다</p>
+            <p class="eyebrow">[[NAME]]의 상상은 현실이 된다</p>
             <h1>아이는 자라고,<br><span class="hl">상상은<svg viewBox="0 0 200 12" preserveAspectRatio="none"><path d="M2 8.5C40 3.5 78 3 120 6.5c30 2.4 55 1.2 78-1.5"/></svg></span> 남습니다.</h1>
-            <p class="lede">말하는 순간, 도하만의 세상이 화면에 펼쳐져요.<br> 끝나면 목소리와 장면이 담긴 <b>상상 영화</b>로 남아요.</p>
+            <p class="lede">말하는 순간, [[NAME]]만의 세상이 화면에 펼쳐져요.<br> 끝나면 목소리와 장면이 담긴 <b>상상 영화</b>로 남아요.</p>
             <div class="home-cta">
               <button class="btn btn-primary" id="startBtn">
                 <span id="startLabel">상상 시작하기</span>
@@ -480,12 +500,12 @@ img{display:block}
               </button>
               <button class="btn btn-ghost" id="albumBtn">지난 상상 보기</button>
             </div>
-            <p class="home-note"><span class="dot"></span>도하가 이야기하는 동안 아빠는 옆에서 같이 웃기만 하면 돼요.</p>
+            <p class="home-note"><span class="dot"></span>[[NAME]]가 이야기하는 동안 아빠는 옆에서 같이 웃기만 하면 돼요.</p>
           </div>
 
           <figure class="hero-card" id="heroCard">
             <div class="hero-img"><img class="style-target" id="heroImg" alt="공룡이 거실에 나타난 상상 장면"><span class="hero-tag">SCENE 01</span></div>
-            <figcaption>어제 도하의 상상 · <span class="q">“공룡이 우리 집 거실에 나타났어!”</span></figcaption>
+            <figcaption>어제 [[NAME]]의 상상 · <span class="q">“공룡이 우리 집 거실에 나타났어!”</span></figcaption>
           </figure>
         </main>
 
@@ -499,7 +519,7 @@ img{display:block}
 
         <footer class="home-foot">
           <span>한 아빠가 아들을 위해 시작한 프로젝트 · EST. 2026</span>
-          <span class="foot-right">심리 진단 없음 · 점수 없음 · 언제든 삭제</span>
+          <span class="foot-right">심리 진단 없음 · 점수 없음 · 이 기기에만 저장</span>
         </footer>
       </div>
     </div>
@@ -526,7 +546,7 @@ img{display:block}
 
       <div class="stage" id="stage">
         <div class="stage-tex" id="stageTex"></div>
-        <div class="status" id="status"><span class="dot"></span><span id="statusText">듣는 중 · 도하야, 무슨 일이 일어났어?</span></div>
+        <div class="status idle" id="status"><span class="dot"></span><span id="statusText">대기 중 · 말하거나 아래에 입력해 주세요</span></div>
         <div class="drawing" id="drawing"><span class="spinner"></span>장면을 그리는 중</div>
         <div class="cap"><span class="num" id="capNum">SCENE 01</span><p id="capText"></p></div>
         <button class="mic" id="micBtn" aria-label="마이크 켜기">
@@ -538,7 +558,7 @@ img{display:block}
         <div class="wave" id="wave" aria-hidden="true"></div>
         <div class="chiprow" id="chipRow"></div>
         <form class="say" id="sayForm" autocomplete="off">
-          <input id="sayInput" type="text" placeholder="도하야, 다음엔 무슨 일이 일어났어?" aria-label="상상 입력" enterkeyhint="send">
+          <input id="sayInput" type="text" placeholder="[[NAME]]야, 다음엔 무슨 일이 일어났어?" aria-label="상상 입력" enterkeyhint="send">
           <button type="submit" aria-label="장면 만들기">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
           </button>
@@ -601,7 +621,7 @@ img{display:block}
 
         <div class="mv-body">
           <section class="card oneline">
-            <p class="card-k">도하의 오늘의 한 줄</p>
+            <p class="card-k">[[NAME]]의 오늘의 한 줄</p>
             <p class="q" id="oneLine">“공룡이 우리 집 거실에 나타났어!”</p>
             <div class="tags" id="movieTags"></div>
             <p class="who" id="oneWho">2026.11.24 · 상상 영화 No.001</p>
@@ -611,14 +631,14 @@ img{display:block}
             <p class="card-k">아빠를 위한 관찰 노트</p>
             <div id="obsBox"></div>
             <div class="qs">
-              <span>오늘 도하에게 물어볼 것</span>
+              <span>오늘 [[NAME]]에게 물어볼 것</span>
               <ul id="qList"></ul>
             </div>
             <div class="dadnote">
               <label for="dadNote">아빠의 기록</label>
-              <textarea id="dadNote" placeholder="오늘 도하의 표정이나 말투 중에 남기고 싶은 한 줄…"></textarea>
+              <textarea id="dadNote" placeholder="오늘 [[NAME]]의 표정이나 말투 중에 남기고 싶은 한 줄…"></textarea>
             </div>
-            <p class="disclaim">이 노트는 아이를 평가하거나 심리적으로 진단하는 내용이 아니에요. 오늘 나눈 상상만 보고 가볍게 읽는 기록입니다.</p>
+            <p class="disclaim">이 노트는 아이가 말한 장면과 단어만 그대로 적은 기록이에요. 아이의 실제 감정이나 심리 상태를 단정하지 않습니다.</p>
           </section>
         </div>
 
@@ -642,8 +662,8 @@ img{display:block}
           </button>
           <div class="al-title">
             <p class="eyebrow">MY UNIVERSE</p>
-            <h1>도하의 상상들</h1>
-            <p id="alCount">함께 만든 상상 영화 3편 · 공룡 6번, 우주 3번</p>
+            <h1>[[NAME]]의 상상들</h1>
+            <p id="alCount">내 상상 영화 0편 · 아래 예시 3편</p>
           </div>
           <button class="btn btn-line" id="newStoryBtn">새 상상 +</button>
         </header>
@@ -662,14 +682,14 @@ img{display:block}
               <div class="inner">
                 <span class="en">The Year Book</span>
                 <div>
-                  <h2>도하의<br>열두 개의 세상</h2>
+                  <h2>[[NAME]]의<br>열두 개의 세상</h2>
                   <p class="est">EST. 2026 · PROJECT DOHA</p>
                 </div>
               </div>
             </div>
             <div class="yb-info">
               <p class="card-k">YEAR BOOK 미리보기</p>
-              <p>한 해 동안 도하가 만든 상상 영화를 <b style="color:#FFE9C9">한 권의 책</b>으로 묶어요. 장면, 도하의 목소리, 아빠의 기록이 함께 담깁니다.</p>
+              <p>한 해 동안 [[NAME]]가 만든 상상 영화를 <b style="color:#FFE9C9">한 권의 책</b>으로 묶어요. 장면, [[NAME]]의 목소리, 아빠의 기록이 함께 담깁니다.</p>
               <div class="months" id="months"></div>
               <p style="font-size:11px;color:#8B7F6D">한 해가 끝나면 열두 개의 세상이 한 권이 됩니다. 실물 앨범 제작은 v0.5.</p>
               <button class="btn btn-ghost" id="ybBtn" style="align-self:flex-start">미리보기 (준비 중)</button>
@@ -679,7 +699,7 @@ img{display:block}
 
         <div class="panel" id="panel-capsule">
           <div class="caps" id="capsList"></div>
-          <p class="cap-note">타임캡슐은 가족만 열 수 있어요. 정해진 날이 되면 도하에게 알림이 가고, 그날의 상상 영화가 그대로 재생됩니다.</p>
+          <p class="cap-note">타임캡슐은 가족만 열 수 있어요. 정해진 날이 되면 [[NAME]]에게 알림이 가고, 그날의 상상 영화가 그대로 재생됩니다.</p>
         </div>
       </div>
     </div>
@@ -710,7 +730,7 @@ img{display:block}
     {id:"block",     ko:"블록 월드",      en:"BLOCK WORLD",  hint:"네모네모 블록"},
     {id:"comic",     ko:"모험 만화",      en:"COMIC",        hint:"굵은 선과 색"},
     {id:"photo",     ko:"실사 영화",      en:"LIVE ACTION",  hint:"영화 한 장면"},
-    {id:"crayon",    ko:"크레파스",       en:"CRAYON",       hint:"도하 그림처럼"},
+    {id:"crayon",    ko:"크레파스",       en:"CRAYON",       hint:"아이 그림처럼"},
     {id:"pixel",     ko:"픽셀 월드",      en:"PIXEL",        hint:"게임 속 세상"}
   ];
   var SCENE_INFO = {
@@ -729,7 +749,10 @@ img{display:block}
     {t:"만화처럼 바꿔줘!",               em:"✏️", act:{type:"style", key:"comic"}},
     {t:"아빠도 거기 있었어!",            em:"👨", act:{type:"scene", key:"ship"}}
   ];
-  var SAVED_KEY = "doha.v01.album";
+  var SAVED_KEY = "doha.v01.album";          // v0.1 레거시 기록(최초 1회 IndexedDB로 이관 후 삭제)
+  var NAME_KEY  = "doha.v011.child";         // 아이를 부르는 이름 — 이 기기에만 저장
+  var LS_FALLBACK = "doha.v011.works";       // IndexedDB를 못 쓰는 환경용 축소 저장(음성 제외)
+  var DEFAULT_NAME = "아이";
 
   /* ---------------- tiny helpers ---------------- */
   function $(s,r){return (r||document).querySelector(s);}
@@ -745,6 +768,31 @@ img{display:block}
   function toast(msg,err){
     toastEl.textContent=msg; toastEl.classList.toggle("err",!!err); toastEl.classList.add("on");
     clearTimeout(toastT); toastT=setTimeout(function(){toastEl.classList.remove("on");},2600);
+  }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+
+  /* 아이를 부르는 이름: 기본은 일반 표현("아이")이고, 사용자가 정한 이름만 이 기기에 저장한다.
+     공개된 index.html 자체에는 실명이 남지 않도록 정적 문구는 [[NAME]] 토큰으로 둔다. */
+  var nameNodes=[], nameAttrs=[];
+  function childName(){
+    try{ var n=localStorage.getItem(NAME_KEY); return (n&&n.trim())?n.trim():DEFAULT_NAME; }catch(e){ return DEFAULT_NAME; }
+  }
+  function NM(){ return childName(); }
+  function saveChildName(n){
+    try{ localStorage.setItem(NAME_KEY, String(n||"").trim().slice(0,12) || DEFAULT_NAME); }catch(e){}
+  }
+  function applyChildName(){
+    var nm=NM();
+    if(!nameNodes.length){
+      var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null), n;
+      while((n=w.nextNode())){ if(n.nodeValue && n.nodeValue.indexOf("[[NAME]]")>=0){ n.__orig=n.nodeValue; nameNodes.push(n); } }
+      $$("[placeholder]").forEach(function(e){
+        var ph=e.getAttribute("placeholder")||"";
+        if(ph.indexOf("[[NAME]]")>=0){ e.__origPh=ph; nameAttrs.push(e); }
+      });
+    }
+    nameNodes.forEach(function(t){ t.nodeValue=(t.__orig||t.nodeValue).split("[[NAME]]").join(nm); });
+    nameAttrs.forEach(function(e){ e.setAttribute("placeholder",(e.__origPh||"").split("[[NAME]]").join(nm)); });
   }
 
   /* ---------------- sound (subtle, opt-in by gesture) ---------------- */
@@ -847,27 +895,145 @@ img{display:block}
     active:0,
     startedAt:0,
     micOn:false,
+    micPending:false,
+    micDenied:false,
     timer:null,
     drawing:false,
     pending:null,
     dadNote:"",
     savedEntry:null,
-    movie:null
+    movie:null,
+    storyId:null,
+    storyNo:0,
+    openSeq:0
   };
-  var albumCache=loadAlbum();
-
-  function loadAlbum(){
-    try{
-      var raw=localStorage.getItem(SAVED_KEY);
-      return raw?JSON.parse(raw):[];
-    }catch(e){ return []; }
+  var albumCache=[];        // 내 기록(작품 목록) — IndexedDB에서 불러온다
+  var albumReady=false, noteT=null;
+  function uid(){ return "w"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8); }
+  function nextNo(){
+    var max=0;
+    albumCache.forEach(function(w){ if(w && +w.no>max) max=+w.no; });
+    return max+1;
   }
-  function persistAlbum(){
-    try{ localStorage.setItem(SAVED_KEY,JSON.stringify(albumCache)); }catch(e){}
+
+  /* ---------------- storage: 작품·장면·원본 음성을 IndexedDB에 영구 저장 ----------------
+     works : {id, no, createdAt, date, title, styleId, tags, one, note, dur, scenes:[{key,caption,tint,at,styleId,audioDur,clipId}]}
+     clips : {id, workId, type, blob}  ← 녹음된 원본 음성(Blob)
+     IndexedDB를 쓸 수 없으면 같은 모양(음성 제외)을 localStorage에 둔다. */
+  var DB_NAME="doha-universe", DB_VER=1, STORE_WORKS="works", STORE_CLIPS="clips";
+  var dbp=null, idbBroken=false;
+  function openDB(){
+    if(dbp) return dbp;
+    dbp=new Promise(function(res){
+      try{
+        if(!window.indexedDB){ idbBroken=true; return res(null); }
+        var rq=indexedDB.open(DB_NAME,DB_VER);
+        rq.onupgradeneeded=function(){
+          var db=rq.result;
+          if(!db.objectStoreNames.contains(STORE_WORKS)){
+            var w=db.createObjectStore(STORE_WORKS,{keyPath:"id"});
+            w.createIndex("createdAt","createdAt");
+          }
+          if(!db.objectStoreNames.contains(STORE_CLIPS)){
+            db.createObjectStore(STORE_CLIPS,{keyPath:"id"});
+          }
+        };
+        rq.onsuccess=function(){ res(rq.result); };
+        rq.onerror=function(){ idbBroken=true; res(null); };
+        rq.onblocked=function(){ res(null); };
+      }catch(e){ idbBroken=true; res(null); }
+    });
+    return dbp;
+  }
+  function reqP(rq){ return new Promise(function(res,rej){ rq.onsuccess=function(){res(rq.result);}; rq.onerror=function(){rej(rq.error);}; }); }
+  function commitP(t){ return new Promise(function(res,rej){ t.oncomplete=function(){res(true);}; t.onerror=function(){rej(t.error);}; t.onabort=function(){rej(t.error);}; }); }
+  function lsWorks(){ try{ return JSON.parse(localStorage.getItem(LS_FALLBACK)||"[]"); }catch(e){ return []; } }
+  function lsPutWork(rec){
+    try{
+      var list=lsWorks(), i=-1;
+      for(var k=0;k<list.length;k++){ if(list[k].id===rec.id){ i=k; break; } }
+      if(i>=0) list[i]=rec; else list.unshift(rec);
+      localStorage.setItem(LS_FALLBACK,JSON.stringify(list));
+    }catch(e){}
+  }
+  function allWorks(){
+    return openDB().then(function(db){
+      if(!db) return lsWorks();
+      try{ return reqP(db.transaction(STORE_WORKS,"readonly").objectStore(STORE_WORKS).getAll()); }
+      catch(e){ return lsWorks(); }
+    }).then(function(list){
+      return (list||[]).sort(function(a,b){ return (b.createdAt||0)-(a.createdAt||0); });
+    }).catch(function(){ return lsWorks(); });
+  }
+  function putWork(rec,clips){
+    return openDB().then(function(db){
+      if(!db){ lsPutWork(rec); return true; }
+      var t=db.transaction([STORE_WORKS,STORE_CLIPS],"readwrite");
+      t.objectStore(STORE_WORKS).put(rec);
+      (clips||[]).forEach(function(c){ t.objectStore(STORE_CLIPS).put(c); });
+      return commitP(t);
+    }).then(function(ok){ return ok; }).catch(function(){ lsPutWork(rec); return false; });
+  }
+  function clipsOf(workId){
+    return openDB().then(function(db){
+      if(!db) return [];
+      try{ return reqP(db.transaction(STORE_CLIPS,"readonly").objectStore(STORE_CLIPS).getAll()); }
+      catch(e){ return []; }
+    }).then(function(all){
+      return (all||[]).filter(function(c){ return c && c.workId===workId; });
+    }).catch(function(){ return []; });
+  }
+  function initAlbum(){
+    return allWorks().then(function(list){ return migrateLegacy(list); }).then(function(list){
+      albumCache=list||[]; albumReady=true;
+      if(state.screen==="album") renderAlbum();
+      syncHomeCta();
+      return albumCache;
+    }).catch(function(){ albumReady=true; });
+  }
+  /* v0.1의 localStorage 기록(장면·자막만)을 잃지 않도록 고유 id를 붙여 IndexedDB로 옮긴다. */
+  function migrateLegacy(list){
+    var legacy=[];
+    try{ legacy=JSON.parse(localStorage.getItem(SAVED_KEY)||"[]"); }catch(e){ legacy=[]; }
+    if(!legacy || !legacy.length) return Promise.resolve(list);
+    var maxNo=0, seen={};
+    (list||[]).forEach(function(w){ if(w && +w.no>maxNo) maxNo=+w.no; seen[w.id]=1; });
+    var jobs=[];
+    legacy.forEach(function(e){
+      if(!e || !e.mine) return;
+      var id=e.id? ("legacy-"+e.id) : ("legacy-"+Date.now()+"-"+Math.random().toString(36).slice(2,7));
+      if(seen[id]) return;
+      maxNo++;
+      var caps=e.captions||[];
+      var key=e.key||"living";
+      var scenes=caps.length
+        ? caps.map(function(c){ return {key:key,caption:c,tint:false,at:0,styleId:"3d",audioDur:0,clipId:null}; })
+        : [{key:key,caption:e.one||e.title||"",tint:false,at:0,styleId:"3d",audioDur:0,clipId:null}];
+      jobs.push(putWork({
+        id:id, no:maxNo, createdAt:(Date.parse(String(e.date)+"T12:00:00")||Date.now()),
+        date:e.date||todayISO(), title:e.title||"상상 영화", styleId:"3d", tags:e.tags||[],
+        one:e.one||"", note:e.note||"", dur:e.dur||0, scenes:scenes, obs:[], questions:[], legacy:true
+      },[]));
+    });
+    if(!jobs.length){ try{ localStorage.removeItem(SAVED_KEY); }catch(e){} return Promise.resolve(list); }
+    return Promise.all(jobs).then(function(){
+      try{ localStorage.removeItem(SAVED_KEY); }catch(e){}
+      return allWorks();
+    });
+  }
+  var clipUrls=[];
+  function revokeClips(){
+    clipUrls.forEach(function(u){ try{ URL.revokeObjectURL(u); }catch(e){} });
+    clipUrls=[];
   }
 
   /* ---------------- navigation ---------------- */
   function go(name){
+    if(state.screen!==name){
+      /* 화면을 떠나면 마이크·녹음·재생을 반드시 정리한다(브라우저 녹음 아이콘 즉시 꺼짐) */
+      if(state.screen==="canvas") releaseMicOnExit();
+      if(state.screen==="movie") pauseMovie();
+    }
     $$(".screen").forEach(function(s){ s.classList.remove("on"); });
     var t=$("#s-"+name); if(t) t.classList.add("on");
     state.screen=name;
@@ -909,7 +1075,9 @@ img{display:block}
     markStyleCards($("#styleRow")); markStyleCards($("#sheetRow"));
     $("#heroCard").setAttribute("data-style",id);
     $("#heroImg").src=srcFor("living",id);
-    $$(".frame").forEach(function(f){
+    /* 지금까지 만든 장면에도 같은 그림체를 적용하고, 저장될 작품에도 그대로 남긴다 */
+    state.scenes.forEach(function(sc){ sc.styleId=id; });
+    $$(".frame",stage).forEach(function(f){
       var key=f.getAttribute("data-key");
       f.setAttribute("data-style",id);
       var im=$("img.style-target",f); if(im) im.src=srcFor(key,id);
@@ -919,16 +1087,18 @@ img{display:block}
       toast("그림체를 "+st.ko+"으로 바꿨어요");
       tone(659.25,0.25,"triangle",0.03);
     }
+    if(!opts.silent) renderStrip();
   }
 
   /* ---------------- canvas rendering ---------------- */
   var stage=$("#stage");
   function addFrame(scene){
     var f=el("div","frame");
+    var st=scene.styleId||state.style;
     f.setAttribute("data-key",scene.key);
-    f.setAttribute("data-style",state.style);
-    f.innerHTML='<img class="style-target" alt=""><div class="tint"></div><div class="veil"></div><div class="stage-tex tex-'+state.style+'"></div>';
-    $("img",f).src=srcFor(scene.key,state.style);
+    f.setAttribute("data-style",st);
+    f.innerHTML='<img class="style-target" alt=""><div class="tint"></div><div class="veil"></div><div class="stage-tex tex-'+st+'"></div>';
+    $("img",f).src=srcFor(scene.key,st);
     if(scene.tint) f.classList.add("tinted");
     stage.insertBefore(f, $("#drawing"));
     return f;
@@ -970,10 +1140,17 @@ img{display:block}
     return "공룡이 온 날";
   }
 
+  function setIdleStatus(){
+    var t=$("#statusText"); if(!t) return;
+    if(state.drawing){ t.textContent="장면을 만드는 중 · 잠깐만"; return; }
+    t.textContent = state.micOn ? "듣는 중 · 이어서 말해줘!" : "대기 중 · 말하거나 아래에 입력해 주세요";
+    $("#status").classList.toggle("idle", !state.micOn);
+  }
   function addScene(opts){
     if(state.drawing){ state.pending=opts; return; }
     state.drawing=true;
     var draw=$("#drawing"); draw.classList.add("on");
+    $("#status").classList.remove("idle");
     $("#statusText").textContent="장면을 만드는 중 · 잠깐만";
     tone(392,0.3,"sine",0.03);
     setTimeout(function(){
@@ -981,29 +1158,40 @@ img{display:block}
         key:opts.key||"living",
         caption:opts.caption||"",
         tint:!!opts.tint,
+        styleId:opts.styleId||state.style,
+        at:elapsed(),
         audio:null,
+        audioBlob:null,
         audioDur:0,
-        at:elapsed()
+        clipId:null
       };
       state.scenes.push(sc);
       addFrame(sc);
       showFrame(state.scenes.length-1);
       draw.classList.remove("on");
       state.drawing=false;
-      $("#statusText").textContent=state.micOn?"듣는 중 · 이어서 말해줘!":"듣는 중 · 도하야, 무슨 일이 일어났어?";
+      setIdleStatus();
       chime();
       if(state.pending){ var p=state.pending; state.pending=null; addScene(p); }
     },520+Math.random()*220);
   }
 
   function startStory(){
-    if(state.micOn) stopMic();
-    state.scenes=[]; state.active=0; state.drawing=false; state.pending=null; state.movie=null;
+    releaseMicOnExit();
+    revokeClips();
+    state.scenes=[]; state.active=0; state.drawing=false; state.pending=null;
+    state.movie=null; state.savedEntry=null;
+    state.storyId=uid(); state.storyNo=nextNo();
     $$(".frame",stage).forEach(function(f){ f.parentNode.removeChild(f); });
     state.startedAt=Date.now();
-    $("#cvNo").textContent=asc(albumCache.length+1);
+    $("#cvNo").textContent=asc(state.storyNo);
     $("#cvTitle").textContent="공룡이 온 날";
     $("#capText").textContent="";
+    $("#capNum").textContent="SCENE 01";
+    $("#sayInput").value="";
+    $("#dadNote").value="";
+    setPlayIcon(false);
+    setIdleStatus();
     renderStrip();
     go("canvas");
     setTimeout(function(){ addScene({key:"living",caption:"공룡이 우리 집 거실에 나타났어!"}); },340);
@@ -1064,7 +1252,7 @@ img{display:block}
       var b=el("i"); b.style.setProperty("--i",i); waveEl.appendChild(b);
     }
   })();
-  var audioCtx=null, analyser=null, micStream=null, recorder=null, recChunks=[], waveRaf=0, simT=0;
+  var audioCtx=null, analyser=null, micStream=null, recorder=null, recChunks=[], recMime="", waveRaf=0, simT=0, micToken=0, lastTracks=[];
   function animateWave(){
     var bars=$$("i",waveEl);
     if(analyser){
@@ -1077,7 +1265,7 @@ img{display:block}
     } else {
       simT+=0.05;
       for(var j=0;j<bars.length;j++){
-        var h=24+Math.abs(Math.sin(simT*1.1+j*0.35))*48+Math.random()*14;
+        var h=24+Math.abs(Math.sin(simT*1.1+j*0.35))*44+Math.random()*12;
         bars[j].style.height=h+"%";
       }
     }
@@ -1087,41 +1275,77 @@ img{display:block}
   function resetWaveIdle(){
     stopWaveLoop();
     $$("i",waveEl).forEach(function(b){ b.style.height=""; });
-    waveEl.classList.remove("flat");
+    waveEl.classList.add("flat");
+  }
+  function releaseStream(stream){
+    try{ stream.getTracks().forEach(function(t){ try{ t.stop(); }catch(e){} }); }catch(e){}
   }
 
   function toggleMic(){
-    if(state.micOn) stopMic(); else startMic();
+    if(state.micOn || state.micPending) stopMic(); else startMic();
+  }
+  function micUiIdle(){
+    var btn=$("#micBtn");
+    btn.classList.remove("listening","pending");
+    btn.classList.toggle("off", !!state.micDenied);
+    btn.setAttribute("aria-label", state.micDenied ? "마이크 권한이 꺼져 있어요 · 다시 시도" : "마이크 켜기");
   }
   function startMic(){
-    state.micOn=true;
-    $("#micBtn").classList.add("listening");
-    $("#statusText").textContent="듣는 중 · 도하 목소리를 듣고 있어요";
+    if(state.micPending) return;
+    var token=++micToken;
+    var btn=$("#micBtn");
+    state.micPending=true; state.micOn=false; state.micDenied=false;
+    btn.classList.remove("off","listening"); btn.classList.add("pending");
+    btn.setAttribute("aria-label","마이크를 여는 중");
+    $("#status").classList.remove("idle");
+    $("#statusText").textContent="마이크를 여는 중 · 허용해 주세요";
     waveEl.classList.remove("flat");
-    if(!audioCtx){
-      var AC=window.AudioContext||window.webkitAudioContext;
-      if(AC) audioCtx=new AC();
-    }
     var md=navigator.mediaDevices;
-    if(md && md.getUserMedia){
-      md.getUserMedia({audio:true}).then(function(stream){
-        micStream=stream;
-        try{
-          if(audioCtx){
-            if(audioCtx.state==="suspended") audioCtx.resume();
-            var src=audioCtx.createMediaStreamSource(stream);
-            analyser=audioCtx.createAnalyser(); analyser.fftSize=128; src.connect(analyser);
-            startRecorder(stream);
-          }
-        }catch(e){}
-        stopWaveLoop(); animateWave();
-      }).catch(function(){
-        startSim();
-        toast("마이크는 꺼져 있어요 — 화면을 눌러도 똑같이 상상할 수 있어요");
-      });
-    } else { startSim(); }
+    if(!md || !md.getUserMedia){ micFail(token,true); return; }
+    md.getUserMedia({audio:true}).then(function(stream){
+      if(token!==micToken || !state.micPending){ releaseStream(stream); return; }   // 그새 화면을 떠났으면 즉시 놓아준다
+      state.micPending=false; state.micOn=true; state.micDenied=false;
+      micStream=stream;
+      try{ lastTracks=stream.getTracks(); }catch(e){ lastTracks=[]; }
+      btn.classList.remove("pending","off"); btn.classList.add("listening");
+      btn.setAttribute("aria-label","마이크 끄기");
+      $("#status").classList.remove("idle");
+      $("#statusText").textContent="듣는 중 · "+NM()+" 목소리를 듣고 있어요";
+      try{
+        if(!audioCtx){ var AC=window.AudioContext||window.webkitAudioContext; if(AC) audioCtx=new AC(); }
+        if(audioCtx){
+          if(audioCtx.state==="suspended") audioCtx.resume();
+          var src=audioCtx.createMediaStreamSource(stream);
+          analyser=audioCtx.createAnalyser(); analyser.fftSize=128; src.connect(analyser);
+        }
+        startRecorder(stream);
+      }catch(e){}
+      stopWaveLoop(); animateWave();
+      try{
+        stream.getAudioTracks().forEach(function(tr){
+          tr.addEventListener("ended",function(){
+            if(token!==micToken) return;
+            state.micOn=false; state.micPending=false; state.micDenied=true;
+            analyser=null; resetWaveIdle(); micUiIdle(); setIdleStatus();
+          });
+        });
+      }catch(e){}
+    }).catch(function(){ micFail(token,false); });
   }
-  function startSim(){ analyser=null; waveEl.classList.remove("flat"); stopWaveLoop(); animateWave(); }
+  function micFail(token,unsupported){
+    if(token!==micToken) return;
+    state.micPending=false; state.micOn=false; state.micDenied=true;
+    analyser=null; stopWaveLoop(); waveEl.classList.add("flat");
+    $$("i",waveEl).forEach(function(b){ b.style.height=""; });
+    micUiIdle();
+    $("#status").classList.add("idle");
+    $("#statusText").textContent = unsupported
+      ? "텍스트 모드 · 이 브라우저는 마이크를 쓸 수 없어요"
+      : "텍스트 모드 · 마이크 권한 없이도 상상할 수 있어요";
+    toast(unsupported
+      ? "이 브라우저는 마이크를 쓸 수 없어요 — 아래 입력창으로 상상해 보세요"
+      : "마이크 권한이 꺼져 있어요 — 아래 입력창으로도 똑같이 상상할 수 있어요");
+  }
   function startRecorder(stream){
     if(!window.MediaRecorder) return;
     try{
@@ -1129,92 +1353,126 @@ img{display:block}
       var mime="";
       for(var i=0;i<types.length;i++){ if(MediaRecorder.isTypeSupported(types[i])){ mime=types[i]; break; } }
       recorder=new MediaRecorder(stream, mime?{mimeType:mime}:undefined);
-      recChunks=[];
+      recChunks=[]; recMime=recorder.mimeType||mime||"audio/webm";
       recorder.ondataavailable=function(e){ if(e.data && e.data.size) recChunks.push(e.data); };
-      recorder.onstop=attachAudio;
+      recorder.onstop=function(){ finalizeRecording(recMime); };
       recorder.start();
     }catch(e){ recorder=null; }
   }
-  function attachAudio(){
-    if(!recChunks.length) return;
-    var blob=new Blob(recChunks,{type:(recorder&&recorder.mimeType)||"audio/webm"});
-    recChunks=[];
-    var sc=state.scenes[state.scenes.length-1]; if(!sc) return;
-    try{
-      var url=URL.createObjectURL(blob);
-      var a=new Audio(url); a.preload="metadata";
-      a.onloadedmetadata=function(){
-        sc.audio=url; sc.audioDur=Math.min(Math.max(a.duration||2,1),40);
-        renderStrip(); toast("도하 목소리를 이 장면에 담았어요 ♪");
-      };
-      a.onerror=function(){};
-    }catch(e){}
+  /* 녹음이 끝나면 그 구간의 원본 음성을 직전 장면에 붙인다(Blob은 저장 시 IndexedDB로 간다). */
+  function finalizeRecording(mime){
+    var chunks=recChunks; recChunks=[];
+    if(!chunks || !chunks.length) return null;
+    var blob=null;
+    try{ blob=new Blob(chunks,{type:mime||"audio/webm"}); }catch(e){ return null; }
+    var sc=state.scenes[state.scenes.length-1];
+    if(!sc) return blob;
+    sc.audioBlob=blob;
+    try{ sc.audio=URL.createObjectURL(blob); clipUrls.push(sc.audio); }catch(e){}
+    if(sc.audio){
+      try{
+        var a=new Audio(sc.audio); a.preload="metadata";
+        a.onloadedmetadata=function(){
+          sc.audioDur=Math.min(Math.max(a.duration||2,1),40);
+          if(state.screen==="canvas" && state.scenes[state.scenes.length-1]===sc) renderStrip();
+        };
+        a.onerror=function(){ if(!sc.audioDur) sc.audioDur=2.5; };
+      }catch(e){}
+    }
+    renderStrip();
+    toast(NM()+" 목소리를 이 장면에 담았어요 ♪");
+    return blob;
   }
-  function stopMic(){
-    state.micOn=false;
-    $("#micBtn").classList.remove("listening");
-    $("#statusText").textContent="듣는 중 · 이어서 말해줘!";
+  /* 마이크를 확실히 끈다: 권한 대기 취소 → 녹음 종료 → 트랙 정지(브라우저 녹음 아이콘 꺼짐) */
+  function stopMic(opts){
+    opts=opts||{};
+    micToken++;                      // 대기 중이던 getUserMedia 결과를 무효화
+    var wasOn=state.micOn;
+    state.micOn=false; state.micPending=false;
     analyser=null; resetWaveIdle();
-    try{ if(recorder && recorder.state==="recording") recorder.stop(); }catch(e){}
-    recorder=null;
-    if(micStream){ micStream.getTracks().forEach(function(t){ try{t.stop();}catch(e){} }); micStream=null; }
+    var finish, done=new Promise(function(res){ finish=res; });
+    var r=recorder; recorder=null;
+    if(r && r.state!=="inactive"){
+      try{
+        r.onstop=function(){ try{ finalizeRecording(recMime); }catch(e){} finish(); };
+        r.stop();
+      }catch(e){ finish(); }
+      setTimeout(finish,700);
+    } else finish();
+    if(micStream){ releaseStream(micStream); micStream=null; }
+    micUiIdle();
+    if(!opts.silent){
+      setIdleStatus();
+      if(wasOn) toast("마이크와 녹음을 껐어요");
+    }
+    return done;
+  }
+  function releaseMicOnExit(){
+    if(state.micOn || state.micPending || recorder || micStream) return stopMic({silent:true});
+    return Promise.resolve();
   }
 
   /* ---------------- movie ---------------- */
   var mv={playing:false, t:0, total:0, segs:[], raf:0, last:0, audios:{}};
+  function composeMovie(m){
+    var segs=[{type:"intro",dur:2.8}], acc=2.8;
+    (m.scenes||[]).forEach(function(s){
+      var d=Math.max(3.2,(s.audioDur||0)+1.2);
+      segs.push({type:"scene",start:acc,dur:d,scene:s}); acc+=d;
+    });
+    segs.push({type:"outro",start:acc,dur:2.4}); acc+=2.4;
+    m.segs=segs; m.total=acc;
+    return m;
+  }
   function buildMovie(){
     var scenes=state.scenes.slice();
-    var dates=todayStr();
     var tags=[];
     scenes.forEach(function(s){ (SCENE_INFO[s.key]||{tags:[]}).tags.forEach(function(t){ if(tags.indexOf(t)<0) tags.push(t); }); });
     if(scenes.some(function(s){return s.tint;}) && tags.indexOf("색")<0) tags.push("색");
-    var segs=[{type:"intro",dur:2.8}];
-    var acc=2.8;
-    scenes.forEach(function(s){
-      var d=Math.max(3.2, (s.audioDur||0)+1.2);
-      segs.push({type:"scene",start:acc,dur:d,scene:s}); acc+=d;
-    });
-    segs.push({type:"outro",start:acc,dur:2.4});
-    acc+=2.4;
     var title=storyTitle();
     var lastCap=scenes.length?scenes[scenes.length-1].caption:"공룡이 우리 집 거실에 나타났어!";
-    var longest=scenes.slice().sort(function(a,b){return b.caption.length-a.caption.length;})[0];
+    var longest=scenes.slice().sort(function(a,b){return (b.caption||"").length-(a.caption||"").length;})[0];
     var one=(longest&&longest.caption)||lastCap;
-
-    return {
-      no: albumCache.length+1,
-      title:title, date:dates, total:acc, segs:segs,
+    var m={
+      id: state.storyId || uid(),
+      no: state.storyNo || nextNo(),
+      title:title,
+      date:todayStr(), dateISO:todayISO(), createdAt:Date.now(),
       tags:tags, one:one,
-      style: styleById(state.style).ko,
+      styleId: state.style, styleKo: styleById(state.style).ko,
       obs: observation(scenes,tags),
       questions: questions(tags),
       scenes:scenes
     };
+    return composeMovie(m);
   }
+  /* 아이의 감정·심리를 단정하지 않는다. 말한 단어·장면·바뀐 것만 사실대로 적는다. */
   function observation(scenes,tags){
     var out=[];
-    var big=scenes.filter(function(s){return /크게|커다|거대/.test(s.caption);}).length;
-    var color=scenes.filter(function(s){return /보라|색/.test(s.caption)||s.tint;}).length;
-    var dad=scenes.filter(function(s){return /아빠|같이/.test(s.caption);}).length;
-    var styleChange=scenes.filter(function(s){return /만화|그림체/.test(s.caption);}).length;
-    if(big) out.push("도하는 <b>“더 크게”</b> 같은 크기 말을 "+big+"번 썼어요. 장면을 손으로 밀어 키우는 걸 즐기는 것 같아요.");
-    if(color) out.push("색을 바꾸는 상상을 했어요. 오늘은 기분을 <b>색</b>으로 표현하고 싶었나 봐요.");
-    if(dad) out.push("이야기 속에 <b>아빠</b>를 불러들였어요. 혼자만의 세계가 아니라 같이 놀고 싶은 마음이 보였어요.");
-    if(styleChange) out.push("중간에 그림체를 직접 바꿔 봤어요. 같은 장면도 다르게 보이는 걸 재미있어 했어요.");
-    if(!out.length){
-      out.push("도하가 만든 장면 "+scenes.length+"개를 끝까지 이어갔어요. 중간에 멈추지 않고 다음 이야기를 스스로 꺼냈어요.");
-      out.push("장면이 바뀔 때마다 화면을 먼저 보고, 그다음에 말을 이어갔어요. 자기 상상이 눈앞에 생기는 걸 확인하는 것 같았어요.");
-    }
-    if(tags.length) out.push("오늘 이야기의 열쇠말은 <b>"+tags.slice(0,4).join(" · ")+"</b> 였어요.");
-    return out.slice(0,3);
+    var caps=scenes.map(function(s){ return s.caption||""; });
+    function hit(re){ return caps.filter(function(c){ return re.test(c); }).length; }
+    var styleIds=[];
+    scenes.forEach(function(s){ var id=s.styleId||state.style; if(styleIds.indexOf(id)<0) styleIds.push(id); });
+    out.push("장면 "+scenes.length+"개를 이어서 만들었어요. 자막과 그림이 첫 장면부터 마지막 장면까지 이어집니다.");
+    var big=hit(/크게|커다|거대/);
+    if(big) out.push("크기를 말하는 표현이 "+big+"번 나왔고, 그 장면은 커진 그림으로 바뀌었어요.");
+    var color=scenes.filter(function(s){ return s.tint || /보라|색/.test(s.caption||""); }).length;
+    if(color) out.push("색을 말하는 표현이 "+color+"번 나왔고, 화면 색이 실제로 바뀌었어요.");
+    var fam=hit(/아빠|엄마/);
+    if(fam) out.push("가족을 부르는 말(아빠·엄마)이 "+fam+"번 나왔고, 가족이 등장하는 장면이 포함됐어요.");
+    var together=hit(/같이|함께/);
+    if(together) out.push("‘같이·함께’처럼 함께 하자는 말이 "+together+"번 나왔어요.");
+    if(styleIds.length>1) out.push("이야기 중간에 그림체를 바꿨어요: "+styleIds.map(function(id){ return styleById(id).ko; }).join(" → ")+".");
+    if(tags.length) out.push("이야기에 등장한 요소: <b>"+tags.slice(0,4).join(" · ")+"</b>");
+    return out.slice(0,4);
   }
   function questions(tags){
     var pool=[
+      "이야기 속에 어떤 요소가 등장했어?",
       "오늘 만든 장면 중에 제일 마음에 드는 건 뭐야?",
-      "공룡이 우리 집에 왔을 때, 제일 먼저 뭐라고 말했어?",
-      "다음엔 공룡이랑 어디로 가고 싶어?",
+      "아빠가 그 세상에 들어간다면 어떤 역할을 하면 좋겠어?",
       "그 장면에서 냄새가 난다면 어떤 냄새일까?",
-      "아빠가 상상 속에 들어간다면 뭘 타고 갈까?"
+      "다음엔 어디로 가 보고 싶어?"
     ];
     if(tags.indexOf("달")>=0) pool.unshift("달이 치즈라면 어떤 맛일 것 같아?");
     if(tags.indexOf("우주")>=0) pool.unshift("우주선에서 내려서 어디에 착륙하고 싶어?");
@@ -1223,14 +1481,21 @@ img{display:block}
   }
   function renderMovie(){
     var m=state.movie; if(!m) return;
+    var nm=NM();
+    var styleKo=m.styleKo||m.style||styleById(m.styleId||state.style).ko;
+    var tags=m.tags||[];
+    var obs=(m.obs&&m.obs.length)?m.obs:observation(m.scenes||[],tags);
+    var qs=(m.questions&&m.questions.length)?m.questions:questions(tags);
+    m.obs=obs; m.questions=qs;
     $("#mvIntro").classList.remove("out");
-    $("#introTitle").textContent=m.title;
-    $("#introCredits").innerHTML="감독 <b>도하</b> · 각본 <b>도하와 아빠</b><br>그림체 <b>"+m.style+"</b> · "+m.date+"<br>"+asc(m.no);
-    $("#oneLine").textContent="“"+m.one+"”";
-    $("#oneWho").textContent=m.date+" · "+asc(m.no);
-    $("#movieTags").innerHTML=m.tags.map(function(t){return '<span class="tag">'+t+'</span>';}).join("");
-    $("#obsBox").innerHTML=m.obs.map(function(o){return "<p>"+o+"</p>";}).join("");
-    $("#qList").innerHTML=m.questions.map(function(q){return "<li>"+q+"</li>";}).join("");
+    $("#introTitle").textContent=m.title||"상상 영화";
+    $("#introCredits").innerHTML="감독 <b>"+esc(nm)+"</b> · 각본 <b>"+esc(nm)+"와 아빠</b><br>그림체 <b>"+esc(styleKo)+"</b> · "+esc(m.date)+"<br>"+asc(m.no);
+    $("#oneLine").textContent="“"+(m.one||"")+"”";
+    $("#oneWho").textContent=(m.date||"")+" · "+asc(m.no);
+    $("#movieTags").innerHTML=tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join("");
+    $("#obsBox").innerHTML=obs.map(function(o){return "<p>"+o+"</p>";}).join("");
+    $("#qList").innerHTML=qs.map(function(q){return "<li>"+esc(q)+"</li>";}).join("");
+    $("#dadNote").value=m.note||"";
     $("#mvDots").innerHTML=m.segs.map(function(s){return "<i></i>";}).join("");
     $("#mvTc").textContent="0:00 / "+mmss(m.total);
     $("#mvProg").style.width="0%";
@@ -1239,16 +1504,18 @@ img{display:block}
 
     var player=$("#player");
     $$(".frame",player).forEach(function(f){f.remove();});
-    m.scenes.forEach(function(sc,i){
+    mv.audios={};
+    (m.scenes||[]).forEach(function(sc){
+      var st=sc.styleId||m.styleId||state.style;
       var f=el("div","frame");
-      f.setAttribute("data-style",state.style);
+      f.setAttribute("data-style",st);
       f.setAttribute("data-key",sc.key);
-      f.innerHTML='<img class="style-target" alt=""><div class="tint"></div><div class="veil" style="background:linear-gradient(180deg,rgba(4,3,2,.3),rgba(4,3,2,0) 35%,rgba(4,3,2,.55))"></div><div class="stage-tex tex-'+state.style+'"></div>';
-      $("img",f).src=srcFor(sc.key,state.style);
+      f.innerHTML='<img class="style-target" alt=""><div class="tint"></div><div class="veil" style="background:linear-gradient(180deg,rgba(4,3,2,.3),rgba(4,3,2,0) 35%,rgba(4,3,2,.55))"></div><div class="stage-tex tex-'+st+'"></div>';
+      $("img",f).src=srcFor(sc.key,st);
       if(sc.tint) f.classList.add("tinted");
       player.insertBefore(f,$("#mvCap"));
     });
-    mv.t=0; mv.playing=false; mv.total=m.total; mv.last=0; mv.segs=m.segs;
+    mv.t=0; mv.playing=false; mv.total=m.total; mv.last=0; mv.segs=m.segs; mv.curIdx=-1;
     setPlayIcon(false);
     setTimeout(function(){ playMovie(); }, 520);
   }
@@ -1332,78 +1599,209 @@ img{display:block}
   }
   function endStory(){
     if(!state.scenes.length){ toast("먼저 장면을 하나 만들어 볼까요?"); return; }
+    if(state.micOn || state.micPending || recorder || micStream){
+      /* 마지막 목소리까지 장면에 붙인 다음 영화를 만든다 */
+      stopMic({silent:true}).then(function(){ setTimeout(finishStory, 220); });
+    } else finishStory();
+  }
+  function finishStory(){
+    if(!state.scenes.length) return;
     state.movie=buildMovie();
     saveEntry(true);
     renderMovie();
     go("movie");
   }
 
-  /* ---------------- album ---------------- */
+  /* ---------------- album / MY UNIVERSE ---------------- */
   var SAMPLES=[
     {date:"2026-11-18",title:"바닷속에 만든 나만의 도시",key:"ship",scenes:4,dur:72,style:"3D 애니메이션",tags:["바다","도시"]},
     {date:"2026-11-11",title:"치즈로 만든 달에 간 공룡",key:"space",scenes:5,dur:124,style:"동화책",tags:["공룡","달"]},
     {date:"2026-11-03",title:"거실에 나타난 공룡",key:"living",scenes:3,dur:48,style:"3D 애니메이션",tags:["공룡","집"]}
   ];
-  function saveEntry(silent){
-    var m=state.movie; if(!m) return;
-    var entry={
-      id:"m"+Date.now(),
-      date:todayISO(),
-      title:m.title,
-      key:(m.scenes[0]||{key:"living"}).key,
-      scenes:m.scenes.length,
-      dur:Math.round(m.total),
-      style:m.style,
-      tags:m.tags,
-      one:m.one,
-      obs:m.obs,
-      questions:m.questions,
-      note:$("#dadNote").value||"",
-      mine:true,
-      captions:m.scenes.map(function(s){return s.caption;})
+  function isoToDot(iso){ return String(iso||"").replace(/-/g,"."); }
+  function recordFromMovie(m){
+    var note=($("#dadNote")?$("#dadNote").value:"")||m.note||"";
+    var styleId=m.styleId||state.style;
+    return {
+      id:m.id, no:m.no,
+      createdAt:m.createdAt||Date.now(),
+      date:m.dateISO||todayISO(),
+      title:m.title||"상상 영화",
+      styleId:styleId,
+      tags:m.tags||[],
+      one:m.one||"",
+      note:note,
+      dur:Math.round(m.total||0),
+      scenes:(m.scenes||[]).map(function(s){
+        return {
+          key:s.key||"living", caption:s.caption||"", tint:!!s.tint, at:s.at||0,
+          styleId:s.styleId||styleId,
+          audioDur:Math.round((s.audioDur||0)*10)/10,
+          clipId:s.clipId||null
+        };
+      })
     };
-    var idx=albumCache.findIndex(function(e){return e.mine && e.date===entry.date;});
-    if(idx>=0) albumCache[idx]=entry; else albumCache.unshift(entry);
-    persistAlbum();
-    state.savedEntry=entry;
-    if(!silent) toast("MY UNIVERSE에 저장했어요");
+  }
+  /* 같은 작품을 다시 저장하면 그 기록을 갱신하고, 새 작품은 새 id로 따로 남긴다. */
+  function saveEntry(silent){
+    var m=state.movie; if(!m) return Promise.resolve(false);
+    if(!m.id) m.id=uid();
+    if(!m.no) m.no=nextNo();
+    var rec=recordFromMovie(m);
+    var clips=[];
+    (m.scenes||[]).forEach(function(s,i){
+      if(s.audioBlob){
+        var cid=s.clipId || (rec.id+"-s"+i);
+        s.clipId=cid; rec.scenes[i].clipId=cid;
+        clips.push({id:cid, workId:rec.id, type:s.audioBlob.type||"audio/webm", blob:s.audioBlob});
+      } else if(s.clipId){
+        rec.scenes[i].clipId=s.clipId;
+      }
+    });
+    var idx=-1;
+    for(var k=0;k<albumCache.length;k++){ if(albumCache[k].id===rec.id){ idx=k; break; } }
+    if(idx>=0) albumCache[idx]=rec; else albumCache.unshift(rec);
+    state.savedEntry=rec;
+    return putWork(rec,clips).then(function(ok){
+      if(state.screen==="album") renderAlbum();
+      if(!silent) toast(ok
+        ? "MY UNIVERSE에 저장했어요 — 장면·자막·목소리가 함께 남아요"
+        : "기록을 저장했어요 · 이 브라우저는 음성 저장을 지원하지 않아요");
+      return ok;
+    }).catch(function(){
+      if(!silent) toast("저장하지 못했어요 — 잠시 뒤 다시 시도해 주세요",true);
+      return false;
+    });
+  }
+  function workCard(e,isNew){
+    var b=el("button","al-card"); b.type="button";
+    var scenes=e.scenes||[];
+    var key=(scenes[0]&&scenes[0].key)||e.key||"living";
+    var hasAudio=scenes.some(function(s){ return !!(s.clipId); });
+    var st=styleById(e.styleId||"3d");
+    b.innerHTML=
+      '<div class="al-thumb" style="background-image:url(\''+(IMG[key]||IMG.living)+'\')">'+
+        '<span class="al-no">No.'+String(e.no||0).padStart(3,"0")+'</span>'+
+        (isNew?'<span class="al-new">NEW</span>':'')+
+        (hasAudio?'<span class="al-audio">🎙 목소리</span>':'')+
+      '</div>'+
+      '<div class="al-meta">'+
+        '<time>'+isoToDot(e.date)+'</time>'+
+        '<h3>'+esc(e.title)+'</h3>'+
+        '<p class="sub">'+scenes.length+'장면 · '+mmss(e.dur)+' · '+esc(st.ko)+'</p>'+
+        '<div class="tags">'+(e.tags||[]).map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join("")+'</div>'+
+      '</div>';
+    b.addEventListener("click",function(){ openWork(e); });
+    return b;
+  }
+  function sampleCard(s){
+    var b=el("button","al-card"); b.type="button";
+    b.innerHTML=
+      '<div class="al-thumb" style="background-image:url(\''+(IMG[s.key]||IMG.living)+'\')">'+
+        '<span class="al-ex" style="position:absolute;top:8px;right:8px;z-index:2">예시</span>'+
+      '</div>'+
+      '<div class="al-meta">'+
+        '<time>'+isoToDot(s.date)+'</time>'+
+        '<h3>'+esc(s.title)+'</h3>'+
+        '<p class="sub">'+s.scenes+'장면 · '+mmss(s.dur)+' · '+esc(s.style)+'</p>'+
+        '<div class="tags">'+(s.tags||[]).map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join("")+'</div>'+
+      '</div>';
+    b.addEventListener("click",function(){ toast("예시 카드예요 · 내 기록 편수에는 들어가지 않아요"); });
+    return b;
+  }
+  /* 저장된 기록을 열면 그 작품의 장면·자막·목소리를 IndexedDB에서 되살려 재생한다. */
+  function openWork(rec){
+    if(!rec) return;
+    var src=(rec.scenes&&rec.scenes.length)?rec.scenes
+      : [{key:rec.key||"living",caption:rec.one||"",tint:false,at:0,styleId:rec.styleId||"3d",audioDur:0,clipId:null}];
+    var built=src.map(function(s){
+      return {
+        key:s.key||"living", caption:s.caption||"", tint:!!s.tint, at:s.at||0,
+        styleId:s.styleId||rec.styleId||"3d", audioDur:+s.audioDur||0,
+        audio:null, audioBlob:null, clipId:s.clipId||null
+      };
+    });
+    var tags=rec.tags||[];
+    var stId=(built[0]&&built[0].styleId)||rec.styleId||"3d";
+    var token=++state.openSeq;
+    revokeClips();
+    clipsOf(rec.id).then(function(clips){
+      var map={};
+      (clips||[]).forEach(function(c){ map[c.id]=c; });
+      built.forEach(function(s){
+        var c=s.clipId && map[s.clipId];
+        if(c && c.blob){
+          s.audioBlob=c.blob;
+          try{ s.audio=URL.createObjectURL(c.blob); clipUrls.push(s.audio); }catch(e){}
+        }
+      });
+    }).catch(function(){}).then(function(){
+      if(token!==state.openSeq) return;
+      var m={
+        id:rec.id, no:rec.no, createdAt:rec.createdAt, title:rec.title||"상상 영화",
+        date:isoToDot(rec.date)||todayStr(), dateISO:rec.date||todayISO(),
+        tags:tags, one:rec.one||"", styleId:stId, styleKo:styleById(stId).ko,
+        scenes:built,
+        obs:(rec.obs&&rec.obs.length)?rec.obs:observation(built,tags),
+        questions:(rec.questions&&rec.questions.length)?rec.questions:questions(tags),
+        note:rec.note||""
+      };
+      composeMovie(m);
+      state.movie=m; state.savedEntry=rec; state.storyId=rec.id; state.storyNo=rec.no;
+      renderMovie();
+      go("movie");
+      var hasAudio=built.some(function(s){ return !!s.audio; });
+      toast(hasAudio ? "저장된 기록을 열었어요 — 장면·자막·목소리까지 재생돼요" : "저장된 기록을 열었어요 — 장면과 자막이 재생돼요");
+    });
+  }
+  function askChildName(){
+    var v=window.prompt("앱에서 부를 이름 (이 기기에만 저장돼요)", NM());
+    if(v==null) return;
+    saveChildName(v);
+    applyChildName();
+    renderAlbum();
+    setIdleStatus();
+    toast("이 기기에만 저장했어요");
   }
   function renderAlbum(){
-    var list=albumCache.concat(SAMPLES);
-    var total=list.length;
-    $("#alCount").textContent="상상 영화 "+total+"편 · 공룡 "+list.filter(function(e){return e.tags.indexOf("공룡")>=0;}).length+"번, 우주 "+list.filter(function(e){return e.tags.indexOf("우주")>=0;}).length+"번";
+    var mine=albumCache.slice();
+    var dino=mine.filter(function(e){ return (e.tags||[]).indexOf("공룡")>=0; }).length;
+    var space=mine.filter(function(e){ return (e.tags||[]).indexOf("우주")>=0; }).length;
+    $("#alCount").textContent = mine.length
+      ? "내 상상 영화 "+mine.length+"편 · 공룡 "+dino+"번, 우주 "+space+"번"
+      : "내 상상 영화 0편 · 아래 예시 3편";
 
     var p=$("#panel-album"); p.innerHTML="";
+
+    var head=el("div","al-sec-head");
+    head.innerHTML='<h2>내 기록 <b>'+mine.length+'편</b></h2>'+
+      '<p>'+(mine.length
+        ? "카드를 누르면 그날의 장면·자막·목소리가 그대로 재생돼요."
+        : "아직 내 기록이 없어요. 첫 상상을 끝내면 날짜별로 여기에 쌓여요.")+'</p>';
+    var nameBtn=el("button","al-name");
+    nameBtn.type="button";
+    nameBtn.textContent="부르는 이름 바꾸기 · "+NM();
+    nameBtn.addEventListener("click",askChildName);
+    head.appendChild(nameBtn);
+    p.appendChild(head);
+
     var grid=el("div","al-grid");
-    if(!list.length){
-      grid.appendChild(el("div","al-empty","아직 저장된 상상이 없어요. 첫 상상을 만들어 볼까요?"));
-    }
-    list.forEach(function(e,i){
-      var b=el("button","al-card");
-      b.type="button";
-      b.innerHTML=
-        '<div class="al-thumb" style="background-image:url(\''+IMG[e.key]+'\')">'+
-          '<span class="al-no">No.'+String(total-i).padStart(3,"0")+'</span>'+
-          (e.mine?'<span class="al-new">NEW</span>':'')+
-        '</div>'+
-        '<div class="al-meta">'+
-          '<time>'+e.date.replace(/-/g,".")+'</time>'+
-          '<h3>'+e.title+'</h3>'+
-          '<p class="sub">'+e.scenes+'장면 · '+mmss(e.dur)+' · '+e.style+'</p>'+
-          '<div class="tags">'+e.tags.map(function(t){return '<span class="tag">'+t+'</span>';}).join("")+'</div>'+
-        '</div>';
-      b.addEventListener("click",function(){
-        if(e.mine && state.movie){ renderMovie(); go("movie"); }
-        else toast("이 기록은 앨범 예시예요 · v0.5에서 실제 영상으로 재생돼요");
-      });
-      grid.appendChild(b);
-    });
+    if(!mine.length) grid.appendChild(el("div","al-empty","아직 저장된 상상이 없어요. 아래 '오늘의 상상 만들기'로 시작해 보세요."));
+    mine.forEach(function(e,i){ grid.appendChild(workCard(e,i===0)); });
     var addCard=el("button","al-card al-add");
     addCard.type="button";
-    addCard.innerHTML='<div class="inner"><span class="plus">+</span><b>오늘의 상상 만들기</b><small>도하와 새 이야기를 시작해요</small></div>';
+    addCard.innerHTML='<div class="inner"><span class="plus">+</span><b>오늘의 상상 만들기</b><small>'+esc(NM())+'와 새 이야기를 시작해요</small></div>';
     addCard.addEventListener("click",startStory);
     grid.appendChild(addCard);
     p.appendChild(grid);
+
+    var sh=el("div","al-sec-head sample");
+    sh.innerHTML='<h2>예시 <span class="al-ex">예시</span></h2>'+
+      '<p>앱이 어떻게 보이는지 보여주는 샘플 3편이에요. 내 기록 편수에는 들어가지 않아요.</p>';
+    p.appendChild(sh);
+    var sg=el("div","al-grid al-grid-samples");
+    SAMPLES.forEach(function(s){ sg.appendChild(sampleCard(s)); });
+    p.appendChild(sg);
 
     var months=$("#months");
     if(months && !months.childElementCount){
@@ -1425,8 +1823,8 @@ img{display:block}
       '<article class="cap-card locked">'+
         '<span class="lock">🔒</span>'+
         '<p class="lbl">TIME CAPSULE · 1년 뒤</p>'+
-        '<h3>열한 살의 도하에게</h3>'+
-        '<p>오늘의 상상 영화와 아빠의 한 줄이 담겨 있어요. 열리는 날, 도하가 직접 열어요.</p>'+
+        '<h3>1년 뒤의 '+esc(NM())+'에게</h3>'+
+        '<p>오늘의 상상 영화와 아빠의 한 줄이 담겨 있어요. 열리는 날, '+esc(NM())+'가 직접 열어요.</p>'+
         '<span class="dday">D-'+(d2>0?d2:365)+' · 2027.11.24</span>'+
       '</article>'+
       '<article class="cap-card">'+
@@ -1439,10 +1837,12 @@ img{display:block}
   }
 
   /* ---------------- wiring ---------------- */
+  applyChildName();
   buildStyleCards($("#styleRow"),function(id){ setStyle(id); tone(587,0.15,"triangle",0.02); });
   buildStyleCards($("#sheetRow"),function(id){ setStyle(id); closeSheet(); });
   buildChips();
   setStyle("3d",{silent:true});
+  setIdleStatus();
   loadPromises.forEach(function(p){ p.then(function(){ /* warm variants lazily */ }); });
 
   $("#startBtn").addEventListener("click",function(){
@@ -1495,11 +1895,16 @@ img{display:block}
     go("album");
   });
   $("#dadNote").addEventListener("input",function(){
-    state.dadNote=this.value;
-    if(state.movie){
-      var idx=albumCache.findIndex(function(e){return e.mine && e.date===todayISO();});
-      if(idx>=0){ albumCache[idx].note=this.value; persistAlbum(); }
-    }
+    var v=this.value;
+    state.dadNote=v;
+    if(state.movie) state.movie.note=v;
+    var id=state.movie&&state.movie.id; if(!id) return;
+    clearTimeout(noteT);
+    noteT=setTimeout(function(){
+      for(var i=0;i<albumCache.length;i++){
+        if(albumCache[i].id===id){ albumCache[i].note=v; putWork(albumCache[i],[]); break; }
+      }
+    },700);
   });
   $("#alBack").addEventListener("click",function(){ go("home"); });
   $("#newStoryBtn").addEventListener("click",startStory);
@@ -1516,7 +1921,31 @@ img{display:block}
   document.addEventListener("keydown",function(e){
     if(e.key==="Escape"){ closeSheet(); }
   });
-  window.addEventListener("pagehide",function(){ stopMic(); pauseMovie(); });
+  /* 화면이 가려지거나 닫힐 때 마이크·녹음·재생을 반드시 놓아준다 */
+  document.addEventListener("visibilitychange",function(){
+    if(document.hidden){ releaseMicOnExit(); pauseMovie(); }
+  });
+  window.addEventListener("pagehide",function(){ releaseMicOnExit(); pauseMovie(); });
+  window.addEventListener("beforeunload",function(){ releaseMicOnExit(); pauseMovie(); });
+
+  /* IndexedDB에서 내 기록을 불러온다(첫 로드·새로고침 뒤 복원) */
+  initAlbum();
+
+  /* 점검·자동화용 상태 노출(화면에는 관여하지 않음) */
+  window.__DOHA={
+    state:state,
+    mic:function(){
+      return {
+        on:!!state.micOn, pending:!!state.micPending, denied:!!state.micDenied,
+        tracks:((micStream?micStream.getTracks():lastTracks)||[]).map(function(t){ return t.readyState; })
+      };
+    },
+    album:function(){ return albumCache; },
+    openWork:openWork,
+    stopMic:stopMic,
+    startStory:startStory,
+    nameOf:NM
+  };
 
   /* dev-only error collector so the prototype can be checked for console errors */
   window.__ERRORS=[];
