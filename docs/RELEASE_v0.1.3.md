@@ -60,7 +60,7 @@ PR 로드맵의 `P1 / v0.2`(정식 음성 인식)와 구분되도록, 이번 STT
 | `src/verify_v012.py` | 65 | **ALL PASS** |
 | `src/verify_v013.py` | 51 | **ALL PASS** |
 | `src/verify_v011.py` | 32 | **ALL PASS** |
-| `src/check_build.py` | 1 | OK (713,104 bytes 일치) |
+| `src/check_build.py` | 1 | OK (713,117 bytes 일치) |
 
 - Chromium 159.0.8154.6 · 가짜 마이크 · 세션별 런타임/콘솔 에러 **0건**.
 - 레이아웃: 1180×820 / 820×1180 / 390×844 모두 `#app.scrollLeft==0`, 문서 폭 = 창 폭.
