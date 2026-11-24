@@ -1,6 +1,6 @@
 # RELEASE v0.1.3 — PR #1 통합 + 바로 듣기 + 임시 음성 자막 변환
 
-2026-11-25 · 로컬 통합 완료 · **배포하지 않음(승인 대기)**
+2026-11-25 · **main 배포 완료** (`4c7b612`) · PR #1 종료 · 라이브 검증 통과
 
 ## 1. 한 줄 요약
 
@@ -89,14 +89,20 @@ PR 로드맵의 `P1 / v0.2`(정식 음성 인식)와 구분되도록, 이번 STT
 1. **실제 iPhone/iPad Safari 미검증** — 이 컨테이너에서는 불가. 특히 ①`webkitSpeechRecognition` 지원·서버 전송 여부 ②`<audio>` 연속 재생(바로 듣기) ③IndexedDB 용량·저장 실패 동작은 실기기 확인이 필요합니다.
 2. **음성인식 품질** — 임시 기능입니다. Chrome 계열은 오디오를 Google 서버로 보내며, 오프라인·권한·정책에 따라 바로 실패할 수 있습니다(그때는 토글이 스스로 꺼지고 원본 녹음은 유지).
 3. **STT와 MediaRecorder 동시 사용** — 같은 마이크를 두 소비자가 쓰는 구조입니다. 실기기에서 발열·중복 점유 이슈가 있는지 확인 필요(테스트는 가짜 인식기라 이 부분을 재현하지 않음).
-4. **PR 본문의 "검토용 초안" 상태** — PR #1은 아직 리뷰·머지 전이며, 이 통합은 PR을 로컬에서 흡수한 형태입니다. PR을 닫을지, 통합 커밋으로 대체할지는 승인 사항입니다.
+4. **PR #1 처리 결과** — v0.1.3 통합 커밋으로 main에 반영되어 PR #1(`develop/v0.1.2-safety` → `main`)은 2026-11-25에 종료했습니다. PR이 올린 문서·안전성·정직성 개선은 전부 이 커밋에 포함되어 있습니다.
 5. **문서 정합성** — `docs/FIRST_SPRINT.md`는 v0.1.2 스프린트 문서로 남겨 두었고, v0.1.3 범위는 이 문서와 README가 설명합니다.
 
-## 7. 승인 후 바로 할 수 있는 일
+## 7. 배포 기록 (실행 완료)
 
 ```bash
-cd project-doha
-python3 src/build.py && python3 src/check_build.py
-git add -A && git commit -m "feat(v0.1.3): PR #1 안전 스프린트 통합 + 캔버스 바로 듣기 + 임시 음성 자막 변환(기본 OFF)"
-git push origin merge/pr1-v013   # 이후 PR 생성 → 리뷰 → 머지 → Pages 배포
+python3 src/check_build.py                      # OK 713,117 bytes
+git commit -m "feat(v0.1.3): PR #1 통합 + 캔버스 바로 듣기 + 임시 음성 자막 변환(기본 OFF)"   # 4c7b612
+git checkout main && git merge --ff-only merge/pr1-v013 && git push origin main
+gh pr close 1 --repo stellingyw-oss/Project-doha --comment "v0.1.3 통합 커밋으로 main에 반영되어 닫습니다. …"
 ```
+
+- GitHub Pages: `main` / 루트, 커밋 `4c7b612` 빌드 `built` → `https://stellingyw-oss.github.io/Project-doha/`
+- 라이브 확인: HTTP 200, 서빙 파일이 로컬 `index.html`과 sha256 동일, 화면 표기 `PROJECT DOHA · v0.1.3`,
+  `#listenBtn`("▶ 방금 녹음 듣기")은 녹음 전 숨김, `#sttBtn`은 `aria-checked="false"`(기본 OFF, 인식기 생성 0회),
+  홈 → 캔버스 → 문장 입력 → 영화 → 저장 → 앨범 흐름에서 uncaught error·unhandledrejection 0건.
+  유일한 실패 요청은 HTML이 선언하지 않은 기본 `/favicon.ico`(404)입니다.
