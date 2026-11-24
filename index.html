@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="theme-color" content="#120F0B">
-<meta name="doha-version" content="0.1.1">
+<meta name="doha-version" content="0.1.2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>PROJECT DOHA · 아이는 자라고, 상상은 남습니다</title>
@@ -349,6 +349,32 @@ img{display:block}
 .al-meta .sub{margin:5px 0 0;font-size:10.5px;color:var(--dim-2)}
 .al-meta .tags{margin-top:8px}
 .al-empty{padding:26px;text-align:center;color:var(--dim-2);font-size:12px;border:1px dashed rgba(248,240,226,.14);border-radius:16px}
+.al-card-wrap{display:flex;flex-direction:column;gap:6px;min-width:0}
+.al-card-wrap .al-card{flex:1 1 auto}
+.al-card-actions{display:flex;gap:6px}
+.al-card-btn{flex:1 1 0;font-size:10.5px;font-weight:700;letter-spacing:-.01em;color:#D8C9B0;background:rgba(248,240,226,.05);
+  border:1px solid rgba(248,240,226,.14);border-radius:9px;padding:7px 6px;transition:background .25s,color .25s}
+.al-card-btn:active{transform:scale(.97)}
+.al-card-btn:hover{background:rgba(248,240,226,.1);color:#F8EDDB}
+.al-card-btn.del{color:#F0B5A4;border-color:rgba(233,137,106,.32)}
+.al-card-btn.del:hover{background:rgba(233,137,106,.14);color:#FFD8CA}
+.al-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+
+/* ---------- save state (SAVING / SAVED_COMPLETE / SAVED_TEXT_ONLY / SAVE_FAILED) ---------- */
+#saveOverlay{position:absolute;inset:0;z-index:78;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:rgba(10,7,4,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+#saveOverlay.on{opacity:1;visibility:visible}
+#saveOverlay .box{display:flex;align-items:center;gap:12px;padding:18px 22px;border-radius:18px;max-width:min(88vw,430px);
+  background:rgba(24,19,13,.94);border:1px solid rgba(243,182,95,.32);color:#FFEBC8;font-size:13px;font-weight:700;line-height:1.55;
+  box-shadow:0 30px 70px -30px rgba(0,0,0,.9)}
+#saveOverlay .box small{display:block;margin-top:5px;font-size:11px;font-weight:600;color:#B9A98F}
+.save-notice{width:100%;max-width:1080px;margin:0 auto;padding:12px 15px;border-radius:14px;font-size:12px;line-height:1.6;
+  border:1px solid rgba(243,182,95,.32);background:rgba(243,182,95,.08);color:#F4E3C6}
+.save-notice.failed{border-color:rgba(233,137,106,.5);background:rgba(233,137,106,.1);color:#F7D9CE}
+.save-notice[hidden]{display:none}
+.save-notice-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.save-notice-actions .btn{padding:8px 14px;font-size:11.5px}
 
 .yb{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px;align-items:stretch}
 .yb-cover{position:relative;border-radius:18px;overflow:hidden;min-height:220px;background-size:cover;background-position:center;
@@ -478,7 +504,7 @@ img{display:block}
         <header class="topbar">
           <div class="brand">
             <span class="brand-mark">little worlds.</span>
-            <span class="brand-sub">PROJECT DOHA · v0.1.1</span>
+            <span class="brand-sub">PROJECT DOHA · v0.1.2</span>
           </div>
           <div class="topbar-right">
             <span class="badge-soft">🛡 광고 없음 · 가족만</span>
@@ -642,6 +668,14 @@ img{display:block}
           </section>
         </div>
 
+        <div class="save-notice" id="saveNotice" hidden>
+          <p id="saveNoticeText"></p>
+          <div class="save-notice-actions">
+            <button class="btn btn-line" id="saveRetryBtn">다시 저장</button>
+            <button class="btn btn-line" id="saveDownloadBtn">파일로 내려받기</button>
+          </div>
+        </div>
+
         <div class="mv-actions">
           <button class="btn btn-primary" id="saveAlbumBtn">MY UNIVERSE에 저장</button>
           <button class="btn btn-ghost" id="againBtn">새 상상 시작</button>
@@ -705,6 +739,13 @@ img{display:block}
     </div>
   </section>
 
+  <!-- 저장 중에는 앨범 반영·화면 전환을 막고 여기서 상태를 보여준다 -->
+  <div id="saveOverlay" role="status" aria-live="polite">
+    <div class="box">
+      <span class="spinner"></span>
+      <div><span id="saveOverlayText">기록을 저장하는 중 …</span><small>저장이 끝나면 화면이 넘어가요</small></div>
+    </div>
+  </div>
   <div id="toast"></div>
   <div class="grain"></div>
 </div>
@@ -905,10 +946,11 @@ img{display:block}
     movie:null,
     storyId:null,
     storyNo:0,
-    openSeq:0
+    openSeq:0,
+    save:{phase:"IDLE",at:0,audioSaved:0,audioTotal:0,reason:"",error:"",id:null}   /* IDLE → SAVING → SAVED_COMPLETE|SAVED_TEXT_ONLY|SAVE_FAILED */
   };
   var albumCache=[];        // 내 기록(작품 목록) — IndexedDB에서 불러온다
-  var albumReady=false, noteT=null;
+  var albumReady=false, noteT=null, saveInFlight=null;
   function uid(){ return "w"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8); }
   function nextNo(){
     var max=0;
@@ -917,9 +959,13 @@ img{display:block}
   }
 
   /* ---------------- storage: 작품·장면·원본 음성을 IndexedDB에 영구 저장 ----------------
-     works : {id, no, createdAt, date, title, styleId, tags, one, note, dur, scenes:[{key,caption,tint,at,styleId,audioDur,clipId}]}
-     clips : {id, workId, type, blob}  ← 녹음된 원본 음성(Blob)
-     IndexedDB를 쓸 수 없으면 같은 모양(음성 제외)을 localStorage에 둔다. */
+     works : {id, no, createdAt, date, title, styleId, tags, one, note, dur, saveStatus,
+              scenes:[{key,caption,tint,at,styleId,audioDur,clipId,clipIds,takeCount}]}
+     clips : {id, workId, sceneIndex, takeIndex, type, dur, blob}  ← 녹음된 원본 음성(Blob)
+     저장 결과는 true/false가 아니라 저장 상태로 돌려준다:
+       SAVING → SAVED_COMPLETE / SAVED_TEXT_ONLY / SAVE_FAILED
+     IndexedDB를 쓸 수 없으면 같은 모양(음성 제외)을 localStorage에 두되, 그때는 완전 저장이 아니라
+     SAVED_TEXT_ONLY로 정확히 알린다. */
   var DB_NAME="doha-universe", DB_VER=1, STORE_WORKS="works", STORE_CLIPS="clips";
   var dbp=null, idbBroken=false;
   function openDB(){
@@ -948,13 +994,24 @@ img{display:block}
   function reqP(rq){ return new Promise(function(res,rej){ rq.onsuccess=function(){res(rq.result);}; rq.onerror=function(){rej(rq.error);}; }); }
   function commitP(t){ return new Promise(function(res,rej){ t.oncomplete=function(){res(true);}; t.onerror=function(){rej(t.error);}; t.onabort=function(){rej(t.error);}; }); }
   function lsWorks(){ try{ return JSON.parse(localStorage.getItem(LS_FALLBACK)||"[]"); }catch(e){ return []; } }
+  /* localStorage 축소 저장 — 실제로 다시 읽어 확인했을 때만 성공으로 본다 */
   function lsPutWork(rec){
     try{
       var list=lsWorks(), i=-1;
       for(var k=0;k<list.length;k++){ if(list[k].id===rec.id){ i=k; break; } }
       if(i>=0) list[i]=rec; else list.unshift(rec);
       localStorage.setItem(LS_FALLBACK,JSON.stringify(list));
-    }catch(e){}
+    }catch(e){ return {ok:false,error:String((e&&e.name)||e)}; }
+    var back=lsWorks();
+    for(var j=0;j<back.length;j++){ if(back[j] && back[j].id===rec.id) return {ok:true}; }
+    return {ok:false,error:"readback_missing"};
+  }
+  function lsDeleteWork(id){
+    try{
+      var list=lsWorks().filter(function(w){ return w && w.id!==id; });
+      localStorage.setItem(LS_FALLBACK,JSON.stringify(list));
+      return {ok:true};
+    }catch(e){ return {ok:false,error:String((e&&e.name)||e)}; }
   }
   function allWorks(){
     return openDB().then(function(db){
@@ -965,14 +1022,78 @@ img{display:block}
       return (list||[]).sort(function(a,b){ return (b.createdAt||0)-(a.createdAt||0); });
     }).catch(function(){ return lsWorks(); });
   }
+  function writeTxn(db,rec,clips){
+    var t=db.transaction([STORE_WORKS,STORE_CLIPS],"readwrite");
+    t.objectStore(STORE_WORKS).put(rec);
+    (clips||[]).forEach(function(c){ t.objectStore(STORE_CLIPS).put(c); });
+    return commitP(t);
+  }
+  /* 트랜잭션 커밋 뒤에 다시 읽어 “정말 들어갔는지” 확인한다 */
+  function verifyWork(db,id){
+    return reqP(db.transaction(STORE_WORKS,"readonly").objectStore(STORE_WORKS).get(id)).then(function(w){
+      if(!(w && w.id===id)) return {work:false,clips:0};
+      return reqP(db.transaction(STORE_CLIPS,"readonly").objectStore(STORE_CLIPS).getAll()).then(function(all){
+        return {work:true,clips:(all||[]).filter(function(c){ return c && c.workId===id; }).length};
+      }).catch(function(){ return {work:true,clips:0}; });
+    }).catch(function(){ return {work:false,clips:0}; });
+  }
+  /* 저장 결과: {status:"SAVED_COMPLETE"|"SAVED_TEXT_ONLY"|"SAVE_FAILED", audioSaved, audioTotal, reason, error}
+     - 원본 음성까지 커밋·확인이 끝나야만 SAVED_COMPLETE
+     - 기록만 남고 음성이 빠졌거나 localStorage로 대신하면 SAVED_TEXT_ONLY
+     - 아무것도 확인되지 않으면 SAVE_FAILED (호출부는 앨범에 반영하지 않는다) */
   function putWork(rec,clips){
+    clips=clips||[];
     return openDB().then(function(db){
-      if(!db){ lsPutWork(rec); return true; }
+      if(!db){
+        var ls=lsPutWork(rec);
+        if(!ls.ok) return {status:"SAVE_FAILED",audioSaved:0,audioTotal:clips.length,reason:"idb_unavailable",error:ls.error};
+        return {status: clips.length?"SAVED_TEXT_ONLY":"SAVED_COMPLETE",audioSaved:0,audioTotal:clips.length,
+                reason: clips.length?"idb_unavailable":""};
+      }
+      return writeTxn(db,rec,clips).then(function(){
+        return verifyWork(db,rec.id);
+      }).then(function(v){
+        if(!v.work) return {status:"SAVE_FAILED",audioSaved:v.clips,audioTotal:clips.length,reason:"verify_missing"};
+        if(clips.length && v.clips<clips.length)
+          return {status:"SAVED_TEXT_ONLY",audioSaved:v.clips,audioTotal:clips.length,reason:"verify_clips"};
+        return {status:"SAVED_COMPLETE",audioSaved:v.clips,audioTotal:clips.length,reason:""};
+      }).catch(function(err){
+        /* 용량 초과 등으로 트랜잭션이 실패하면, 원본 음성 없이라도 장면·자막 기록은 남긴다 */
+        return writeTxn(db,rec,[]).then(function(){
+          return verifyWork(db,rec.id);
+        }).then(function(v){
+          if(v.work) return {status: clips.length?"SAVED_TEXT_ONLY":"SAVE_FAILED",audioSaved:0,audioTotal:clips.length,
+                             reason:"idb_error",error:String((err&&err.name)||err)};
+          throw err;
+        }).catch(function(e2){
+          var ls=lsPutWork(rec);
+          return {status: ls.ok?"SAVED_TEXT_ONLY":"SAVE_FAILED",audioSaved:0,audioTotal:clips.length,
+                  reason:"idb_error",error:String((e2&&e2.name)||e2)};
+        });
+      });
+    }).catch(function(err){
+      return {status:"SAVE_FAILED",audioSaved:0,audioTotal:clips.length,reason:"open_error",error:String((err&&err.name)||err)};
+    });
+  }
+  /* 기록 한 편과 그 원본 음성(clips)을 함께 지운다 */
+  function deleteWork(id){
+    return openDB().then(function(db){
+      var ls=lsDeleteWork(id);
+      if(!db) return {ok:ls.ok,reason: ls.ok?"":"idb_unavailable"};
       var t=db.transaction([STORE_WORKS,STORE_CLIPS],"readwrite");
-      t.objectStore(STORE_WORKS).put(rec);
-      (clips||[]).forEach(function(c){ t.objectStore(STORE_CLIPS).put(c); });
-      return commitP(t);
-    }).then(function(ok){ return ok; }).catch(function(){ lsPutWork(rec); return false; });
+      t.objectStore(STORE_WORKS).delete(id);
+      var cl=t.objectStore(STORE_CLIPS);
+      cl.openCursor().onsuccess=function(e){
+        var cur=e.target.result; if(!cur) return;
+        if(cur.value && cur.value.workId===id) cur.delete();
+        cur.continue();
+      };
+      return commitP(t).then(function(){
+        return verifyWork(db,id);
+      }).then(function(v){
+        return {ok: !v.work, clipsLeft:v.clips};
+      }).catch(function(err){ return {ok:false,reason:String((err&&err.name)||err)}; });
+    }).catch(function(err){ return {ok:false,reason:String((err&&err.name)||err)}; });
   }
   function clipsOf(workId){
     return openDB().then(function(db){
@@ -991,35 +1112,43 @@ img{display:block}
       return albumCache;
     }).catch(function(){ albumReady=true; });
   }
-  /* v0.1의 localStorage 기록(장면·자막만)을 잃지 않도록 고유 id를 붙여 IndexedDB로 옮긴다. */
+  /* v0.1의 localStorage 기록(장면·자막만)을 잃지 않도록 고유 id를 붙여 IndexedDB로 옮긴다.
+     ⚠️ 이관한 모든 기록이 실제로 다시 읽혀 확인되기 전에는 v0.1 원본(SAVED_KEY)을 절대 지우지 않는다. */
   function migrateLegacy(list){
     var legacy=[];
     try{ legacy=JSON.parse(localStorage.getItem(SAVED_KEY)||"[]"); }catch(e){ legacy=[]; }
     if(!legacy || !legacy.length) return Promise.resolve(list);
-    var maxNo=0, seen={};
+    var maxNo=0, seen={}, want=[], jobs=[];
     (list||[]).forEach(function(w){ if(w && +w.no>maxNo) maxNo=+w.no; seen[w.id]=1; });
-    var jobs=[];
     legacy.forEach(function(e){
       if(!e || !e.mine) return;
       var id=e.id? ("legacy-"+e.id) : ("legacy-"+Date.now()+"-"+Math.random().toString(36).slice(2,7));
+      want.push(id);
       if(seen[id]) return;
-      maxNo++;
+      seen[id]=1;
+      maxNo+=1;
+      var no=maxNo;
       var caps=e.captions||[];
       var key=e.key||"living";
       var scenes=caps.length
-        ? caps.map(function(c){ return {key:key,caption:c,tint:false,at:0,styleId:"3d",audioDur:0,clipId:null}; })
-        : [{key:key,caption:e.one||e.title||"",tint:false,at:0,styleId:"3d",audioDur:0,clipId:null}];
+        ? caps.map(function(c){ return {key:key,caption:c,tint:false,at:0,styleId:"3d",audioDur:0,clipId:null,clipIds:[],takeCount:0}; })
+        : [{key:key,caption:e.one||e.title||"",tint:false,at:0,styleId:"3d",audioDur:0,clipId:null,clipIds:[],takeCount:0}];
       jobs.push(putWork({
-        id:id, no:maxNo, createdAt:(Date.parse(String(e.date)+"T12:00:00")||Date.now()),
+        id:id, no:no, createdAt:(Date.parse(String(e.date)+"T12:00:00")||Date.now()),
         date:e.date||todayISO(), title:e.title||"상상 영화", styleId:"3d", tags:e.tags||[],
         one:e.one||"", note:e.note||"", dur:e.dur||0, scenes:scenes, obs:[], questions:[], legacy:true
       },[]));
     });
-    if(!jobs.length){ try{ localStorage.removeItem(SAVED_KEY); }catch(e){} return Promise.resolve(list); }
-    return Promise.all(jobs).then(function(){
-      try{ localStorage.removeItem(SAVED_KEY); }catch(e){}
+    var saved=jobs.length? Promise.all(jobs) : Promise.resolve([]);
+    return saved.then(function(){
+      /* 저장 성공과 데이터 복원을 확인한 뒤에만 원본을 지운다(실패하면 다음 실행에서 다시 시도) */
       return allWorks();
-    });
+    }).then(function(fresh){
+      var ids={}; (fresh||[]).forEach(function(w){ if(w) ids[w.id]=1; });
+      var allThere=want.every(function(id){ return !!ids[id]; });
+      if(allThere){ try{ localStorage.removeItem(SAVED_KEY); }catch(e){} }
+      return fresh;
+    }).catch(function(){ return list; });
   }
   var clipUrls=[];
   function revokeClips(){
@@ -1028,7 +1157,13 @@ img{display:block}
   }
 
   /* ---------------- navigation ---------------- */
-  function go(name){
+  function go(name,opts){
+    opts=opts||{};
+    /* 저장이 끝나기 전에는 앨범 반영·화면 전환을 하지 않는다 */
+    if(!opts.force && state.save.phase==="SAVING" && state.screen!==name){
+      toast("저장 중이에요 — 잠깐만 기다려 주세요");
+      return false;
+    }
     if(state.screen!==name){
       /* 화면을 떠나면 마이크·녹음·재생을 반드시 정리한다(브라우저 녹음 아이콘 즉시 꺼짐) */
       if(state.screen==="canvas") releaseMicOnExit();
@@ -1041,6 +1176,7 @@ img{display:block}
     if(name==="home") syncHomeCta();
     var sc=$("#s-"+name+" .home-scroll, #s-"+name+" .mv-scroll, #s-"+name+" .al-scroll");
     if(sc) sc.scrollTop=0;
+    return true;
   }
   function syncHomeCta(){
     var label=$("#startLabel");
@@ -1163,7 +1299,8 @@ img{display:block}
         audio:null,
         audioBlob:null,
         audioDur:0,
-        clipId:null
+        clipId:null,
+        takes:[]                  /* 이 장면에서 녹음한 테이크들(여러 번 녹음해도 모두 보관) */
       };
       state.scenes.push(sc);
       addFrame(sc);
@@ -1177,10 +1314,18 @@ img{display:block}
   }
 
   function startStory(){
-    releaseMicOnExit();
+    if(state.save.phase==="SAVING"){ toast("저장 중이에요 — 잠깐만 기다려 주세요"); return; }
+    /* 녹음이 마무리되는 중이면 원본을 장면에 붙인 뒤에 새 이야기를 시작한다(장면 오연결 방지) */
+    var busy=(state.micOn || state.micPending || recorder || micStream || micStopping);
+    var p=busy? stopMic({silent:true}) : Promise.resolve();
+    return p.then(beginStory);
+  }
+  function beginStory(){
     revokeClips();
     state.scenes=[]; state.active=0; state.drawing=false; state.pending=null;
     state.movie=null; state.savedEntry=null;
+    state.save={phase:"IDLE",at:0,audioSaved:0,audioTotal:0,reason:"",error:"",id:null};
+    var nt=$("#saveNotice"); if(nt){ nt.hidden=true; nt.className="save-notice"; }
     state.storyId=uid(); state.storyNo=nextNo();
     $$(".frame",stage).forEach(function(f){ f.parentNode.removeChild(f); });
     state.startedAt=Date.now();
@@ -1252,7 +1397,8 @@ img{display:block}
       var b=el("i"); b.style.setProperty("--i",i); waveEl.appendChild(b);
     }
   })();
-  var audioCtx=null, analyser=null, micStream=null, recorder=null, recChunks=[], recMime="", waveRaf=0, simT=0, micToken=0, lastTracks=[];
+  var audioCtx=null, analyser=null, micStream=null, recorder=null, waveRaf=0, simT=0, micToken=0, lastTracks=[];
+  var recSession=null, micStopping=null, recSeq=0, audioLosses=0;
   function animateWave(){
     var bars=$$("i",waveEl);
     if(analyser){
@@ -1282,7 +1428,10 @@ img{display:block}
   }
 
   function toggleMic(){
-    if(state.micOn || state.micPending) stopMic(); else startMic();
+    if(state.micOn || state.micPending){ stopMic(); return; }
+    /* 녹음 마무리(원본 수집)와 새 녹음이 겹치지 않게 한다 */
+    if(micStopping){ toast("방금 녹음을 정리하는 중이에요 — 잠깐만"); return; }
+    startMic();
   }
   function micUiIdle(){
     var btn=$("#micBtn");
@@ -1347,69 +1496,131 @@ img{display:block}
       : "마이크 권한이 꺼져 있어요 — 아래 입력창으로도 똑같이 상상할 수 있어요");
   }
   function startRecorder(stream){
-    if(!window.MediaRecorder) return;
+    if(!window.MediaRecorder) return null;
     try{
       var types=["audio/mp4","audio/webm;codecs=opus","audio/webm"];
       var mime="";
       for(var i=0;i<types.length;i++){ if(MediaRecorder.isTypeSupported(types[i])){ mime=types[i]; break; } }
-      recorder=new MediaRecorder(stream, mime?{mimeType:mime}:undefined);
-      recChunks=[]; recMime=recorder.mimeType||mime||"audio/webm";
-      recorder.ondataavailable=function(e){ if(e.data && e.data.size) recChunks.push(e.data); };
-      recorder.onstop=function(){ finalizeRecording(recMime); };
-      recorder.start();
-    }catch(e){ recorder=null; }
+      var r=new MediaRecorder(stream, mime?{mimeType:mime}:undefined);
+      /* 녹음 세션마다 자기 덩어리·자기 종료 약속을 따로 가진다.
+         전역 버퍼를 쓰지 않으므로 빠른 재시작·늦은 종료 이벤트가 겹쳐도 다른 녹음과 섞이지 않는다. */
+      var sess={
+        id:++recSeq, rec:r, chunks:[], mime:r.mimeType||mime||"audio/webm",
+        sceneIndex: Math.max(0,state.scenes.length-1),
+        storyId: state.storyId,
+        startedAt: Date.now(), done:false, promise:null, resolve:null, result:null
+      };
+      sess.promise=new Promise(function(res){ sess.resolve=res; });
+      r.ondataavailable=function(e){ if(e.data && e.data.size) sess.chunks.push(e.data); };
+      r.onerror=function(){ collectRecSession(sess,"recorder_error"); };
+      r.onstop=function(){ collectRecSession(sess); };
+      recorder=r; recSession=sess;
+      r.start();
+      return sess;
+    }catch(e){ recorder=null; recSession=null; return null; }
   }
-  /* 녹음이 끝나면 그 구간의 원본 음성을 직전 장면에 붙인다(Blob은 저장 시 IndexedDB로 간다). */
-  function finalizeRecording(mime){
-    var chunks=recChunks; recChunks=[];
-    if(!chunks || !chunks.length) return null;
+  /* 녹음 종료 → Blob 수집 → 장면에 붙이기(길이 측정) → 약속 완료.
+     이 약속이 끝나기 전에는 아무도 영화를 만들거나 저장하지 않는다. */
+  function collectRecSession(sess,reason){
+    if(!sess || sess.done) return;
+    sess.done=true;
+    var chunks=sess.chunks; sess.chunks=[];
     var blob=null;
-    try{ blob=new Blob(chunks,{type:mime||"audio/webm"}); }catch(e){ return null; }
-    var sc=state.scenes[state.scenes.length-1];
-    if(!sc) return blob;
-    sc.audioBlob=blob;
-    try{ sc.audio=URL.createObjectURL(blob); clipUrls.push(sc.audio); }catch(e){}
-    if(sc.audio){
-      try{
-        var a=new Audio(sc.audio); a.preload="metadata";
-        a.onloadedmetadata=function(){
-          sc.audioDur=Math.min(Math.max(a.duration||2,1),40);
-          if(state.screen==="canvas" && state.scenes[state.scenes.length-1]===sc) renderStrip();
-        };
-        a.onerror=function(){ if(!sc.audioDur) sc.audioDur=2.5; };
-      }catch(e){}
+    try{ if(chunks && chunks.length) blob=new Blob(chunks,{type:sess.mime||"audio/webm"}); }catch(e){ blob=null; }
+    if(!blob || !blob.size){
+      sess.result={ok:false, blob:null, reason:reason||"empty"};
+      sess.resolve(sess.result);
+      return;
     }
-    renderStrip();
-    toast(NM()+" 목소리를 이 장면에 담았어요 ♪");
-    return blob;
+    attachTake(blob,sess).then(function(take){
+      sess.result={ok:true, blob:blob, take:take, reason: take? "":"story_changed"};
+      sess.resolve(sess.result);
+    }).catch(function(err){
+      sess.result={ok:false, blob:blob, reason:"attach_error", error:String((err&&err.name)||err)};
+      sess.resolve(sess.result);
+    });
   }
-  /* 마이크를 확실히 끈다: 권한 대기 취소 → 녹음 종료 → 트랙 정지(브라우저 녹음 아이콘 꺼짐) */
+  /* 녹음 한 구간(테이크)을 그 녹음을 시작한 장면에 붙인다.
+     같은 장면에서 다시 녹음해도 앞 테이크를 지우지 않고 하나 더 쌓는다(원본 음성 유실 방지). */
+  function attachTake(blob,sess){
+    return measureAudio(blob).then(function(measured){
+      var sc = state.scenes[sess.sceneIndex] || state.scenes[state.scenes.length-1] || null;
+      if(!sc || sess.storyId!==state.storyId) return null;   /* 다른 이야기로 넘어간 뒤 늦게 온 녹음은 엉뚱한 장면에 붙이지 않는다 */
+      var wall=Math.max(0.5, Math.round((Date.now()-sess.startedAt)/100)/10);
+      var dur=measured>0 ? measured : wall;      /* 길이 제한(40초 상한) 없음 — 실제 음성 길이를 그대로 쓴다 */
+      var take={clipId:null, blob:blob, url:null, dur:dur, mime:blob.type||sess.mime, startedAt:sess.startedAt, sceneIndex:sess.sceneIndex};
+      try{ take.url=URL.createObjectURL(blob); clipUrls.push(take.url); }catch(e){}
+      if(!sc.takes) sc.takes=[];
+      sc.takes.push(take);
+      sc.audioBlob=blob;                 /* 호환용: 가장 최근 테이크 */
+      sc.audio=take.url||sc.audio;
+      sc.audioDur=Math.round(totalAudioDur(sc)*10)/10;
+      if(state.screen==="canvas" && state.scenes.indexOf(sc)===state.scenes.length-1) renderStrip();
+      return take;
+    });
+  }
+  function totalAudioDur(sc){
+    var d=0; ((sc&&sc.takes)||[]).forEach(function(t){ d+=+t.dur||0; });
+    if(!d && sc && +sc.audioDur) d=+sc.audioDur;
+    return Math.round(d*10)/10;
+  }
+  /* Blob의 실제 재생 길이를 잰다. 잴 수 없으면 0을 주고, 호출부가 녹음한 시간으로 대신한다. */
+  function measureAudio(blob){
+    return new Promise(function(res){
+      var url=null;
+      try{ url=URL.createObjectURL(blob); }catch(e){ return res(0); }
+      var a=new Audio(); a.preload="metadata";
+      var settled=false;
+      function done(v){ if(settled) return; settled=true; try{ URL.revokeObjectURL(url); }catch(e){} res(Math.round((v||0)*10)/10); }
+      a.onloadedmetadata=function(){ var d=a.duration; done(isFinite(d)&&d>0?d:0); };
+      a.onerror=function(){ done(0); };
+      setTimeout(function(){ done(isFinite(a.duration)&&a.duration>0?a.duration:0); },1200);
+      a.src=url;
+    });
+  }
+  /* 마이크를 확실히 끈다: 권한 대기 취소 → 녹음 종료(원본 수집·장면 부착까지 대기) → 트랙 정지 → 화면 정리 */
   function stopMic(opts){
     opts=opts||{};
-    micToken++;                      // 대기 중이던 getUserMedia 결과를 무효화
+    micToken++;                      /* 대기 중이던 getUserMedia 결과를 무효화 */
     var wasOn=state.micOn;
     state.micOn=false; state.micPending=false;
     analyser=null; resetWaveIdle();
-    var finish, done=new Promise(function(res){ finish=res; });
-    var r=recorder; recorder=null;
-    if(r && r.state!=="inactive"){
+    var r=recorder, sess=recSession;
+    recorder=null; recSession=null;
+    var stopped=null;
+    if(r && sess && !sess.done){
+      stopped=sess.promise.then(function(v){
+        if(v && v.ok && v.take) toast(NM()+" 목소리를 이 장면에 담았어요 ♪");
+        else if(v && v.reason==="story_changed") { /* 다른 이야기로 넘어간 뒤의 녹음 — 버린다 */ }
+        else if(v && v.reason==="stop_timeout"){ audioLosses++; toast("녹음 마무리가 늦어져 이 구간을 담지 못했어요",true); }
+        return v;
+      });
       try{
-        r.onstop=function(){ try{ finalizeRecording(recMime); }catch(e){} finish(); };
-        r.stop();
-      }catch(e){ finish(); }
-      setTimeout(finish,700);
-    } else finish();
+        if(r.state!=="inactive"){
+          try{ r.requestData(); }catch(e){}
+          r.stop();
+        } else collectRecSession(sess);
+      }catch(e){ collectRecSession(sess,"stop_error"); }
+      /* 종료 이벤트가 오지 않는 예외에서도 화면이 멈추지 않게 한다(이때는 유실을 정직하게 알린다) */
+      var timer=null;
+      stopped=Promise.race([
+        stopped,
+        new Promise(function(res){ timer=setTimeout(function(){ collectRecSession(sess,"stop_timeout"); res(sess.result||{ok:false,reason:"stop_timeout"}); },5000); })
+      ]).then(function(v){ clearTimeout(timer); return v; });
+      micStopping=stopped;
+      stopped.then(function(){ if(micStopping===stopped) micStopping=null; },function(){ if(micStopping===stopped) micStopping=null; });
+    }
     if(micStream){ releaseStream(micStream); micStream=null; }
     micUiIdle();
     if(!opts.silent){
       setIdleStatus();
       if(wasOn) toast("마이크와 녹음을 껐어요");
     }
-    return done;
+    return stopped || Promise.resolve({ok:false,reason:"no_recording"});
   }
   function releaseMicOnExit(){
     if(state.micOn || state.micPending || recorder || micStream) return stopMic({silent:true});
-    return Promise.resolve();
+    return micStopping || Promise.resolve({ok:false,reason:"no_recording"});
   }
 
   /* ---------------- movie ---------------- */
@@ -1551,12 +1762,10 @@ img{display:block}
     if(f){ var img=$("img",f); img.style.animation="none"; void img.offsetWidth; img.style.animation=""; f.classList.add("on"); }
     $("#mvCap").textContent=s.scene.caption;
     $("#mvCap").classList.add("on");
-    var a=mv.audios[idx];
-    if(s.scene.audio && !a){
-      try{ mv.audios[idx]=new Audio(s.scene.audio); }catch(e){}
-    }
-    Object.keys(mv.audios).forEach(function(k){ if(+k!==idx){ try{mv.audios[k].pause();mv.audios[k].currentTime=0;}catch(e){} } });
-    if(mv.audios[idx] && mv.playing){ try{ mv.audios[idx].currentTime=0; mv.audios[idx].play(); }catch(e){} }
+    var at=mv.audios[idx];
+    if(!at){ mv.audios[idx]=buildTakePlayer(s.scene); }
+    Object.keys(mv.audios).forEach(function(k){ if(+k!==idx){ try{ mv.audios[k].pause(); }catch(e){} } });
+    if(mv.audios[idx] && mv.playing){ try{ mv.audios[idx].play(); }catch(e){} }
   }
   function tick(now){
     if(!mv.playing) return;
@@ -1597,19 +1806,46 @@ img{display:block}
   function setPlayIcon(playing){
     $("#playIcon").innerHTML=playing?'<path d="M7 4.5h3.5v15H7zM13.5 4.5H17v15h-3.5z"/>':'<path d="M8 5.5v13l11-6.5z"/>';
   }
+  function segmentUrls(sc){
+    var u=[];
+    ((sc&&sc.takes)||[]).forEach(function(t){ if(t&&t.url) u.push(t.url); });
+    if(!u.length && sc && sc.audio) u.push(sc.audio);
+    return u;
+  }
+  /* 한 장면에 여러 번 녹음했으면 그 테이크들을 순서대로 이어 재생한다(앞 테이크도 사라지지 않는다). */
+  function buildTakePlayer(sc){
+    var urls=segmentUrls(sc);
+    if(!urls.length) return null;
+    var list=[];
+    urls.forEach(function(u){ try{ list.push(new Audio(u)); }catch(e){} });
+    if(!list.length) return null;
+    list.forEach(function(a,i){
+      if(i<list.length-1) a.onended=function(){ try{ list[i+1].pause(); list[i+1].currentTime=0; list[i+1].play(); }catch(e){} };
+    });
+    return {
+      pause:function(){ list.forEach(function(a){ try{ a.pause(); }catch(e){} }); },
+      play:function(){ list.forEach(function(a){ try{ a.pause(); a.currentTime=0; }catch(e){} }); try{ list[0].play(); }catch(e){} }
+    };
+  }
   function endStory(){
     if(!state.scenes.length){ toast("먼저 장면을 하나 만들어 볼까요?"); return; }
-    if(state.micOn || state.micPending || recorder || micStream){
-      /* 마지막 목소리까지 장면에 붙인 다음 영화를 만든다 */
-      stopMic({silent:true}).then(function(){ setTimeout(finishStory, 220); });
-    } else finishStory();
+    if(state.save.phase==="SAVING"){ toast("저장 중이에요 — 잠깐만 기다려 주세요"); return; }
+    /* 마지막 목소리까지 장면에 붙인 뒤(원본 수집 완료) 영화를 만들고, 저장이 끝난 다음에 화면을 넘긴다 */
+    var busy=(state.micOn || state.micPending || recorder || micStream || micStopping);
+    setSaveState("SAVING",{text: busy? "마지막 목소리를 담고 저장하는 중 …" : "오늘의 상상을 저장하는 중 …", id:state.movie&&state.movie.id});
+    var p=busy? stopMic({silent:true}) : Promise.resolve();
+    return p.then(finishStory);
   }
   function finishStory(){
-    if(!state.scenes.length) return;
+    if(!state.scenes.length) return Promise.resolve({status:"SAVE_FAILED",reason:"no_scenes"});
     state.movie=buildMovie();
-    saveEntry(true);
-    renderMovie();
-    go("movie");
+    setSaveState("SAVING",{text:"오늘의 상상을 저장하는 중 …", id:state.movie.id});
+    return saveEntry(true).then(function(res){
+      renderMovie();
+      go("movie");
+      showSaveNotice(res);
+      return res;
+    });
   }
 
   /* ---------------- album / MY UNIVERSE ---------------- */
@@ -1633,18 +1869,70 @@ img{display:block}
       note:note,
       dur:Math.round(m.total||0),
       scenes:(m.scenes||[]).map(function(s){
+        var takes=(s.takes||[]);
+        var ids=[];
+        takes.forEach(function(t){ if(t.clipId) ids.push(t.clipId); });
         return {
           key:s.key||"living", caption:s.caption||"", tint:!!s.tint, at:s.at||0,
           styleId:s.styleId||styleId,
-          audioDur:Math.round((s.audioDur||0)*10)/10,
-          clipId:s.clipId||null
+          audioDur:Math.round(totalAudioDur(s)*10)/10,
+          clipId: ids.length? ids[0] : (s.clipId||null),
+          clipIds: ids.length? ids : (s.clipId?[s.clipId]:[]),
+          takeCount: takes.length || (s.clipId?1:0)
         };
       })
     };
   }
-  /* 같은 작품을 다시 저장하면 그 기록을 갱신하고, 새 작품은 새 id로 따로 남긴다. */
+
+  /* ---------------- 저장 상태 표시 (SAVING / SAVED_COMPLETE / SAVED_TEXT_ONLY / SAVE_FAILED) ---------------- */
+  function setSaveState(phase,info){
+    info=info||{};
+    state.save={phase:phase, at:Date.now(),
+      audioSaved:info.audioSaved||0, audioTotal:info.audioTotal||0,
+      reason:info.reason||"", error:info.error||"", id:info.id!==undefined?info.id:(state.save&&state.save.id)};
+    var ov=$("#saveOverlay");
+    if(ov){
+      var on=(phase==="SAVING");
+      ov.classList.toggle("on",on);
+      var txt=$("#saveOverlayText");
+      if(txt && on) txt.textContent=info.text||"기록을 저장하는 중 …";
+    }
+    var btn=$("#saveAlbumBtn");
+    if(btn){
+      btn.disabled=(phase==="SAVING");
+      btn.textContent=(phase==="SAVING")? "저장하는 중 …" : "MY UNIVERSE에 저장";
+    }
+    return state.save;
+  }
+  function saveReasonKo(reason){
+    return {
+      idb_unavailable:"이 브라우저에서 IndexedDB를 쓰지 못함",
+      idb_error:"저장 공간 부족·오류",
+      verify_missing:"저장 확인 실패",
+      verify_clips:"음성 저장 확인 실패",
+      open_error:"저장소를 열지 못함",
+      quota:"저장 공간 부족"
+    }[reason] || "알 수 없는 이유";
+  }
+  function showSaveNotice(res){
+    var box=$("#saveNotice"); if(!box) return;
+    var st=res&&res.status;
+    if(!st || st==="SAVING" || st==="SAVED_COMPLETE"){ box.hidden=true; box.className="save-notice"; return; }
+    box.hidden=false;
+    box.className="save-notice"+(st==="SAVE_FAILED"?" failed":"");
+    var txt=$("#saveNoticeText");
+    if(!txt) return;
+    if(st==="SAVED_TEXT_ONLY"){
+      txt.textContent="장면·자막·아빠의 기록은 저장했어요. 다만 원본 음성 "+(res.audioTotal||0)+"개는 이 브라우저에 저장하지 못했어요("+saveReasonKo(res.reason)+"). 파일로 내려받아 두면 목소리를 잃지 않아요.";
+    } else {
+      txt.textContent="이 기록을 이 브라우저에 저장하지 못했어요("+saveReasonKo(res.reason)+"). 지금 파일로 내려받으면 장면·자막·목소리를 잃지 않아요.";
+    }
+  }
+  /* 같은 작품을 다시 저장하면 그 기록을 갱신하고, 새 작품은 새 id로 따로 남긴다.
+     저장이 “확인”된 다음에만 앨범에 반영한다. 저장 중에는 중복 호출을 같은 약속으로 묶는다. */
   function saveEntry(silent){
-    var m=state.movie; if(!m) return Promise.resolve(false);
+    var m=state.movie; if(!m) return Promise.resolve({status:"SAVE_FAILED",reason:"no_movie"});
+    if(saveInFlight) return saveInFlight;
     if(!m.id) m.id=uid();
     if(!m.no) m.no=nextNo();
     var rec=recordFromMovie(m);
@@ -1654,40 +1942,188 @@ img{display:block}
     }
     var clips=[];
     (m.scenes||[]).forEach(function(s,i){
-      if(s.audioBlob){
-        var cid=s.clipId || (rec.id+"-s"+i);
-        s.clipId=cid; rec.scenes[i].clipId=cid;
-        clips.push({id:cid, workId:rec.id, type:s.audioBlob.type||"audio/webm", blob:s.audioBlob});
-      } else if(s.clipId){
-        rec.scenes[i].clipId=s.clipId;
-      }
+      var takes=(s.takes||[]);
+      takes.forEach(function(t,k){
+        var cid=t.clipId || (rec.id+"-s"+i+"-t"+k);
+        t.clipId=cid;
+        if(t.blob) clips.push({id:cid, workId:rec.id, sceneIndex:i, takeIndex:k, type:t.blob.type||t.mime||"audio/webm", dur:t.dur||0, blob:t.blob});
+      });
+      if(takes.length){
+        rec.scenes[i].clipId=takes[0].clipId||null;
+        rec.scenes[i].clipIds=takes.map(function(t){ return t.clipId; }).filter(Boolean);
+      } else if(s.clipId){ rec.scenes[i].clipId=s.clipId; }
     });
-    var idx=-1;
-    for(var k=0;k<albumCache.length;k++){ if(albumCache[k].id===rec.id){ idx=k; break; } }
-    if(idx>=0) albumCache[idx]=rec; else albumCache.unshift(rec);
-    state.savedEntry=rec;
-    return putWork(rec,clips).then(function(ok){
-      if(state.screen==="album") renderAlbum();
-      if(!silent) toast(ok
-        ? "MY UNIVERSE에 저장했어요 — 장면·자막·목소리가 함께 남아요"
-        : "기록을 저장했어요 · 이 브라우저는 음성 저장을 지원하지 않아요");
+    setSaveState("SAVING",{text:(silent?"오늘의 상상을":"기록을")+" 저장하는 중 …", id:rec.id});
+    saveInFlight=putWork(rec,clips).then(function(res){
+      saveInFlight=null;
+      if(res.status==="SAVED_COMPLETE" || res.status==="SAVED_TEXT_ONLY"){
+        /* 저장 완료를 확인한 뒤에만 앨범에 반영 */
+        var idx=-1;
+        for(var k=0;k<albumCache.length;k++){ if(albumCache[k].id===rec.id){ idx=k; break; } }
+        if(idx>=0) albumCache[idx]=rec; else albumCache.unshift(rec);
+        state.savedEntry=rec;
+        setSaveState(res.status,{audioSaved:res.audioSaved,audioTotal:res.audioTotal,reason:res.reason,error:res.error,id:rec.id});
+        if(state.screen==="album") renderAlbum();
+        if(!silent) toast(res.status==="SAVED_COMPLETE"
+          ? "MY UNIVERSE에 저장했어요 — 장면·자막·목소리가 함께 남아요"
+          : "기록은 저장했어요 · 원본 음성은 저장하지 못했어요 — 파일로 내려받아 두세요", res.status!=="SAVED_COMPLETE");
+      } else {
+        /* 저장 실패를 성공처럼 표시하지 않는다 — 앨범에도 넣지 않는다 */
+        state.savedEntry=null;
+        setSaveState("SAVE_FAILED",{reason:res.reason,error:res.error,id:rec.id,audioTotal:res.audioTotal});
+        toast("저장하지 못했어요 — '파일로 내려받기'로 기록을 지켜 주세요",true);
+      }
+      showSaveNotice(res);
+      return res;
+    }).catch(function(err){
+      saveInFlight=null;
+      var res={status:"SAVE_FAILED",audioSaved:0,audioTotal:clips.length,reason:"exception",error:String((err&&err.name)||err)};
+      setSaveState("SAVE_FAILED",res);
+      showSaveNotice(res);
+      return res;
+    });
+    return saveInFlight;
+  }
+  /* ---------------- 기록 내보내기(Export) · 개별 삭제(Delete) ----------------
+     배포 주소(도밍인)가 바뀌면 그 브라우저의 IndexedDB는 새 앱에서 바로 보이지 않는다.
+     그래서 장면·자막·보호자 기록 + 원본 음성(base64)을 JSON 파일 하나로 내려받을 수 있게 둔다. */
+  function exportFilename(rec){
+    var safe=String((rec&&rec.title)||"상상영화").replace(/[\\/:*?"<>|]+/g,"").replace(/\s+/g,"_").slice(0,40) || "상상영화";
+    return "PROJECT-DOHA_No"+String((rec&&rec.no)||0).padStart(3,"0")+"_"+String((rec&&rec.date)||"").replace(/[^0-9]/g,"")+"_"+safe+".json";
+  }
+  function blobToDataURL(blob){
+    return new Promise(function(res,rej){
+      try{
+        var fr=new FileReader();
+        fr.onload=function(){ res(String(fr.result||"")); };
+        fr.onerror=function(){ rej(fr.error); };
+        fr.readAsDataURL(blob);
+      }catch(e){ rej(e); }
+    });
+  }
+  function downloadText(name,text){
+    try{
+      var blob=new Blob([text],{type:"application/json;charset=utf-8"});
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement("a");
+      a.href=url; a.download=name; a.rel="noopener"; a.style.display="none";
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ try{ a.remove(); URL.revokeObjectURL(url); }catch(e){} },2000);
+      return true;
+    }catch(e){ return false; }
+  }
+  /* 한 기록의 원본 음성을 장면·테이크 순서대로 모아 base64로 만든다.
+     저장된 클립(IndexedDB)을 먼저 쓰고, 없으면 지금 열어 둔 영화가 가진 메모리 Blob을 쓴다.
+     — SAVED_TEXT_ONLY·SAVE_FAILED 에서도 “파일로 내려받기”를 하면 목소리까지 보존된다. */
+  function collectAudio(rec,clips,workIndex,movie){
+    var map={};
+    (clips||[]).forEach(function(c){ if(c&&c.id) map[c.id]=c; });
+    var mem={};
+    if(movie && movie.id===rec.id){
+      (movie.scenes||[]).forEach(function(s,i){
+        (s.takes||[]).forEach(function(t,k){
+          if(!t || !t.blob) return;
+          if(t.clipId) mem[t.clipId]=t;
+          mem["idx:"+i+":"+k]=t;
+        });
+      });
+    }
+    var audio=[], jobs=[];
+    ((rec&&rec.scenes)||[]).forEach(function(s,i){
+      var ids=(s.clipIds&&s.clipIds.length)? s.clipIds : (s.clipId? [s.clipId] : []);
+      ids.forEach(function(id,k){
+        var c=map[id];
+        var t=mem[id] || mem["idx:"+i+":"+k];
+        var blob=(c && c.blob && c.blob.size)? c.blob : (t && t.blob && t.blob.size? t.blob : null);
+        if(!blob) return;
+        var mime=(c&&c.type) || blob.type || (t&&t.mime) || "";
+        var dur=(c&&+c.dur) || (t&&+t.dur) || 0;
+        jobs.push(blobToDataURL(blob).then(function(dataUrl){
+          audio.push({workIndex:workIndex, clipId:id, sceneIndex:i, takeIndex:k,
+            mime:mime, bytes:blob.size, dur:dur, dataUrl:dataUrl});
+        }).catch(function(){}));
+      });
+    });
+    return Promise.all(jobs).then(function(){ return audio; });
+  }
+  function exportWork(rec,opts){
+    opts=opts||{};
+    if(!rec){ toast("내보낼 기록이 없어요",true); return Promise.resolve(false); }
+    return clipsOf(rec.id).catch(function(){ return []; }).then(function(clips){
+      return collectAudio(rec,clips,0,state.movie);
+    }).then(function(audio){
+      var audioBytes=0;
+      audio.forEach(function(a){ audioBytes+=a.bytes; });
+      var payload={
+        app:"PROJECT DOHA", format:"doha.work/1", formatVersion:"0.1.2",
+        exportedAt:new Date().toISOString(),
+        note:"이 파일은 이 브라우저 밖으로 나온 기록 사본입니다. 아이의 목소리가 들어 있을 수 있으니 안전한 곳에 보관하세요.",
+        manifest:{workCount:1, sceneCount:((rec.scenes)||[]).length, audioClipCount:audio.length, audioBytes:audioBytes},
+        works:[{record:rec, audio:audio}]
+      };
+      var name=exportFilename(rec);
+      var ok=downloadText(name,JSON.stringify(payload,null,1));
+      if(opts.silent!==true) toast(ok? "기록을 파일로 내보냈어요 · "+name : "파일을 만들지 못했어요", !ok);
       return ok;
-    }).catch(function(){
-      if(!silent) toast("저장하지 못했어요 — 잠시 뒤 다시 시도해 주세요",true);
-      return false;
+    }).catch(function(){ toast("내보내지 못했어요 — 잠시 뒤 다시 시도해 주세요",true); return false; });
+  }
+  /* 내 기록 전부를 한 파일로 (도밍인 이전 전에 반드시 한 번) */
+  function exportAll(){
+    return allWorks().then(function(list){
+      var works=list||[];
+      if(!works.length){ toast("내보낼 기록이 없어요"); return false; }
+      return Promise.all(works.map(function(rec,wi){
+        return clipsOf(rec.id).catch(function(){ return []; }).then(function(clips){
+          return collectAudio(rec,clips,wi,state.movie).then(function(audio){ return {record:rec, audio:audio}; });
+        });
+      })).then(function(entries){
+        var audioCount=0, audioBytes=0, sceneCount=0;
+        entries.forEach(function(e){
+          sceneCount+=(e.record.scenes||[]).length;
+          e.audio.forEach(function(a){ audioCount++; audioBytes+=a.bytes; });
+        });
+        var payload={
+          app:"PROJECT DOHA", format:"doha.work/1", formatVersion:"0.1.2",
+          exportedAt:new Date().toISOString(),
+          note:"이 파일은 이 브라우저 밖으로 나온 기록 사본입니다. 아이의 목소리가 들어 있을 수 있으니 안전한 곳에 보관하세요.",
+          manifest:{workCount:entries.length, sceneCount:sceneCount, audioClipCount:audioCount, audioBytes:audioBytes},
+          works:entries
+        };
+        var name="PROJECT-DOHA_all_"+todayISO().replace(/-/g,"")+".json";
+        var ok=downloadText(name,JSON.stringify(payload,null,1));
+        toast(ok? "내 기록 "+entries.length+"편을 한 파일로 내보냈어요 · "+name : "파일을 만들지 못했어요", !ok);
+        return ok;
+      });
+    }).catch(function(){ toast("내보내지 못했어요 — 잠시 뒤 다시 시도해 주세요",true); return false; });
+  }
+  /* 개별 삭제 — 지우기 전에 확인을 받고, 작품 기록·원본 음성을 함께 지운다 */
+  function askDeleteWork(rec){
+    if(!rec) return Promise.resolve(false);
+    var label="No."+String(rec.no||0).padStart(3,"0")+" "+String(rec.title||"상상 영화");
+    var ok=window.confirm("이 기록을 삭제할까요?\n\n"+label+"\n장면·자막·녹음된 원본 음성까지 이 브라우저에서 지워집니다. 되돌릴 수 없어요.\n\n(지우기 전에 '내보내기'로 파일을 만들어 두면 안전해요.)");
+    if(!ok) return Promise.resolve(false);
+    return deleteWork(rec.id).then(function(res){
+      if(!res || !res.ok){ toast("삭제하지 못했어요 — 잠시 뒤 다시 시도해 주세요",true); return false; }
+      albumCache=albumCache.filter(function(w){ return w.id!==rec.id; });
+      if(state.savedEntry && state.savedEntry.id===rec.id) state.savedEntry=null;
+      renderAlbum();
+      toast("기록을 삭제했어요");
+      return true;
     });
   }
   function workCard(e,isNew){
+    var wrap=el("div","al-card-wrap");
     var b=el("button","al-card"); b.type="button";
     var scenes=e.scenes||[];
     var key=(scenes[0]&&scenes[0].key)||e.key||"living";
-    var hasAudio=scenes.some(function(s){ return !!(s.clipId); });
+    var hasAudio=scenes.some(function(s){ return !!(s.clipId || (s.takeCount>0)); });
+    var takeCount=scenes.reduce(function(n,s){ return n+(+s.takeCount||(s.clipId?1:0)); },0);
     var st=styleById(e.styleId||"3d");
     b.innerHTML=
       '<div class="al-thumb" style="background-image:url(\''+(IMG[key]||IMG.living)+'\')">'+
         '<span class="al-no">No.'+String(e.no||0).padStart(3,"0")+'</span>'+
         (isNew?'<span class="al-new">NEW</span>':'')+
-        (hasAudio?'<span class="al-audio">🎙 목소리</span>':'')+
+        (hasAudio?'<span class="al-audio">🎙 목소리'+(takeCount>1?' '+takeCount+'구간':'')+'</span>':'')+
       '</div>'+
       '<div class="al-meta">'+
         '<time>'+isoToDot(e.date)+'</time>'+
@@ -1696,7 +2132,19 @@ img{display:block}
         '<div class="tags">'+(e.tags||[]).map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join("")+'</div>'+
       '</div>';
     b.addEventListener("click",function(){ openWork(e); });
-    return b;
+    wrap.appendChild(b);
+
+    /* 기록을 이 브라우저 밖으로 꺼내는 길(내보내기)과 지우는 길(삭제) */
+    var acts=el("div","al-card-actions");
+    var ex=el("button","al-card-btn"); ex.type="button"; ex.textContent="내보내기";
+    ex.setAttribute("aria-label","No."+String(e.no||0).padStart(3,"0")+" 기록을 파일로 내보내기");
+    ex.addEventListener("click",function(ev){ if(ev) ev.stopPropagation(); exportWork(e); });
+    var del=el("button","al-card-btn del"); del.type="button"; del.textContent="삭제";
+    del.setAttribute("aria-label","No."+String(e.no||0).padStart(3,"0")+" 기록 삭제");
+    del.addEventListener("click",function(ev){ if(ev) ev.stopPropagation(); askDeleteWork(e); });
+    acts.appendChild(ex); acts.appendChild(del);
+    wrap.appendChild(acts);
+    return wrap;
   }
   function sampleCard(s){
     var b=el("button","al-card"); b.type="button";
@@ -1713,7 +2161,8 @@ img{display:block}
     b.addEventListener("click",function(){ toast("예시 카드예요 · 내 기록 편수에는 들어가지 않아요"); });
     return b;
   }
-  /* 저장된 기록을 열면 그 작품의 장면·자막·목소리를 IndexedDB에서 되살려 재생한다. */
+  /* 저장된 기록을 열면 그 작품의 장면·자막·목소리를 IndexedDB에서 되살려 재생한다.
+     한 장면에 여러 번 녹음한 경우(clipIds) 모든 구간을 순서대로 되살린다. */
   function openWork(rec){
     if(!rec) return;
     var src=(rec.scenes&&rec.scenes.length)?rec.scenes
@@ -1722,7 +2171,8 @@ img{display:block}
       return {
         key:s.key||"living", caption:s.caption||"", tint:!!s.tint, at:s.at||0,
         styleId:s.styleId||rec.styleId||"3d", audioDur:+s.audioDur||0,
-        audio:null, audioBlob:null, clipId:s.clipId||null
+        audio:null, audioBlob:null, clipId:s.clipId||null,
+        takes:[]
       };
     });
     var tags=rec.tags||[];
@@ -1731,12 +2181,19 @@ img{display:block}
     revokeClips();
     clipsOf(rec.id).then(function(clips){
       var map={};
-      (clips||[]).forEach(function(c){ map[c.id]=c; });
-      built.forEach(function(s){
-        var c=s.clipId && map[s.clipId];
-        if(c && c.blob){
-          s.audioBlob=c.blob;
-          try{ s.audio=URL.createObjectURL(c.blob); clipUrls.push(s.audio); }catch(e){}
+      (clips||[]).forEach(function(c){ if(c&&c.id) map[c.id]=c; });
+      built.forEach(function(s,i){
+        var ids=(src[i]&&src[i].clipIds&&src[i].clipIds.length)? src[i].clipIds : (s.clipId? [s.clipId] : []);
+        ids.forEach(function(id,k){
+          var c=map[id]; if(!c || !c.blob) return;
+          var take={clipId:id, blob:c.blob, url:null, dur:+c.dur||0, mime:c.type||c.blob.type||"", startedAt:c.startedAt||0, sceneIndex:i};
+          try{ take.url=URL.createObjectURL(c.blob); clipUrls.push(take.url); }catch(e){}
+          s.takes.push(take);
+        });
+        if(s.takes.length){
+          s.audioBlob=s.takes[0].blob;
+          s.audio=s.takes[0].url;
+          s.audioDur=totalAudioDur(s)||s.audioDur;
         }
       });
     }).catch(function(){}).then(function(){
@@ -1752,6 +2209,8 @@ img{display:block}
       };
       composeMovie(m);
       state.movie=m; state.savedEntry=rec; state.storyId=rec.id; state.storyNo=rec.no;
+      state.save={phase:"IDLE",at:0,audioSaved:0,audioTotal:0,reason:"",error:"",id:rec.id};
+      var nt=$("#saveNotice"); if(nt){ nt.hidden=true; nt.className="save-notice"; }
       renderMovie();
       go("movie");
       var hasAudio=built.some(function(s){ return !!s.audio; });
@@ -1780,13 +2239,23 @@ img{display:block}
     var head=el("div","al-sec-head");
     head.innerHTML='<h2>내 기록 <b>'+mine.length+'편</b></h2>'+
       '<p>'+(mine.length
-        ? "카드를 누르면 그날의 장면·자막·목소리가 그대로 재생돼요."
+        ? "카드를 누르면 그날의 장면·자막·목소리가 그대로 재생돼요. 기록은 이 브라우저에만 있어서, '내보내기'로 파일을 만들어 두면 브라우저를 바꾸거나 주소가 바뀌어도 잃지 않아요."
         : "아직 내 기록이 없어요. 첫 상상을 끝내면 날짜별로 여기에 쌓여요.")+'</p>';
+    var tools=el("div","al-tools");
     var nameBtn=el("button","al-name");
     nameBtn.type="button";
     nameBtn.textContent="부르는 이름 바꾸기 · "+NM();
     nameBtn.addEventListener("click",askChildName);
-    head.appendChild(nameBtn);
+    tools.appendChild(nameBtn);
+    if(mine.length){
+      var expAllBtn=el("button","al-name");
+      expAllBtn.type="button";
+      expAllBtn.textContent="전체 기록 내보내기 (JSON)";
+      expAllBtn.setAttribute("aria-label","내 기록 전부를 파일 하나로 내보내기");
+      expAllBtn.addEventListener("click",function(){ exportAll(); });
+      tools.appendChild(expAllBtn);
+    }
+    head.appendChild(tools);
     p.appendChild(head);
 
     var grid=el("div","al-grid");
@@ -1895,8 +2364,19 @@ img{display:block}
     $("#mvEnded").classList.remove("on");
   });
   $("#saveAlbumBtn").addEventListener("click",function(){
+    if(state.save.phase==="SAVING"){ toast("저장 중이에요 — 잠깐만"); return; }
+    saveEntry(false).then(function(res){
+      /* 저장이 확인된 뒤에만 앨범으로 넘어간다(실패하면 이 화면에 남아 다시 시도·내려받기) */
+      if(res && res.status!=="SAVE_FAILED") go("album");
+    });
+  });
+  $("#saveRetryBtn").addEventListener("click",function(){
+    if(state.save.phase==="SAVING") return;
+    toast("다시 저장해 볼게요");
     saveEntry(false);
-    go("album");
+  });
+  $("#saveDownloadBtn").addEventListener("click",function(){
+    exportWork(state.movie? recordFromMovie(state.movie) : state.savedEntry);
   });
   $("#dadNote").addEventListener("input",function(){
     var v=this.value;
@@ -1938,14 +2418,24 @@ img{display:block}
   /* 점검·자동화용 상태 노출(화면에는 관여하지 않음) */
   window.__DOHA={
     state:state,
+    version:function(){ return (document.querySelector('meta[name="doha-version"]')||{}).content||""; },
     mic:function(){
       return {
         on:!!state.micOn, pending:!!state.micPending, denied:!!state.micDenied,
+        stopping:!!micStopping, losses:audioLosses,
         tracks:((micStream?micStream.getTracks():lastTracks)||[]).map(function(t){ return t.readyState; })
       };
     },
     album:function(){ return albumCache; },
+    saveState:function(){ return {phase:state.save.phase, audioSaved:state.save.audioSaved, audioTotal:state.save.audioTotal, reason:state.save.reason, error:state.save.error, id:state.save.id}; },
+    saveEntry:saveEntry,
+    exportWork:exportWork,
+    exportAll:exportAll,
+    deleteWork:deleteWork,
+    askDeleteWork:askDeleteWork,
     openWork:openWork,
+    endStory:endStory,
+    finishStory:finishStory,
     stopMic:stopMic,
     startStory:startStory,
     nameOf:NM
