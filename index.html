@@ -2106,6 +2106,16 @@ img{display:block}
       if(!res || !res.ok){ toast("삭제하지 못했어요 — 잠시 뒤 다시 시도해 주세요",true); return false; }
       albumCache=albumCache.filter(function(w){ return w.id!==rec.id; });
       if(state.savedEntry && state.savedEntry.id===rec.id) state.savedEntry=null;
+      if(state.movie && state.movie.id===rec.id){
+        /* 열어 둔 작품을 지웠다면, 다시 저장할 때 지운 id가 되살아나지 않게 새 기록으로 시작한다 */
+        state.movie.id=uid(); state.movie.no=nextNo(); state.movie.createdAt=Date.now();
+        (state.movie.scenes||[]).forEach(function(s){
+          (s.takes||[]).forEach(function(t){ t.clipId=null; });
+          s.clipId=null; s.clipIds=[];
+        });
+        state.storyId=state.movie.id; state.storyNo=state.movie.no;
+        setSaveState("IDLE",{id:state.movie.id});
+      }
       renderAlbum();
       toast("기록을 삭제했어요");
       return true;
