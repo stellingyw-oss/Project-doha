@@ -1648,6 +1648,10 @@ img{display:block}
     if(!m.id) m.id=uid();
     if(!m.no) m.no=nextNo();
     var rec=recordFromMovie(m);
+    /* 앨범 로딩 전에 새 이야기를 시작한 경우에도 번호가 겹치지 않게 한다 */
+    if(albumCache.some(function(w){ return w.id!==rec.id && +w.no===+rec.no; })){
+      rec.no=nextNo(); m.no=rec.no;
+    }
     var clips=[];
     (m.scenes||[]).forEach(function(s,i){
       if(s.audioBlob){
