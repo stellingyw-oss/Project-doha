@@ -1,5 +1,16 @@
 # PROJECT DOHA — v0.1 터치 프로토타입
 
+## 0. 라이브 주소 (배포 완료 · 2026-11-24)
+
+**https://stellingyw-oss.github.io/Project-doha/**
+
+- 아이폰·아이패드 Safari에서 위 주소를 열면 바로 동작합니다(설치·로그인·인터넷 저장 불필요, 첫 로드 후엔 오프라인도 가능).
+- 저장소: https://github.com/stellingyw-oss/Project-doha (public) · GitHub Pages(main / root) 자동 배포
+- ⚠️ 주소의 `Project-doha`는 **대문자 P**입니다. 소문자로 치면 404가 납니다.
+- 저장한 이야기는 그 브라우저의 localStorage에 남습니다(기기·브라우저마다 따로).
+
+---
+
 도하(초3)가 아빠와 함께 화면을 눌러보며 **"상상이 화면이 되는"** 경험을 확인하는 웹앱 프로토타입입니다.
 서버·설치·로그인 없이 **`index.html` 파일 하나만** 열면 바로 동작합니다.
 
