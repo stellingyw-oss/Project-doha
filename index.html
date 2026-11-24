@@ -30,7 +30,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 input,textarea{font:inherit}
 img{display:block}
-#app{position:fixed;inset:0;overflow:hidden;isolation:isolate}
+#app{position:fixed;inset:0;overflow:hidden;overflow:clip;isolation:isolate}
 .bg{position:absolute;inset:-12%;z-index:0;pointer-events:none;
   background:
     radial-gradient(75% 55% at 12% 6%,rgba(243,182,95,.15),transparent 62%),
@@ -1176,6 +1176,8 @@ img{display:block}
     if(name==="home") syncHomeCta();
     var sc=$("#s-"+name+" .home-scroll, #s-"+name+" .mv-scroll, #s-"+name+" .al-scroll");
     if(sc) sc.scrollTop=0;
+    /* 배경 장식(-12%)이 만든 가로 넘침 때문에 포커스가 #app을 옆으로 밀어 두는 경우를 되돌린다 */
+    try{ if($app.scrollLeft) $app.scrollLeft=0; if($app.scrollTop) $app.scrollTop=0; }catch(e){}
     return true;
   }
   function syncHomeCta(){
