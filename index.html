@@ -943,7 +943,7 @@ img{display:block}
     save:{phase:"IDLE",at:0,audioSaved:0,audioTotal:0,reason:"",error:"",id:null}   /* IDLE → SAVING → SAVED_COMPLETE|SAVED_TEXT_ONLY|SAVE_FAILED */
   };
   var albumCache=[];        // 내 기록(작품 목록) — IndexedDB에서 불러온다
-  var albumReady=false, saveInFlight=null, deleting=new Set();
+  var saveInFlight=null, deleting=new Set();
   function uid(){ return "w"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8); }
   function nextNo(){
     var max=0;
@@ -960,12 +960,12 @@ img{display:block}
      IndexedDB를 쓸 수 없으면 같은 모양(음성 제외)을 localStorage에 두되, 그때는 완전 저장이 아니라
      SAVED_TEXT_ONLY로 정확히 알린다. */
   var DB_NAME="doha-universe", DB_VER=1, STORE_WORKS="works", STORE_CLIPS="clips";
-  var dbp=null, idbBroken=false;
+  var dbp=null;
   function openDB(){
     if(dbp) return dbp;
     dbp=new Promise(function(res){
       try{
-        if(!window.indexedDB){ idbBroken=true; return res(null); }
+        if(!window.indexedDB){ return res(null); }
         var rq=indexedDB.open(DB_NAME,DB_VER);
         rq.onupgradeneeded=function(){
           var db=rq.result;
@@ -978,9 +978,9 @@ img{display:block}
           }
         };
         rq.onsuccess=function(){ res(rq.result); };
-        rq.onerror=function(){ idbBroken=true; res(null); };
+        rq.onerror=function(){ res(null); };
         rq.onblocked=function(){ res(null); };
-      }catch(e){ idbBroken=true; res(null); }
+      }catch(e){ res(null); }
     });
     return dbp;
   }
@@ -1001,8 +1001,9 @@ img{display:block}
   }
   function lsDeleteWork(id){
     try{
-      var list=lsWorks().filter(function(w){ return w && w.id!==id; });
-      localStorage.setItem(LS_FALLBACK,JSON.stringify(list));
+      var previous=lsWorks();
+      var list=previous.filter(function(w){ return w && w.id!==id; });
+      if(list.length!==previous.length) localStorage.setItem(LS_FALLBACK,JSON.stringify(list));
       return {ok:true};
     }catch(e){ return {ok:false,error:String((e&&e.name)||e)}; }
   }
@@ -1018,8 +1019,13 @@ img{display:block}
   }
   function writeTxn(db,rec,clips){
     var t=db.transaction([STORE_WORKS,STORE_CLIPS],"readwrite");
-    t.objectStore(STORE_WORKS).put(rec);
-    (clips||[]).forEach(function(c){ t.objectStore(STORE_CLIPS).put(c); });
+    try{
+      t.objectStore(STORE_WORKS).put(rec);
+      (clips||[]).forEach(function(c){ t.objectStore(STORE_CLIPS).put(c); });
+    }catch(error){
+      try{ t.abort(); }catch(abortError){}
+      throw error;
+    }
     return commitP(t);
   }
   /* 트랜잭션 커밋 뒤에 다시 읽어 “정말 들어갔는지” 확인한다 */
@@ -1097,11 +1103,11 @@ img{display:block}
   }
   function initAlbum(){
     return allWorks().then(function(list){ return migrateLegacy(list); }).then(function(list){
-      albumCache=list||[]; albumReady=true;
+      albumCache=list||[];
       if(state.screen==="album") renderAlbum();
       syncHomeCta();
       return albumCache;
-    }).catch(function(){ albumReady=true; });
+    }).catch(function(){ return albumCache; });
   }
   /* v0.1의 localStorage 기록(장면·자막만)을 잃지 않도록 고유 id를 붙여 IndexedDB로 옮긴다.
      ⚠️ 이관한 모든 기록이 실제로 다시 읽혀 확인되기 전에는 v0.1 원본(SAVED_KEY)을 절대 지우지 않는다. */
@@ -1287,7 +1293,7 @@ img{display:block}
       !window.confirm("아직 저장하지 못한 내용은 새 이야기를 시작하면 사라질 수 있어요. 먼저 파일로 내려받을 수 있어요. 새 이야기를 시작할까요?")) return;
     /* 녹음이 마무리되는 중이면 원본을 장면에 붙인 뒤에 새 이야기를 시작한다(장면 오연결 방지) */
     var busy=(state.micOn || state.micPending || recorder || micStream || micStopping);
-    var p=busy? stopMic({silent:true}) : Promise.resolve();
+    var p=busy? stopMic() : Promise.resolve();
     return p.then(beginStory);
   }
   function beginStory(){
@@ -1458,7 +1464,7 @@ img{display:block}
          전역 버퍼를 쓰지 않으므로 빠른 재시작·늦은 종료 이벤트가 겹쳐도 다른 녹음과 섞이지 않는다. */
       var sess={
         id:++recSeq, rec:r, chunks:[], mime:r.mimeType||mime,
-        scene:state.scenes[state.active] || null,
+        scene:state.scenes[state.scenes.length-1] || null,
         storyId: state.storyId,
         startedAt: Date.now(), done:false, promise:null, resolve:null, result:null
       };
@@ -1538,8 +1544,7 @@ img{display:block}
     });
   }
   /* 마이크를 확실히 끈다: 권한 대기 취소 → 녹음 종료(원본 수집·장면 부착까지 대기) → 트랙 정지 → 화면 정리 */
-  function stopMic(opts){
-    opts=opts||{};
+  function stopMic(){
     if(micStopping) return micStopping;
     micToken++;
     state.micOn=false; state.micPending=false;
@@ -1568,7 +1573,7 @@ img{display:block}
     return micStopping || Promise.resolve({ok:false,reason:"no_recording"});
   }
   function releaseMicOnExit(){
-    if(state.micOn || state.micPending || recorder || micStream) return stopMic({silent:true});
+    if(state.micOn || state.micPending || recorder || micStream) return stopMic();
     return micStopping || Promise.resolve({ok:false,reason:"no_recording"});
   }
 
@@ -1791,7 +1796,7 @@ img{display:block}
     /* 마지막 목소리까지 장면에 붙인 뒤(원본 수집 완료) 영화를 만들고, 저장이 끝난 다음에 화면을 넘긴다 */
     var busy=(state.micOn || state.micPending || recorder || micStream || micStopping);
     setSaveState("SAVING",{text: busy? "마지막 목소리를 담고 저장하는 중 …" : "오늘의 상상을 저장하는 중 …", id:state.movie&&state.movie.id});
-    var p=busy? stopMic({silent:true}) : Promise.resolve();
+    var p=busy? stopMic() : Promise.resolve();
     return p.then(finishStory);
   }
   function finishStory(){
@@ -2106,7 +2111,7 @@ img{display:block}
     var key=(scenes[0]&&scenes[0].key)||e.key||"living";
     var hasAudio=scenes.some(function(s){ return !!(s.clipId || (s.takeCount>0)); });
     var takeCount=scenes.reduce(function(n,s){ return n+(+s.takeCount||(s.clipId?1:0)); },0);
-    var thumbnail=key==="neutral"?"":" style=\"background-image:url("+ (IMG[key]||IMG.living) +")\"";
+    var thumbnail=key==="neutral"?"":" style=\"background-image:url("+(IMG[key]||IMG.living)+")\"";
     var st=styleById(e.styleId||"3d");
     b.innerHTML=
       '<div class="al-thumb"'+thumbnail+'>'+
@@ -2184,7 +2189,7 @@ img{display:block}
       built.forEach(function(s,i){
         var ids=(src[i]&&src[i].clipIds&&src[i].clipIds.length)? src[i].clipIds : (s.clipId? [s.clipId] : []);
         ids.forEach(function(id,k){
-          var c=map[id]; if(!c || !c.blob) return;
+          var c=map[id]; if(!c || !c.blob || !c.blob.size) return;
           var take={clipId:id, blob:c.blob, url:null, dur:+c.dur||0, mime:c.type||c.blob.type||"", startedAt:c.startedAt||0, sceneIndex:i};
           try{ take.url=URL.createObjectURL(c.blob); clipUrls.push(take.url); }catch(e){}
           s.takes.push(take);

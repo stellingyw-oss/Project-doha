@@ -76,6 +76,26 @@ def verify():
         type_line(page, "가상의 두 번째 기록")
         begin_capture(page)
         finish(page)
+        # Use the v0.1.1 single-clip metadata shape for the second saved work.
+        page.evaluate("""async () => {
+            const record = structuredClone(__DOHA.state.savedEntry);
+            for (const scene of record.scenes) {
+                delete scene.clipIds;
+                delete scene.takeCount;
+            }
+            const db = await new Promise((resolve, reject) => {
+                const request = indexedDB.open('doha-universe');
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+            await new Promise((resolve, reject) => {
+                const transaction = db.transaction('works', 'readwrite');
+                transaction.oncomplete = resolve;
+                transaction.onabort = () => reject(transaction.error);
+                transaction.objectStore('works').put(record);
+            });
+            db.close();
+        }""")
         page.reload()
         page.click("#albumBtn")
         cards = page.locator(".al-card-wrap")
@@ -100,8 +120,9 @@ def verify():
         expect(cards).to_have_count(1)
         cards.first.locator(".al-card").click()
         expect(page.locator("#originalAudio audio")).to_have_count(1)
+        assert page.locator("#app").evaluate("(app) => app.scrollLeft") == 0
         assert not errors, errors
-        print("PASS neutral, labels, real MediaRecorder start/stop, immediate end, multiple segments, raw/JSON downloads, same-day records, reload, replay, delete isolation", flush=True)
+        print("PASS legacy single-clip playback, neutral, labels, real MediaRecorder start/stop, immediate end, multiple segments, raw/JSON downloads, same-day records, reload, replay, delete isolation", flush=True)
         page.close()
 
         cases = {
@@ -178,6 +199,14 @@ def verify():
         expect(page.locator("#originalAudio audio")).to_have_count(1)
         assert not errors, errors
         print("PASS page exit stops tracks and preserves final segment", flush=True)
+        page.close()
+
+        page, errors = launch_page(browser, """localStorage.setItem('doha.v01.album',
+            JSON.stringify([{id:'fixture',mine:true,title:'가상 이관 기록',one:'합성 문장'}]));""")
+        page.wait_for_function("__DOHA.album().some(record => record.id === 'legacy-fixture')")
+        assert page.evaluate("localStorage.getItem('doha.v01.album')") is None
+        assert not errors, errors
+        print("PASS verified legacy migration removes source only after success", flush=True)
         browser.close()
 
 
