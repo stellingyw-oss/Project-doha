@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-"""PROJECT DOHA v0.1.3 검증 — 캔버스 바로 듣기 + 임시 음성 자막 변환(STT, 기본 OFF).
+"""PROJECT DOHA v0.1.3 기능 검증 — 캔버스 바로 듣기 + 음성 자막 변환의 '시작되지 않음' 확인.
+
+v0.1.4 공개분부터 음성 자막 인식(STT)은 안전상 비활성화되었다(녹음 동의 문구는 '이 브라우저에만
+저장'인데 브라우저 음성인식은 오디오를 제조사 서버로 보낼 수 있기 때문). 그래서 v0.1.3의
+K~N 세션(켜짐·오류·미지원·새 세션)은 **어떤 경로로도 인식기가 생성·시작되지 않는다**를
+검사하도록 바뀌었다. 인식 코드는 v0.2를 위해 소스에 남아 있되 STT_ENABLED=false 로 잠겨 있다.
 
 검증 항목
  H. 바로 듣기 — 녹음 전 숨김 / 녹음 뒤 표시 / 재생·정지 / 끝나면 라벨 복귀
  I. 바로 듣기 — 마이크 재시작·화면 이탈·다른 장면 이동 시 자동 정지
- J. 음성 자막 변환 — 기본 OFF(토글·상태·인식기 미생성), 마이크를 켜도 시작하지 않음
- K. 음성 자막 변환 ON — 확정 결과가 '예시 그림 ·' 장면으로 붙고 원본 녹음은 그대로 저장
- L. 음성 자막 변환 오류 — 토글 자동 OFF, 원본 녹음·저장은 무중단
- M. 음성 자막 변환 미지원 — 켜지 않고 안내, 원본 녹음은 그대로
- N. 새로고침 뒤에도 기본 OFF, 콘솔·런타임 에러 0
+ K. 음성 자막 변환 비활성 — 토글·setStt(true)·마이크 어느 경로로도 인식기 0회, 녹음·저장은 정상
+ L. 음성인식이 없는 브라우저 — 같은 안내, 녹음·저장은 정상
+ M. 새로고침(새 세션) 뒤에도 같은 상태, 콘솔·런타임 에러 0
 
 사용:
   LD_LIBRARY_PATH=/workspace/tmp/sysroot/usr/lib/x86_64-linux-gnu \\
@@ -32,6 +35,22 @@ REPORT = {"checks": [], "data": {}}
 def check(name, ok, detail=""):
     REPORT["checks"].append({"name": name, "ok": bool(ok), "detail": str(detail)[:400]})
     print(("PASS " if ok else "FAIL ") + name + ("  · " + str(detail)[:300] if detail != "" else ""))
+
+
+def _start_stt_head(src):
+    i = src.find("function startStt()")
+    return src[i:i + 240] if i >= 0 else "startStt 없음"
+
+
+def _start_stt_guard_before_ctor(src):
+    """startStt()가 인식기 생성(new C())보다 앞에서 STT_ENABLED 로 끊기는지."""
+    i = src.find("function startStt()")
+    if i < 0:
+        return False
+    body = src[i:i + 4000]
+    guard = body.find("if(!STT_ENABLED) return;")
+    ctor = body.find("new C()")
+    return guard >= 0 and ctor > guard and body.find("r.start()") > ctor
 
 
 class Quiet(http.server.SimpleHTTPRequestHandler):
@@ -152,35 +171,42 @@ def main():
     src = open(os.path.join(ROOT, "index.html"), encoding="utf-8").read()
     check("소스: 바로 듣기 버튼 존재", 'id="listenBtn"' in src and "▶ 방금 녹음 듣기" in src)
     check("소스: 음성 자막 변환 토글이 기본 OFF(aria-checked=false)", 'id="sttBtn"' in src and 'aria-checked="false"' in src)
-    check("소스: 음성 자막 변환 라벨에 서버 전송 가능 표기", "음성 자막 변환 (임시 · 브라우저 서버 전송 가능)" in src)
-    check("소스: 원본 녹음과 STT가 같은 try 블록에 묶여 있지 않음(격리)",
+    check("소스: 음성 자막 토글은 비활성 상태·'v0.2 준비 중' 라벨",
+          'aria-disabled="true"' in src and "음성 자막 변환 (v0.2 준비 중)" in src)
+    check("소스: STT 스위치가 false 이고 startStt 첫 줄에서 끊김(인식기 생성 전)",
+          "var STT_ENABLED=false" in src
+          and _start_stt_guard_before_ctor(src), _start_stt_head(src))
+    check("소스: 원본 녹음과 STT 스위치가 같은 try 블록에 묶여 있지 않음(격리)",
           "sttCommit" in src and "MediaRecorder" in src and src.index("function sttCommit") < src.index("function startRecorder"))
 
     with sync_playwright() as pw:
-        # ================= 세션 H·I·J: 바로 듣기 + STT 기본 OFF =================
+        # ================= 세션 H·I: 바로 듣기, 음성 자막은 비활성 =================
         browser = pw.chromium.launch(args=FAKE)
         ctx, page, errs, cerrs = new_page(browser, init_script=sr(""))
         page.goto(url)
         page.wait_for_timeout(800)
         REPORT["data"]["url"] = url
 
-        check("버전 meta = 0.1.3", page.eval_on_selector("meta[name=doha-version]", "e=>e.content") == "0.1.3")
+        check("버전 meta = 0.1.4", page.eval_on_selector("meta[name=doha-version]", "e=>e.content") == "0.1.4")
         check("초기 런타임·콘솔 에러 0건", not errs and not cerrs, errs or cerrs)
 
         start_story(page)
         st0 = listen_state(page)
         print(st0)
         check("H. 녹음 전에는 바로 듣기 버튼 숨김", st0["hidden"] is True and st0["available"] is False, st0)
-        check("J. 음성 자막 변환 토글 기본 OFF", page.get_attribute("#sttBtn", "aria-checked") == "false")
+        check("K. 음성 자막 토글 기본 OFF·비활성", page.get_attribute("#sttBtn", "aria-checked") == "false"
+              and page.get_attribute("#sttBtn", "aria-disabled") == "true")
         j0 = page.evaluate("__DOHA.stt()")
-        check("J. 기본 상태에서 인식기 생성 0회", j0["on"] is False and j0["starts"] == 0 and not page.evaluate("window.__stt.ctors"), j0)
+        check("K. 기본 상태에서 인식기 생성 0회·enabled=false",
+              j0["enabled"] is False and j0["on"] is False and j0["starts"] == 0
+              and not page.evaluate("window.__stt.ctors"), j0)
 
         mic_on(page)
         page.wait_for_timeout(1200)
         j1 = page.evaluate("__DOHA.stt()")
-        check("J. OFF 상태에서 마이크를 켜도 음성인식을 시작하지 않음",
+        check("K. 마이크를 켜도 음성인식을 시작하지 않음",
               j1["on"] is False and j1["starts"] == 0 and not page.evaluate("window.__stt.ctors"), j1)
-        check("J. OFF 상태에서 녹음은 정상 동작", j1["on"] is False and page.evaluate("__DOHA.mic().on") is True)
+        check("K. 마이크 녹음은 정상 동작", page.evaluate("__DOHA.mic().on") is True)
         mic_off(page)
 
         st1 = listen_state(page)
@@ -234,131 +260,105 @@ def main():
         st_end = listen_state(page)
         check("H. 재생이 끝나면 라벨이 '▶ 방금 녹음 듣기'로 복귀", st_end["open"] is False and st_end["label"] == "▶ 방금 녹음 듣기", st_end)
 
-        check("세션 H/I/J 런타임·콘솔 에러 0건", not errs and not cerrs, errs or cerrs)
+        check("세션 H/I/K 런타임·콘솔 에러 0건", not errs and not cerrs, errs or cerrs)
         page.screenshot(path="/workspace/tmp/shots/v013-canvas.png")
         ctx.close()
         browser.close()
 
-        # ================= 세션 K: STT 켬 → 확정 결과가 예시 장면으로 =================
+        # ================= 세션 K: 토글·setStt(true)로도 인식기가 생기지 않는다 =================
         browser = pw.chromium.launch(args=FAKE)
         ctx, page, errs, cerrs = new_page(browser, init_script=sr("interim"))
         page.goto(url)
         page.wait_for_timeout(700)
         start_story(page)
-        page.click("#sttBtn")
-        page.wait_for_timeout(250)
-        k1 = page.evaluate("__DOHA.stt()")
-        check("K. 토글을 켜면 aria-checked=true·안내 문구 갱신",
-              page.get_attribute("#sttBtn", "aria-checked") == "true"
-              and "서버" in page.inner_text("#sttNote"), page.inner_text("#sttNote"))
-        mic_on(page)
-        page.wait_for_function("__DOHA.stt().finals > 0", timeout=6000)
+        # 실제 사람이 누르는 좌표 클릭(aria-disabled 라 Playwright의 기본 클릭은 막히므로 force)
+        page.locator("#sttBtn").click(force=True)
         page.wait_for_timeout(300)
-        scenes = page.evaluate("()=>window.__DOHA.state.scenes.map(s=>({key:s.key,src:s.source,cap:s.caption,takes:(s.takes||[]).length}))")
-        REPORT["data"]["stt_on"] = {"stt": page.evaluate("__DOHA.stt()"), "scenes": scenes}
-        check("K. 확정된 말이 장면으로 추가됨", len(scenes) == 1 and scenes[0]["cap"] == "우주선을 타고 하늘로 날아갔어", scenes)
-        check("K. 그 장면은 '예시 그림' 라벨(source=sample)", scenes and scenes[0]["src"] == "sample" and scenes[0]["key"] == "space", scenes)
-        check("K. 자막에 '예시 그림 ·' 접두 표시", page.inner_text("#capText").startswith("예시 그림 ·"), page.inner_text("#capText"))
-        k2 = page.evaluate("__DOHA.stt()")
-        check("K. 인식 결과 수신·오류 0", k2["finals"] >= 1 and k2["errors"] == 0, k2)
-        check("K. 음성인식은 ko-KR·interimResults로 시작", page.evaluate("__DOHA.stt().starts") >= 1
-              and page.evaluate("document.querySelector('#sttHear').hidden") in (True, False))
-        check("K. STT 중에도 원본 녹음은 계속 동작", page.evaluate("__DOHA.mic().on") is True, page.evaluate("__DOHA.mic()"))
+        k1 = page.evaluate("__DOHA.stt()")
+        REPORT["data"]["stt_disabled"] = {"stt": k1, "note": page.inner_text("#sttNote"),
+                                         "toast": page.inner_text("#toast")}
+        check("K. 토글을 눌러도 켜지지 않음(aria-checked=false·on=false)",
+              page.get_attribute("#sttBtn", "aria-checked") == "false" and k1["on"] is False, k1)
+        check("K. 토글을 눌러도 인식기 생성·시작 0회",
+              not page.evaluate("window.__stt.ctors") and not page.evaluate("window.__stt.starts")
+              and k1["starts"] == 0, page.evaluate("window.__stt"))
+        check("K. 'v0.2 준비 중' 안내가 화면에 뜸",
+              "v0.2" in page.inner_text("#toast") and "이 브라우저에만" in page.inner_text("#sttNote"),
+              page.inner_text("#toast") + " / " + page.inner_text("#sttNote"))
+        page.locator("#sttBtn").click(force=True)
+        page.wait_for_timeout(200)
+        check("K. 두 번째로 눌러도 그대로 OFF",
+              page.get_attribute("#sttBtn", "aria-checked") == "false"
+              and not page.evaluate("window.__stt.ctors"), page.evaluate("__DOHA.stt()"))
+        k2 = page.evaluate("__DOHA.setStt(true,true)")
+        check("K. 스크립트로 setStt(true) 해도 켜지지 않고 인식기 0회",
+              k2 is False and not page.evaluate("window.__stt.ctors")
+              and page.evaluate("__DOHA.stt().on") is False, page.evaluate("__DOHA.stt()"))
 
+        mic_on(page)
+        page.wait_for_timeout(1200)
+        check("K. 마이크를 켜도·녹음 중에도 인식기 0회",
+              not page.evaluate("window.__stt.ctors") and page.evaluate("__DOHA.stt().starts") == 0,
+              page.evaluate("window.__stt"))
         mic_off(page)
-        k3 = page.evaluate("__DOHA.stt()")
-        check("K. 마이크를 끄면 음성인식도 멈춤", k3["on"] is True and page.evaluate("window.__stt.aborts + window.__stt.stops") >= 1, k3)
-        end_scenes = page.evaluate("()=>window.__DOHA.state.scenes.map(s=>({src:s.source,takes:(s.takes||[]).length}))")
-        check("K. 말한 장면과 녹음 장면이 분리되어 보존", len(end_scenes) == 2
-              and end_scenes[0]["src"] == "sample" and end_scenes[0]["takes"] == 0
-              and end_scenes[1]["takes"] == 1, end_scenes)
+        k3 = page.evaluate("()=>window.__DOHA.state.scenes.map(s=>({src:s.source,takes:(s.takes||[]).length}))")
+        check("K. 음성 자막 없이도 원본 녹음 1구간이 중립 장면에 남음",
+              len(k3) == 1 and k3[0]["takes"] == 1, k3)
         page.click("#endBtn")
         page.wait_for_function("__DOHA.saveState().phase==='SAVED_COMPLETE'", timeout=12000)
         k4 = page.evaluate("""()=>({phase:__DOHA.saveState(), audioUpdate:document.querySelectorAll('#originalAudio audio').length,
             album:__DOHA.album().length})""")
-        check("K. STT를 켜도 원본 녹음까지 완전 저장", k4["phase"]["phase"] == "SAVED_COMPLETE"
+        check("K. 음성 자막 비활성 상태에서도 원본 녹음까지 완전 저장", k4["phase"]["phase"] == "SAVED_COMPLETE"
               and k4["phase"]["audioSaved"] == 1 and k4["audioUpdate"] == 1 and k4["album"] == 1, k4)
         check("세션 K 런타임·콘솔 에러 0건", not errs and not cerrs, errs or cerrs)
-        page.screenshot(path="/workspace/tmp/shots/v013-stt-on.png")
+        page.screenshot(path="/workspace/tmp/shots/v013-stt-disabled.png")
         ctx.close()
         browser.close()
 
-        # ================= 세션 L: STT 오류 → 녹음 무중단 =================
-        browser = pw.chromium.launch(args=FAKE)
-        ctx, page, errs, cerrs = new_page(browser, init_script=sr("error"))
-        page.goto(url)
-        page.wait_for_timeout(700)
-        start_story(page)
-        page.click("#sttBtn")
-        page.wait_for_timeout(200)
-        mic_on(page)
-        page.wait_for_function("__DOHA.stt().errors > 0", timeout=6000)
-        page.wait_for_timeout(300)
-        l1 = page.evaluate("__DOHA.stt()")
-        REPORT["data"]["stt_error"] = l1
-        check("L. 인식 오류가 나면 토글이 스스로 OFF", l1["on"] is False and l1["errors"] >= 1
-              and page.get_attribute("#sttBtn", "aria-checked") == "false", l1)
-        check("L. 오류 뒤에도 마이크·녹음은 계속", page.evaluate("__DOHA.mic().on") is True
-              and page.evaluate("__DOHA.mic().losses") == 0, page.evaluate("__DOHA.mic()"))
-        check("L. 안내 문구가 원본 녹음 보존을 알림", "원본 녹음" in page.inner_text("#sttNote"), page.inner_text("#sttNote"))
-        check("L. 오류 뒤에는 음성인식을 다시 붙이지 않음", page.evaluate("__DOHA.stt().starts") == 1,
-              page.evaluate("__DOHA.stt()"))
-        page.wait_for_timeout(1200)
-        mic_off(page)
-        l2 = page.evaluate("()=>window.__DOHA.state.scenes.map(s=>({src:s.source,key:s.key,takes:(s.takes||[]).length}))")
-        check("L. 오류에도 방해 없이 중립 장면에 원본 녹음 1구간", len(l2) == 1 and l2[0]["key"] == "neutral"
-              and l2[0]["takes"] == 1, l2)
-        page.click("#endBtn")
-        page.wait_for_function("__DOHA.saveState().phase==='SAVED_COMPLETE'", timeout=12000)
-        l3 = page.evaluate("()=>({save:__DOHA.saveState(), album:__DOHA.album().length})")
-        check("L. STT 오류와 무관하게 SAVED_COMPLETE", l3["save"]["phase"] == "SAVED_COMPLETE"
-              and l3["save"]["audioSaved"] == 1 and l3["album"] == 1, l3)
-        check("세션 L 런타임·콘솔 에러 0건", not errs and not cerrs, errs or cerrs)
-        ctx.close()
-        browser.close()
-
-        # ================= 세션 M: 미지원 브라우저 → 켜지지 않음 =================
+        # ================= 세션 L: 음성인식이 없는 브라우저 → 같은 안내, 녹음·저장 정상 =================
         browser = pw.chromium.launch(args=FAKE)
         ctx, page, errs, cerrs = new_page(browser, init_script=NO_SR)
         page.goto(url)
         page.wait_for_timeout(700)
         start_story(page)
         m0 = page.evaluate("__DOHA.stt()")
-        check("M. 음성인식이 없는 브라우저에서 supported=false", m0["supported"] is False and m0["on"] is False, m0)
-        page.click("#sttBtn")
+        check("L. 음성인식이 없는 브라우저에서 supported=false·enabled=false",
+              m0["supported"] is False and m0["enabled"] is False and m0["on"] is False, m0)
+        page.locator("#sttBtn").click(force=True)
         page.wait_for_timeout(300)
-        m1 = page.evaluate("__DOHA.stt()")
-        check("M. 미지원 브라우저에서는 토글이 켜지지 않음", m1["on"] is False
-              and page.get_attribute("#sttBtn", "aria-checked") == "false", m1)
-        check("M. 미지원 안내 문구 표시", "지원하지 않아요" in page.inner_text("#sttNote"), page.inner_text("#sttNote"))
+        check("L. 미지원 브라우저에서도 토글이 켜지지 않음", page.evaluate("__DOHA.stt().on") is False
+              and page.get_attribute("#sttBtn", "aria-checked") == "false")
+        check("L. 안내 문구가 원본 녹음 보존을 알림", "이 브라우저에만" in page.inner_text("#sttNote"),
+              page.inner_text("#sttNote"))
         mic_on(page)
         page.wait_for_timeout(1200)
-        check("M. 미지원 상태에서도 원본 녹음은 정상", page.evaluate("__DOHA.mic().on") is True
+        check("L. 미지원 상태에서도 원본 녹음은 정상", page.evaluate("__DOHA.mic().on") is True
               and page.evaluate("__DOHA.mic().losses") == 0, page.evaluate("__DOHA.mic()"))
         mic_off(page)
         m2 = page.evaluate("()=>window.__DOHA.state.scenes.map(s=>({takes:(s.takes||[]).length}))")
-        check("M. 미지원 상태에서도 테이크가 남음", m2 and m2[0]["takes"] == 1, m2)
+        check("L. 미지원 상태에서도 테이크가 남음", bool(m2) and m2[0]["takes"] == 1, m2)
         page.click("#endBtn")
         page.wait_for_function("__DOHA.saveState().phase==='SAVED_COMPLETE'", timeout=12000)
-        check("M. 미지원 상태에서도 저장 완료", page.evaluate("__DOHA.saveState().phase") == "SAVED_COMPLETE")
-        check("세션 M 런타임·콘솔 에러 0건", not errs and not cerrs, errs or cerrs)
+        check("L. 미지원 상태에서도 저장 완료", page.evaluate("__DOHA.saveState().phase") == "SAVED_COMPLETE")
+        check("세션 L 런타임·콘솔 에러 0건", not errs and not cerrs, errs or cerrs)
         ctx.close()
         browser.close()
 
-        # ================= 세션 N: 새로고침 뒤에도 기본 OFF =================
+        # ================= 세션 M: 새로고침(새 세션) 뒤에도 같은 상태 =================
         browser = pw.chromium.launch(args=FAKE)
         ctx, page, errs, cerrs = new_page(browser, init_script=sr("final"))
         page.goto(url)
         page.wait_for_timeout(700)
         start_story(page)
-        page.click("#sttBtn")
+        page.locator("#sttBtn").click(force=True)
         page.wait_for_timeout(200)
-        check("N. 켠 상태 확인", page.get_attribute("#sttBtn", "aria-checked") == "true")
         page.reload()
         page.wait_for_timeout(900)
-        check("N. 새로고침(새 세션) 뒤에는 다시 기본 OFF", page.get_attribute("#sttBtn", "aria-checked") == "false"
+        check("M. 새로고침(새 세션) 뒤에도 OFF·비활성", page.get_attribute("#sttBtn", "aria-checked") == "false"
+              and page.get_attribute("#sttBtn", "aria-disabled") == "true"
               and page.evaluate("__DOHA.stt().on") is False, page.evaluate("__DOHA.stt()"))
-        check("세션 N 런타임·콘솔 에러 0건", not errs and not cerrs, errs or cerrs)
+        check("M. 새 세션에서도 인식기 생성 0회", not page.evaluate("window.__stt.ctors"))
+        check("세션 M 런타임·콘솔 에러 0건", not errs and not cerrs, errs or cerrs)
         ctx.close()
         browser.close()
 
