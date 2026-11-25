@@ -222,6 +222,15 @@ def run_viewport(browser, name, w, h, dsf, mobile):
         "({chrome:+getComputedStyle(document.querySelector('.mv-chrome')).zIndex,"
         " intro:+getComputedStyle(document.querySelector('#mvIntro')).zIndex,"
         " ended:+getComputedStyle(document.querySelector('#mvEnded')).zIndex})")
+    # 제목 카드 글자가 컨트롤 바에 가리지 않는지(폰처럼 무대가 낮은 화면)
+    play["intro_fit"] = page.evaluate("""() => {
+        const c = document.querySelector('#introCredits').getBoundingClientRect();
+        const ch = document.querySelector('.mv-chrome').getBoundingClientRect();
+        const p = document.querySelector('#player').getBoundingClientRect();
+        return {credBottom: Math.round(c.bottom), chromeTop: Math.round(ch.top),
+                playerBottom: Math.round(p.bottom),
+                overlap: c.bottom > ch.top, inside: c.bottom <= p.bottom};
+    }""")
     # "보이는가"는 픽셀로 본다 — 재생 버튼 한가운데(▶ 삼각형은 단색 #FFF4E1)를 4×4 픽셀로
     # 찍어 크림색이 실제로 칠해졌는지 확인한다. 제목 카드가 위에 덮여 있으면 그 자리는
     # 카드 배경(보라)이 되고, 컨트롤 바가 위에 있으면 ▶ 색이 그대로 남는다.
@@ -397,6 +406,8 @@ def main():
             else:
                 check("[%s] 제목 카드가 떠 있어도 ▶ 가 실제로 보임(픽셀)" % name,
                       mp["icon_pixel"]["dist_from_icon_cream"] <= 45, mp["icon_pixel"])
+            check("[%s] 제목 카드 글자가 컨트롤 바에 가리지 않음" % name,
+                  (not mp["intro_fit"]["overlap"]) and mp["intro_fit"]["inside"], mp["intro_fit"])
             check("[%s] 영화 정지 상태에서 제목 카드가 ▶를 덮지 않음" % name,
                   mp["intro_shown"] and mp["cover"]["onPlayBtn"]
                   and mp["cover"]["introPointerEvents"] == "none", mp["cover"])
