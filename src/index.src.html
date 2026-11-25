@@ -133,7 +133,7 @@ img{display:block}
 .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(40,24,10,.1),transparent 42%,rgba(40,24,10,.18));pointer-events:none}
 .hero-card figcaption{margin:13px 4px 0;font-size:11.5px;color:var(--muted);letter-spacing:.01em}
 .hero-card figcaption .q{color:var(--ink-2);font-family:var(--serif);font-style:italic;font-weight:600}
-.hero-tag{position:absolute;top:12px;left:12px;font-size:9.5px;letter-spacing:.16em;font-weight:900;color:#3A2205;
+.hero-tag{position:absolute;top:12px;left:12px;max-width:calc(100% - 24px);font-size:9.5px;letter-spacing:.06em;font-weight:900;color:#3A2205;
   background:linear-gradient(180deg,#FFD79B,#F2A54C);padding:5px 10px;border-radius:8px;box-shadow:0 3px 8px -3px rgba(160,90,20,.6)}
 .hero-tape{position:absolute;top:-13px;left:50%;transform:translateX(-50%) rotate(-2deg);width:80px;height:24px;border-radius:3px;
   background:rgba(255,214,160,.72);border:1px solid rgba(214,158,96,.35);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
@@ -287,6 +287,7 @@ img{display:block}
   transition:color .25s,border-color .25s,background .25s;box-shadow:0 1px 2px rgba(126,84,40,.06)}
 .stt-toggle .sw{position:relative;flex:0 0 auto;width:26px;height:15px;border-radius:999px;background:rgba(140,100,60,.25);transition:background .25s}
 .stt-toggle .sw::after{content:"";position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:#FFFDF8;box-shadow:0 1px 2px rgba(120,80,40,.35);transition:transform .2s,background .2s}
+.stt-toggle[aria-disabled="true"]{cursor:default;color:var(--muted);border-style:dashed}
 .stt-toggle[aria-checked="true"]{color:var(--amber-ink);border-color:rgba(235,158,66,.5);background:rgba(255,226,180,.55)}
 .stt-toggle[aria-checked="true"] .sw{background:rgba(235,158,66,.65)}
 .stt-toggle[aria-checked="true"] .sw::after{transform:translateX(11px);background:#FFFDF8}
@@ -636,7 +637,7 @@ img{display:block}
           <div class="home-copy">
             <p class="eyebrow">[[NAME]]의 상상은 현실이 된다</p>
             <h1>아이는 자라고,<br><span class="hl">상상은<svg viewBox="0 0 200 12" preserveAspectRatio="none"><path d="M2 8.5C40 3.5 78 3 120 6.5c30 2.4 55 1.2 78-1.5"/></svg></span> 남습니다.</h1>
-            <p class="lede">말하는 순간, [[NAME]]만의 세상이 화면에 펼쳐져요.<br> 끝나면 목소리와 장면이 담긴 <b>상상 영화</b>로 남아요.</p>
+            <p class="lede">함께 지어낸 이야기와 오늘의 목소리를 간직해요.<br> 오늘 만든 장면은 <b>상상 영화</b>로 남아요.</p>
             <div class="home-cta">
               <button class="btn btn-primary" id="startBtn">
                 <span id="startLabel">상상 시작하기</span>
@@ -648,8 +649,8 @@ img{display:block}
           </div>
 
           <figure class="hero-card" id="heroCard">
-            <div class="hero-img"><img class="style-target" id="heroImg" alt="공룡이 거실에 나타난 상상 장면"><span class="hero-tag">예시 장면</span></div>
-            <figcaption>어제 [[NAME]]의 상상 · <span class="q">“공룡이 우리 집 거실에 나타났어!”</span></figcaption>
+            <div class="hero-img"><img class="style-target" id="heroImg" alt="공룡이 거실에 나타난 상상 장면"><span class="hero-tag">이렇게 놀 수 있어요</span></div>
+            <figcaption><b>예시 장면</b> · <span class="q">“공룡이 우리 집 거실에 나타났어!”</span></figcaption>
           </figure>
         </main>
 
@@ -702,10 +703,10 @@ img{display:block}
       <div class="cv-deck">
         <div class="wave" id="wave" aria-hidden="true"></div>
         <div class="stt">
-          <button class="stt-toggle" id="sttBtn" type="button" role="switch" aria-checked="false" aria-label="음성 자막 변환 (임시) 켜기">
-            <span class="sw" aria-hidden="true"></span><span>음성 자막 변환 (임시 · 브라우저 서버 전송 가능)</span>
+          <button class="stt-toggle" id="sttBtn" type="button" role="switch" aria-checked="false" aria-disabled="true" aria-label="음성 자막 변환 (v0.2 준비 중)">
+            <span class="sw" aria-hidden="true"></span><span>음성 자막 변환 (v0.2 준비 중)</span>
           </button>
-          <span class="stt-note" id="sttNote">기본은 꺼져 있어요 · 원본 녹음은 이 브라우저에만 저장</span>
+          <span class="stt-note" id="sttNote">지금은 녹음·바로 듣기·직접 입력으로 놀아요 · 원본 녹음은 이 브라우저에만 저장</span>
           <span class="stt-hear" id="sttHear" hidden></span>
         </div>
         <p class="hint" id="deckHint">입력한 문장은 그대로 남아요. 그림과 그림체는 준비된 예시이며 음성 자동 자막은 아직 없어요.</p>
@@ -861,7 +862,7 @@ img{display:block}
 
         <div class="panel" id="panel-capsule">
           <div class="caps" id="capsList"></div>
-          <p class="cap-note">타임캡슐은 가족만 열 수 있어요. 정해진 날이 되면 [[NAME]]에게 알림이 가고, 그날의 상상 영화가 그대로 재생됩니다.</p>
+          <p class="cap-note">타임캡슐은 가족만 열 수 있어요. 미리보기 · 날짜 알림은 준비 중이에요.</p>
         </div>
       </div>
     </div>
@@ -1556,12 +1557,15 @@ img{display:block}
     }catch(e){ stopListen(); }
   }
 
-  /* ---------------- v0.1.3 · 음성 자막 변환(임시) — 기본 OFF ----------------
+  /* ---------------- v0.1.3 · 음성 자막 변환(임시) — v0.1.4 공개분에서는 시작하지 않는다 ----------------
      브라우저 음성인식(SpeechRecognition)은 오디오를 브라우저 제조사 서버로 보낼 수 있다.
-     그래서 기본값은 OFF이고, 보호자가 화면의 토글을 직접 켰을 때만 시작한다.
-     원본 녹음(MediaRecorder → IndexedDB)과는 완전히 분리되어 있어서, 인식이 실패하거나
-     아예 지원되지 않아도 녹음·저장은 절대 멈추지 않는다. */
-  var stt={on:false, rec:null, starts:0, errors:0, finals:0, lastText:"", lastError:""};
+     녹음 전 동의 문구는 "이 브라우저에만 녹음"이므로, 외부 처리 고지·사전 동의를 갖춘
+     v0.2 전까지는 공개 v0.1.4에서 인식기를 아예 시작하지 않는다(STT_ENABLED=false).
+     인식 코드는 v0.2에서 다시 켤 수 있도록 남겨 두되, 이 값이 false인 동안에는
+     startStt()가 첫 줄에서 돌아가므로 인식기 생성 경로가 없다.
+     원본 녹음(MediaRecorder → IndexedDB)·바로 듣기·직접 입력은 이 기능과 무관하게 그대로 동작한다. */
+  var STT_ENABLED=false;
+  var stt={enabled:STT_ENABLED, on:false, rec:null, starts:0, errors:0, finals:0, lastText:"", lastError:""};
   function sttCtor(){ try{ return window.SpeechRecognition || window.webkitSpeechRecognition || null; }catch(e){ return null; } }
   function sttPreview(t){
     var h=$("#sttHear"); if(!h) return;
@@ -1571,15 +1575,29 @@ img{display:block}
   }
   function sttNote(t){ var n=$("#sttNote"); if(n) n.textContent=t; }
   function sttIdleNote(){
+    if(!STT_ENABLED) return "지금은 녹음·바로 듣기·직접 입력으로 놀아요 · 원본 녹음은 이 브라우저에만 저장";
     return sttCtor()
       ? "기본은 꺼져 있어요 · 원본 녹음은 이 브라우저에만 저장"
       : "이 브라우저는 음성 자막 변환을 지원하지 않아요 · 원본 녹음은 그대로 저장돼요";
   }
+  function sttSoon(silent){
+    stopStt();
+    stt.on=false;
+    var b=$("#sttBtn");
+    if(b){ b.setAttribute("aria-checked","false"); b.setAttribute("aria-disabled","true");
+           b.setAttribute("aria-label","음성 자막 변환 (v0.2 준비 중)"); }
+    sttNote(sttIdleNote());
+    var hint=$("#deckHint");
+    if(hint) hint.textContent="입력한 문장은 그대로 남아요. 그림과 그림체는 준비된 예시이고, 음성 자동 자막은 v0.2에서 준비 중이에요.";
+    if(!silent) toast("음성 자막은 v0.2에서 준비 중이에요 — 지금은 원본 녹음·바로 듣기·직접 입력으로 놀 수 있어요");
+    return false;
+  }
   function setStt(on,silent){
+    if(!STT_ENABLED) return sttSoon(silent);   /* 공개 v0.1.4: 켜지는 경로가 없다 */
     on=!!on && !!sttCtor();
     stt.on=on;
     var b=$("#sttBtn");
-    if(b){ b.setAttribute("aria-checked", on?"true":"false"); b.setAttribute("aria-label", on?"음성 자막 변환 (임시) 끄기":"음성 자막 변환 (임시) 켜기"); }
+    if(b){ b.setAttribute("aria-checked", on?"true":"false"); b.setAttribute("aria-disabled","false"); b.setAttribute("aria-label", on?"음성 자막 변환 (임시) 끄기":"음성 자막 변환 (임시) 켜기"); }
     var hint=$("#deckHint");
     if(on){
       sttNote("켜짐 · 인식된 말은 예시 그림 장면으로 남아요. 목소리가 브라우저 제조사 서버로 전달될 수 있어요.");
@@ -1596,11 +1614,13 @@ img{display:block}
     return stt.on;
   }
   function toggleStt(){
+    if(!STT_ENABLED){ setStt(false); return; }   /* v0.2 준비 중 안내만 하고 끝낸다 */
     if(stt.on){ setStt(false); return; }
     if(!sttCtor()){ setStt(false,true); toast("이 브라우저는 음성 자막 변환을 지원하지 않아요 — 원본 녹음은 그대로 저장돼요",true); return; }
     setStt(true);
   }
   function startStt(){
+    if(!STT_ENABLED) return;   /* 공개 v0.1.4 안전 조치 — 여기서 끊어 인식기를 만들지 않는다 */
     if(!stt.on || !state.micOn) return;
     stopStt();
     var C=sttCtor();
@@ -1658,6 +1678,7 @@ img{display:block}
     toast("음성 자막 변환을 쓸 수 없어 껐어요 — 원본 녹음은 그대로 저장돼요",true);
   }
   function sttCommit(text){
+    if(!STT_ENABLED) return;
     text=String(text||"").trim();
     if(!text) return;
     stt.finals++; stt.lastText=text;
@@ -1737,7 +1758,7 @@ img{display:block}
       btn.setAttribute("aria-label","마이크 끄기");
       stopListen();                       /* 녹음을 다시 켜면 이전 테이크 재생은 멈춘다 */
       setIdleStatus();
-      if(stt.on) startStt();              /* 기본 OFF — 보호자가 켰을 때만, 원본 녹음과 별도로 */
+      if(STT_ENABLED && stt.on) startStt();   /* v0.1.4 공개분에서는 STT_ENABLED=false 라 실행되지 않는다 */
       try{
         if(!audioCtx){ var AC=window.AudioContext||window.webkitAudioContext; if(AC) audioCtx=new AC(); }
         if(audioCtx){
@@ -2773,7 +2794,7 @@ img{display:block}
     saveState:function(){ return {phase:state.save.phase, audioSaved:state.save.audioSaved, audioTotal:state.save.audioTotal, reason:state.save.reason, error:state.save.error, id:state.save.id}; },
     saveEntry:saveEntry,
     stt:function(){
-      return {on:!!stt.on, supported:!!sttCtor(), starts:stt.starts, errors:stt.errors, finals:stt.finals,
+      return {enabled:STT_ENABLED, on:!!stt.on, supported:!!sttCtor(), starts:stt.starts, errors:stt.errors, finals:stt.finals,
               lastText:stt.lastText, lastError:stt.lastError};
     },
     setStt:setStt,

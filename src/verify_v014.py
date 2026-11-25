@@ -108,10 +108,23 @@ def static_checks():
     check("홈 버전 표기 v0.1.4", "PROJECT DOHA · v0.1.4" in src)
     for label in ['광고 없음 · 이 브라우저에만', '이 브라우저에만 저장', '예시 장면',
                   '예시 그림 ·', '예시 필터 ·', '▶ 방금 녹음 듣기',
-                  '음성 자막 변환 (임시 · 브라우저 서버 전송 가능)']:
+                  '음성 자막 변환 (v0.2 준비 중)']:
         check("정직성 라벨 유지: " + label, label in src)
     check("녹음 전 동의 확인 문구 유지", "녹음" in src and "confirm(" in src)
     check("음성 자막 변환 토글 기본 OFF", 'id="sttBtn"' in src and 'aria-checked="false"' in src)
+    # PR #2 리뷰 보완 1 — 녹음 동의('이 브라우저에만')와 충돌하는 음성 자막 인식을 공개분에서 끈다
+    check("음성 자막 인식 비활성(STT_ENABLED=false)·토글 비활성 표시",
+          "var STT_ENABLED=false" in src and 'aria-disabled="true"' in src)
+    check("startStt()가 인식기 생성 전에 STT_ENABLED로 끊김",
+          src.index("function startStt()") < src.index("if(!STT_ENABLED) return;", src.index("function startStt()"))
+          < src.index("new C()", src.index("function startStt()")))
+    # PR #2 리뷰 보완 2 — 첫 방문 가족이 예시와 자기 기록을 구별하도록 문구 정정
+    check("공룡 예시: '이렇게 놀 수 있어요' + '예시 장면' 구분 표시",
+          "이렇게 놀 수 있어요" in src and "<b>예시 장면</b>" in src and "어제 [[NAME]]의 상상" not in src)
+    check("홈 안내: '함께 지어낸 이야기와 오늘의 목소리를 간직해요'",
+          "함께 지어낸 이야기와 오늘의 목소리를 간직해요" in src and "말하는 순간" not in src)
+    check("타임캡슐 안내: '미리보기 · 날짜 알림은 준비 중이에요'",
+          "미리보기 · 날짜 알림은 준비 중이에요" in src and "알림이 가고" not in src)
     check("원본 녹음 카드 유지", 'id="originalAudio"' in src)
     check("저장·내보내기 버튼 유지", 'id="saveAlbumBtn"' in src and "기록 + 음성 JSON" in src)
     check("일부 음성 누락을 정직하게 알리는 문구", "missingAudioClipCount" in src and "missingAudioNote" in src
@@ -371,6 +384,109 @@ def check_missing_audio_export(browser):
     ctx.close()
 
 
+def check_missing_audio_export_all(browser):
+    """작품 2편 중 1편의 음성 1구간만 누락된 상태에서 '전체 기록 내보내기'를 실제로 누른다.
+
+    PR #2 리뷰 보완 3 — 부모가 기기를 바꾸기 전 믿고 누르는 버튼은 개별이 아니라 전체 내보내기다.
+    JSON에 작품 2편과 누락 1건이 기록되고 화면에 경고가 뜨는지, 그리고 '기록 정보만' 내보내기에는
+    누락 경고가 뜨지 않는지 함께 확인한다.
+    """
+    ctx = browser.new_context(viewport={"width": 1180, "height": 820}, permissions=["microphone"],
+                              accept_downloads=True)
+    page = ctx.new_page()
+    page.on("dialog", lambda d: d.accept())
+    page.goto("file://" + SRC)
+    page.wait_for_timeout(800)
+
+    def make_work(sentence):
+        page.fill("#sayInput", sentence)
+        page.press("#sayInput", "Enter")
+        page.wait_for_timeout(500)
+        page.click("#micBtn")
+        page.wait_for_function("__DOHA.mic().on")
+        page.wait_for_timeout(1200)
+        page.click("#micBtn")
+        page.wait_for_function("!__DOHA.mic().on && !__DOHA.mic().stopping")
+        page.wait_for_timeout(300)
+        page.click("#endBtn")
+        page.wait_for_function("__DOHA.saveState().phase==='SAVED_COMPLETE'", timeout=15000)
+        page.wait_for_timeout(600)
+
+    # 작품 1
+    page.click("#startBtn")
+    page.wait_for_timeout(600)
+    make_work("가상의 첫 번째 이야기")
+    page.click("#mvAlbumBtn")
+    page.wait_for_timeout(900)
+    # 작품 2 (앨범의 '오늘의 상상 만들기' 카드 → 새 이야기)
+    page.click(".al-card.al-add")
+    page.wait_for_timeout(700)
+    make_work("가상의 두 번째 이야기")
+    page.click("#mvAlbumBtn")
+    page.wait_for_timeout(900)
+    prepared = page.evaluate("()=>({works:__DOHA.album().length})")
+    check("[전체 내보내기] 작품 2편 준비", prepared["works"] == 2, prepared)
+
+    # 가장 최근 작품(작품 2)의 원본 음성 1구간만 지운다
+    removed = page.evaluate("""async () => {
+        const db = await new Promise((res, rej) => { const r = indexedDB.open('doha-universe'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+        const clips = await new Promise((res, rej) => { const r = db.transaction('clips').objectStore('clips').getAll(); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+        const works = await new Promise((res, rej) => { const r = db.transaction('works').objectStore('works').getAll(); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+        if (!clips.length || !works.length) return {ok: false};
+        const newest = works.slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))[0];
+        const target = clips.filter(c => c.workId === newest.id)[0] || clips[0];
+        await new Promise((res, rej) => { const t = db.transaction('clips', 'readwrite'); t.oncomplete = res; t.onabort = () => rej(t.error); t.objectStore('clips').delete(target.id); });
+        db.close();
+        return {ok: true, clipCount: clips.length, workCount: works.length, workId: target.workId, workNo: newest.no};
+    }""")
+    check("[전체 내보내기] 누락 시나리오 준비(작품 2편 중 1구간 삭제)",
+          removed.get("ok") is True and removed.get("workCount") == 2 and removed.get("clipCount") == 2, removed)
+    # 새로고침으로 메모리에 남은 Blob 회수 경로까지 끊는다
+    page.reload()
+    page.wait_for_timeout(900)
+    page.click("#albumBtn")
+    page.wait_for_timeout(900)
+
+    with page.expect_download() as event:
+        page.get_by_text("전체 기록 내보내기 (JSON)", exact=False).first.click()
+    path = event.value.path()
+    data = json.loads(open(path, encoding="utf-8").read())
+    toast = page.locator("#toast").text_content() or ""
+    manifest = data.get("manifest", {})
+    works = data.get("works", [])
+    check("[전체 내보내기] JSON에 작품 2편이 모두 기록",
+          len(works) == 2 and manifest.get("workCount") == 2, {"works": len(works), "manifest": manifest})
+    check("[전체 내보내기] 누락 1건을 파일에 기록",
+          manifest.get("missingAudioClipCount") == 1, manifest.get("missingAudioClipCount"))
+    check("[전체 내보내기] 파일 안 누락 안내 문구", "찾지 못해" in str(manifest.get("missingAudioNote", "")),
+          manifest.get("missingAudioNote"))
+    check("[전체 내보내기] 파일 note에도 누락 표시", "빠져" in str(data.get("note", "")), data.get("note"))
+    check("[전체 내보내기] 화면에도 누락 경고(2편·1구간)",
+          "빠졌어요" in toast and "2편" in toast, toast)
+    check("[전체 내보내기] 파일 자체는 정상 생성", os.path.getsize(path) > 0, os.path.getsize(path))
+
+    # '기록 정보만' 내보내기(metadataOnly) — 원본 오디오를 담지 않으므로 누락 경고가 없어야 한다
+    missing_id = removed.get("workId")
+    missing_rec = next((w.get("record", {}) for w in works
+                        if w.get("record", {}).get("id") == missing_id), {})
+    no = missing_rec.get("no") or 0
+    card = page.locator("#panel-album .al-card-wrap").filter(has_text="No.%03d" % no).first
+    with page.expect_download() as meta_event:
+        card.get_by_text("기록 정보 JSON").click()
+    meta_path = meta_event.value.path()
+    meta = json.loads(open(meta_path, encoding="utf-8").read())
+    page.wait_for_timeout(150)
+    meta_toast = page.locator("#toast").text_content() or ""
+    meta_manifest = meta.get("manifest", {})
+    check("[기록 정보만] 파일은 정상 생성(기록 정보 사본)",
+          meta_manifest.get("workCount") == 1 and "기록 정보의 사본" in str(meta.get("note", "")),
+          meta_manifest)
+    check("[기록 정보만] 음성을 담지 않으므로 누락 항목·경고 없음",
+          "missingAudioClipCount" not in meta_manifest and "빠졌어요" not in meta_toast
+          and "빠져" not in str(meta.get("note", "")), {"manifest": meta_manifest, "toast": meta_toast})
+    ctx.close()
+
+
 def main():
     os.makedirs(SHOTS, exist_ok=True)
     static_checks()
@@ -420,8 +536,10 @@ def main():
             check("[%s] 원본 목소리 카드 유지" % name, info["movie"]["audioCards"] >= 1, info["movie"])
             check("[%s] 런타임·콘솔 에러 0" % name, not info["errors"] and not info["console_errors"],
                   info["errors"] or info["console_errors"])
-        print("--- 일부 음성 누락 내보내기", flush=True)
+        print("--- 일부 음성 누락 내보내기(개별)", flush=True)
         check_missing_audio_export(browser)
+        print("--- 일부 음성 누락 내보내기(전체)", flush=True)
+        check_missing_audio_export_all(browser)
         browser.close()
 
     base = results["ipad"]["contrast"]

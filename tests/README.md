@@ -64,8 +64,12 @@ IndexedDB·다운로드 동작이 오리진에 묶여 있기 때문). `tests/ver
 |---|---|---|
 | `tests/verify_safety.py` | 10 (실패 경로 7 + 종합 흐름 3) | ALL PASS |
 | `src/verify_v012.py` | 65 | ALL PASS |
-| `src/verify_v013.py` | 51 | ALL PASS |
+| `src/verify_v013.py` | 43 (v0.1.4 공개분부터 STT 세션은 '인식기가 시작되지 않음'을 검사) | ALL PASS |
+| `src/verify_v014.py` | 114 (톤·대비·빈 무대·영화 ▶ · 내보내기 누락 개별/전체 · STT 비활성) | ALL PASS |
 | `src/verify_v011.py` | 32 | ALL PASS |
+
+`verify_v013.py`는 2026-11-25부터 음성 자막 인식이 비활성(`STT_ENABLED=false`)되었으므로,
+가짜 음성인식을 주입해도 토글·`setStt(true)`·마이크 어느 경로로도 인식기 생성 0회임을 검사합니다.
 
 각 스위트는 세션별 **런타임·콘솔 에러 0건**도 함께 확인합니다.
 실제 iPhone/iPad Safari 검증은 별도이며, 이 컨테이너에서는 실행할 수 없습니다(미검증으로 표기).
