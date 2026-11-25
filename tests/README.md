@@ -30,6 +30,9 @@ python3 src/verify_v014.py   # 톤 리뉴얼·영화 ▶·내보내기 누락
 
 # 3) v0.2 첫 실험 — 가상 티키타카 대화(합성 음성·모의 자막)
 python3 src/verify_v02_exp.py
+
+# 4) v0.2-A — 한 번에 이어 녹음(세 마디 나누기·저장·새로고침 뒤 장면 2 재생) + resume 보완
+python3 src/verify_v02a.py
 ```
 
 ## Chromium 경로 (환경별)

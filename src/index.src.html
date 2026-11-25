@@ -7,6 +7,7 @@
 <meta name="doha-version" content="0.1.4">
 <!-- v0.2 첫 실험(검토용) 표식 — 앱 기준 버전은 v0.1.4 그대로, 실험 기능만 덧붙임 -->
 <meta name="doha-experiment" content="0.2-exp">
+<meta name="doha-experiment-a" content="0.2-a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>PROJECT DOHA · 아이는 자라고, 상상은 남습니다</title>
@@ -438,6 +439,55 @@ img{display:block}
 .exp-log{margin:0;max-height:150px;overflow:auto;font-family:ui-monospace,Menlo,monospace;font-size:10px;line-height:1.6;
   background:#2B2138;color:#F3E2C8;border-radius:12px;padding:9px 10px;white-space:pre-wrap}
 .exp-hint{font-size:10.5px;color:var(--muted-2);line-height:1.6;margin:7px 0 0}
+/* ---------- v0.2-A 한 번에 이어 녹음 (검토용) ---------- */
+#s-expa{z-index:6}
+.expa-script{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.expa-script li{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center;border:1px solid var(--line);
+  border-radius:13px;padding:9px 11px;background:rgba(255,253,248,.9)}
+.expa-script .n{font-size:9px;font-weight:900;color:var(--amber-ink)}
+.expa-script .t{font-size:13.5px;font-weight:800;color:var(--ink)}
+.expa-script .m{font-size:9.5px;font-weight:800;color:var(--muted-2);white-space:nowrap}
+.expa-rec{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.exp-btn.rec{background:linear-gradient(180deg,#FFB4A2,#EF6A55 58%,#D94B36);color:#FFF6F2;
+  border-color:rgba(160,52,34,.7);box-shadow:0 3px 0 -1px #A63A26}
+.exp-btn.rec.on{background:linear-gradient(180deg,#FFD9C9,#F08A72 58%,#DB5C41);color:#3A1206}
+.exp-btn[disabled]{opacity:.45;filter:grayscale(.3);cursor:default}
+.exp-btn.retry{border-color:rgba(214,86,60,.85);box-shadow:0 0 0 3px rgba(214,86,60,.16)}
+.expa-retry{margin:8px 0 0;font-size:11px;line-height:1.6;font-weight:800;color:#8E2F1C;background:#FFE9E2;
+  border:1px solid rgba(214,86,60,.45);border-radius:12px;padding:8px 10px}
+.expa-retry[hidden]{display:none}
+.expa-live{display:flex;gap:10px;align-items:center;font-size:11px;font-weight:800;color:var(--muted)}
+.expa-live b{color:var(--amber-ink);font-weight:900}
+.expa-dot{width:9px;height:9px;border-radius:50%;background:#C9B79E;flex:0 0 auto}
+.expa-dot.on{background:#E0533C;box-shadow:0 0 0 4px rgba(224,83,60,.16);animation:expapulse 1.2s ease-in-out infinite}
+@keyframes expapulse{0%,100%{opacity:1}50%{opacity:.45}}
+.expa-take{border:1px solid var(--line);border-radius:16px;padding:10px 12px;background:var(--card);
+  display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow-sm)}
+.expa-take[data-cur="1"]{border-color:rgba(235,158,66,.85);box-shadow:0 0 0 3px rgba(235,158,66,.14)}
+.expa-take-head{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.expa-take-head b{font-size:12px;color:var(--ink);font-weight:900}
+.expa-take-head span{font-size:10px;color:var(--muted-2);font-weight:800}
+.expa-take-head .src{font-size:9px;font-weight:900;padding:3px 7px;border-radius:999px;background:#FBF2E2;border:1px solid var(--line)}
+.expa-acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.expa-acts button{font-size:10.5px;font-weight:900;padding:7px 12px;border-radius:999px;border:1px solid var(--line-strong);
+  background:#FFF9EF;color:#5E4A33}
+.expa-acts button[data-act="playall"]{background:linear-gradient(180deg,#FFD69B,#F3A94F 60%,#E4922F);color:#3A2205;border-color:rgba(192,116,33,.55)}
+.expa-acts a{font-size:10px;font-weight:800;color:#6B563C;background:#FBF2E2;border:1px solid var(--line);
+  border-radius:999px;padding:6px 11px;text-decoration:none}
+.expa-line{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;border:1px solid var(--line);
+  border-radius:13px;padding:8px 10px;background:rgba(255,253,248,.92)}
+.expa-line.on{border-color:rgba(235,158,66,.85);box-shadow:0 0 0 3px rgba(235,158,66,.16)}
+.expa-line .idx{font-size:9px;font-weight:900;color:var(--amber-ink)}
+.expa-line .txt{font-size:12.5px;font-weight:800;color:var(--ink)}
+.expa-line .txt.muted{color:var(--muted-2);font-weight:700}
+.expa-line .meta{grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:9.5px;color:var(--muted-2);font-weight:800}
+.expa-line .st{font-size:9px;font-weight:900;padding:3px 7px;border-radius:999px;white-space:nowrap}
+.expa-seg{font-size:9px;font-weight:900;padding:3px 7px;border-radius:999px;background:#EFF3EA;border:1px solid #D8E3CC;color:#4A6B39}
+.expa-seg.est{background:#FBF2E2;border-color:var(--line);color:#7A6244}
+.expa-player-card{display:flex;flex-direction:column;gap:7px}
+.expa-player-card audio{width:100%;height:34px}
+.expa-now{font-size:10.5px;font-weight:900;color:var(--amber-ink)}
+.expa-empty{font-size:11px;color:var(--muted-2);line-height:1.6;margin:0}
 @media (max-width:560px){
   .exp{padding-left:10px;padding-right:10px;gap:10px}
   .exp-sim span{flex:1 0 100%}
@@ -752,9 +802,10 @@ img{display:block}
               </button>
               <button class="btn btn-ghost" id="albumBtn">지난 상상 보기</button>
               <button class="btn btn-ghost" id="expBtn">🧪 v0.2 티키타카 실험 (검토용)</button>
+              <button class="btn btn-ghost" id="expABtn">🎙️ v0.2-A 한 번에 이어 녹음 (검토용)</button>
             </div>
             <p class="home-note"><span class="dot"></span>[[NAME]]가 이야기하는 동안 아빠는 옆에서 같이 웃기만 하면 돼요.</p>
-            <p class="home-expnote"><b>v0.2 첫 실험 · 검토용</b> — 실제 아이 목소리·외부 API·유료 호출 없이, 합성 음성과 모의 자막으로만 대화가 이어지는지 확인해요.</p>
+            <p class="home-expnote"><b>v0.2 첫 실험 · 검토용</b> — 실제 아이 목소리·외부 API·유료 호출 없이, 합성 음성과 모의 자막으로만 대화가 이어지는지 확인해요.<br><b>v0.2-A · 검토용</b> — 성인이 세 문장을 한 번에 이어 녹음하면 조용한 구간을 찾아 세 마디로 나눠 보관하고, 원본은 자르지 않아요.</p>
           </div>
 
           <figure class="hero-card" id="heroCard">
@@ -1013,6 +1064,7 @@ img{display:block}
           <button class="exp-btn" id="expStop" type="button">■ 멈춤</button>
           <span class="exp-statinfo"><b id="expState">대기</b><span id="expTime">0:00 / 0:00</span></span>
         </div>
+        <p class="expa-retry" id="expRetry" role="alert" hidden></p>
 
         <div class="exp-sim" id="expSimRow" role="group" aria-label="자막 지연·누락 시뮬레이션">
           <span>자막 시뮬레이션</span>
@@ -1051,6 +1103,78 @@ img{display:block}
         <section class="exp-card">
           <h3>검증 로그</h3>
           <pre class="exp-log" id="expLog"></pre>
+        </section>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ v0.2-A 실험 · 한 번에 이어 녹음 (검토용) ============ -->
+  <section class="screen" id="s-expa" aria-label="v0.2-A 실험 · 한 번에 이어 녹음">
+    <div class="exp-scroll">
+      <div class="exp">
+        <header class="exp-top">
+          <button class="icon-btn cv-back" id="expaBack" aria-label="홈으로">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <div>
+            <span class="k">v0.2-A 실험 · 검토용</span>
+            <strong>한 번에 이어 녹음 · 세 문장</strong>
+          </div>
+          <span class="spacer"></span>
+          <span class="exp-flag">이 브라우저에만 · 서버 전송 없음</span>
+        </header>
+
+        <p class="exp-notice" id="expaNotice">
+          <b>검토용 실험입니다.</b> 성인이 아래 <b>세 문장을 한 번에 이어</b> 읽으면, 앱이 목소리 사이의 <b>조용한 구간</b>을 찾아 세 마디로 나눕니다.
+          <b>원본 녹음은 자르지 않고 그대로</b> 보관하고, 나눈 마디는 원본에서 잘라 만든 사본이에요. 자막은 <b>모의 자막</b>이고, 두 번째 자막만 늦게 보내 보는 실험을 할 수 있습니다.
+          외부 API·유료 호출·실제 아동 데이터 없이 이 브라우저 안에서만 돌아갑니다.
+        </p>
+
+        <section class="exp-card">
+          <h3>읽을 대본 — 문장 사이에 반 초쯤 쉬어 주세요</h3>
+          <ol class="expa-script" id="expaScript"></ol>
+          <p class="exp-hint">쉬는 곳이 두 군데 있어야 조용한 구간으로 세 마디를 나눌 수 있어요. 쉼 없이 이어 읽으면 <b>대본 길이 비율</b>로 나누고 <b>경계 자동 추정</b>이라고 표시합니다.</p>
+        </section>
+
+        <section class="exp-card">
+          <h3>한 번에 이어 녹음 (성인)</h3>
+          <div class="expa-rec">
+            <button class="exp-btn rec" id="expaRecBtn" type="button">● 녹음 시작 (성인)</button>
+            <button class="exp-btn" id="expaStopRecBtn" type="button" disabled>■ 녹음 끝내기</button>
+            <button class="exp-btn" id="expaDemoBtn" type="button">예시 음성으로 흐름 보기 (합성)</button>
+          </div>
+          <div class="expa-live" style="margin-top:9px">
+            <span class="expa-dot" id="expaDot" aria-hidden="true"></span>
+            <b id="expaState">대기</b>
+            <span id="expaTimer">0:00</span>
+          </div>
+          <p class="expa-retry" id="expaRetry" role="alert" hidden></p>
+          <p class="exp-hint">녹음은 <b>이 브라우저(IndexedDB)에만</b> 저장되고 서버로 보내지 않아요. 30초가 넘으면 자동으로 멈춥니다. 예시 음성은 합성음이라 실제 목소리가 아닙니다.</p>
+        </section>
+
+        <section class="exp-card">
+          <h3>지금 듣는 마디</h3>
+          <div class="expa-player-card">
+            <audio id="expaPlayer" controls preload="metadata" aria-label="이어 녹음 실험 재생"></audio>
+            <span class="expa-now" id="expaNow">아직 재생하지 않았어요</span>
+            <div class="expa-acts">
+              <button type="button" id="expaLateBtn" data-late="off">2번째 자막만 늦게 보내기: 꺼짐</button>
+              <button type="button" id="expaStopPlayBtn">■ 멈춤</button>
+            </div>
+          </div>
+          <p class="exp-hint">‘장면 다시 듣기’는 그 마디만 다시 들려주고 <b>자막 상태는 바꾸지 않습니다</b>. ‘전체 이어 듣기’에서만 모의 자막이 도착합니다.</p>
+        </section>
+
+        <section class="exp-card">
+          <h3>저장된 녹음 · 새로고침해도 남아요</h3>
+          <div id="expaTakes" style="display:flex;flex-direction:column;gap:9px"></div>
+          <p class="expa-empty" id="expaEmpty">아직 저장된 녹음이 없어요. 위에서 한 번에 이어 녹음하거나 예시 음성으로 흐름을 볼 수 있어요.</p>
+        </section>
+
+        <section class="exp-card">
+          <h3>검증 로그</h3>
+          <pre class="exp-log" id="expaLog"></pre>
         </section>
       </div>
     </div>
@@ -1484,13 +1608,14 @@ img{display:block}
       if(state.screen==="canvas"){ stopListen(); releaseMicOnExit(); }
       if(state.screen==="movie"){ pauseMovie(); pauseOriginalAudio(); }
       if(state.screen==="exp"){ tikiStop(true); }
+      if(state.screen==="expa"){ expaLeave(); }
     }
     $$(".screen").forEach(function(s){ s.classList.remove("on"); });
     var t=$("#s-"+name); if(t) t.classList.add("on");
     state.screen=name;
     if(name==="album") renderAlbum();
     if(name==="home") syncHomeCta();
-    var sc=$("#s-"+name+" .home-scroll, #s-"+name+" .mv-scroll, #s-"+name+" .al-scroll");
+    var sc=$("#s-"+name+" .home-scroll, #s-"+name+" .mv-scroll, #s-"+name+" .al-scroll, #s-"+name+" .exp-scroll");
     if(sc) sc.scrollTop=0;
     /* 배경 장식(-12%)이 만든 가로 넘침 때문에 포커스가 #app을 옆으로 밀어 두는 경우를 되돌린다 */
     try{ if($app.scrollLeft) $app.scrollLeft=0; if($app.scrollTop) $app.scrollTop=0; }catch(e){}
@@ -2886,6 +3011,7 @@ img{display:block}
   var TIKI={
     ready:false, sim:"normal", styleId:"3d", mood:"night",
     lines:[], extras:[], playing:false, done:false, cur:-1, curTime:0, total:0,
+    phase:"idle", startP:null, playError:"",
     timeline:[], events:[], evI:0, log:[], ac:null, srcs:[], raf:0, urls:[]
   };
 
@@ -3058,17 +3184,79 @@ img{display:block}
     }
     return TIKI.ac;
   }
+  /* 재생 상태 표시는 '실제 오디오가 running 이 된 뒤'에만 바꾼다.
+     tikiPlay() 는 resume() 완료를 기다렸다가 시작하고, 실패하면 재생 중으로 두지 않고 다시 누를 수 있게 남긴다. */
+  var TIKI_RESUME_TIMEOUT=2500;
+  function tikiSetState(text){ var st=$("#expState"); if(st) st.textContent=text; }
+  function tikiSetRetry(show,msg){
+    var box=$("#expRetry");
+    if(box){ box.hidden=!show; if(msg) box.textContent=msg; }
+    var b=$("#expPlay");
+    if(b){
+      b.classList.toggle("retry",!!show);
+      b.textContent=show?"▶ 다시 시도 (합성 음성)":"▶ 시연 재생 (합성 음성)";
+    }
+  }
+  /* resume() 은 Safari 에서 몇 초 걸리거나 실패할 수 있다. 실제 상태가 running 이 된 뒤에만 성공으로 본다. */
+  function tikiResume(ctx){
+    return new Promise(function(res,rej){
+      var settled=false, timer=null, poll=null;
+      function stop(){ if(timer){ clearTimeout(timer); timer=null; } if(poll){ clearInterval(poll); poll=null; } }
+      function ok(){ if(settled) return; settled=true; stop(); res(true); }
+      function fail(why){ if(settled) return; settled=true; stop(); rej(new Error(why)); }
+      if(!ctx || typeof ctx.resume!=="function") return fail("no_resume");
+      if(ctx.state==="running") return ok();
+      timer=setTimeout(function(){ fail("resume_timeout:"+(ctx.state||"?")); },TIKI_RESUME_TIMEOUT);
+      var p=null;
+      try{ p=ctx.resume(); }catch(e){ return fail("resume_throw:"+((e&&e.name)||e)); }
+      Promise.resolve(p).then(function(){
+        if(ctx.state==="running") return ok();
+        var tries=0;
+        poll=setInterval(function(){
+          tries++;
+          if(ctx.state==="running"){ ok(); return; }
+          if(tries>=8) fail("state_still:"+(ctx.state||"?"));
+        },60);
+      },function(err){ fail("resume_rejected:"+((err&&err.name)||err)); });
+    });
+  }
   function tikiPlay(){
     if(!TIKI.ready) tikiBuild();
+    if(state.screen!=="exp") return Promise.resolve(false);
+    if(TIKI.phase==="starting" && TIKI.startP) return TIKI.startP;   /* 두 번 눌러도 예약이 겹치지 않는다 */
     tikiStop(true);
-    if(state.screen!=="exp") return false;
+    tikiSetRetry(false);
     var ctx=tikiCtx();
-    if(!ctx){ tikiLog("합성 음성을 시작하지 못했어요 — 이 브라우저에 Web Audio가 없어요"); return false; }
-    try{ if(ctx.state==="suspended") ctx.resume(); }catch(e){}
+    if(!ctx){
+      TIKI.phase="error";
+      tikiSetState("재생 준비 실패");
+      tikiSetRetry(true,"이 브라우저에서는 합성 음성을 재생할 수 없어요(Web Audio 없음). 보관된 원본 음성은 그대로입니다.");
+      tikiLog("합성 음성을 시작하지 못했어요 — 이 브라우저에 Web Audio가 없어요");
+      return Promise.resolve(false);
+    }
+    if(ctx.state==="running") return Promise.resolve(tikiStart(ctx));
+    TIKI.phase="starting";
+    tikiSetState("소리 준비 중…");
+    tikiLog("오디오 재개 요청 · 현재 상태 "+ctx.state+" — 실제 실행 상태가 된 뒤에 '재생 중'으로 바꿉니다");
+    TIKI.startP=tikiResume(ctx).then(function(){
+      if(state.screen!=="exp"){ TIKI.phase="idle"; return false; }
+      return tikiStart(ctx);
+    }).catch(function(err){
+      TIKI.phase="error";
+      TIKI.playError=String((err&&err.message)||err);
+      tikiSetState("재생 준비 실패");
+      tikiSetRetry(true,"소리를 켜지 못했어요("+TIKI.playError+"). 화면을 한 번 누른 뒤 ▶ 다시 시도를 눌러 주세요 — '재생 중'으로 표시하지 않았습니다.");
+      tikiLog("오디오 재개 실패 · "+TIKI.playError+" — '재생 중'으로 바꾸지 않고 다시 시도할 수 있게 두었어요");
+      return false;
+    });
+    return TIKI.startP;
+  }
+  /* 실제 오디오 상태가 running 인 뒤에 부른다 — 여기서 처음 '재생 중'이 된다 */
+  function tikiStart(ctx){
     tikiReset();
     tikiPlan();
     var at=ctx.currentTime+0.16;
-    TIKI.t0=at; TIKI.playing=true;
+    TIKI.t0=at; TIKI.playing=true; TIKI.phase="playing";
     TIKI.srcs=[];
     TIKI.lines.forEach(function(ln,i){
       var buf=ctx.createBuffer(1,ln.pcm.length,ln.sr);
@@ -3079,7 +3267,8 @@ img{display:block}
       TIKI.srcs.push(src);
       tikiLog("예약 "+ln.id+" · "+ln.startAt.toFixed(2)+"–"+ln.endAt.toFixed(2)+"초 (합성 음성 "+Math.round(ln.dur*1000)+"ms)");
     });
-    var st=$("#expState"); if(st) st.textContent="재생 중";
+    tikiSetState("재생 중");
+    tikiLog("오디오 상태 "+ctx.state+" · 실제 실행 상태를 확인한 뒤 세 마디 예약 완료");
     TIKI.raf=requestAnimationFrame(tikiTick);
     return true;
   }
@@ -3136,7 +3325,7 @@ img{display:block}
     while(TIKI.evI<TIKI.events.length && TIKI.events[TIKI.evI].at<=TIKI.total+0.001){
       tikiFire(TIKI.events[TIKI.evI++]);
     }
-    TIKI.done=true; TIKI.playing=false;
+    TIKI.done=true; TIKI.playing=false; TIKI.phase="done";
     if(TIKI.raf){ cancelAnimationFrame(TIKI.raf); TIKI.raf=0; }
     TIKI.curTime=TIKI.total;
     tikiShow(TIKI.lines.length-1,true);
@@ -3148,6 +3337,7 @@ img{display:block}
   function tikiStop(silent){
     if(TIKI.raf){ cancelAnimationFrame(TIKI.raf); TIKI.raf=0; }
     TIKI.playing=false;
+    if(TIKI.phase!=="starting") TIKI.phase="idle";
     (TIKI.srcs||[]).forEach(function(s){ try{ s.stop(); }catch(e){} });
     TIKI.srcs=[];
     if(!silent){
@@ -3200,10 +3390,753 @@ img{display:block}
     $$("#expMoodRow button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-mood")===TIKI.mood); });
     $$("#expSimRow button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-sim")===TIKI.sim); });
     var st0=$("#expState"); if(st0) st0.textContent="대기";
+    TIKI.phase="idle"; TIKI.playError=""; tikiSetRetry(false);
     tikiRenderFrames(); tikiRenderLines(); tikiRenderExtras(); tikiUpdateTime();
     tikiShow(TIKI.lines.length-1,true);
     var sc=$("#s-exp .exp-scroll"); if(sc) sc.scrollTop=0;
     go("exp");
+  }
+
+  /* ============================================================
+     v0.2-A 실험 — 성인이 세 문장을 '한 번에 이어' 녹음하고 세 마디로 나눠 보관 (검토용)
+       · 녹음: 이야기 녹음과 같은 MediaRecorder 방식(같은 MIME 선택·chunk 수집·measureAudio)
+       · 나누기: 목소리 사이의 조용한 구간 두 곳을 찾아 경계로 삼는다.
+                 못 찾으면 대본 길이 비율로 나누고 '경계 자동 추정'으로 표시한다.
+       · 원본: 자르지 않고 Blob 그대로 보관. 마디는 원본에서 잘라 만든 WAV 사본(원본 불변)
+       · 저장: 별도 DB(doha-exp-a) — 아이의 기존 작품·음성(doha-universe)은 건드리지 않는다
+       · 자막: 모의 자막. 두 번째 자막만 늦게 보내도 두 번째 마디에만 붙고, 그대로 저장된다
+     실제 아동 데이터·외부 API·유료 호출 없음. 실제 아이 목소리를 쓰지 않는다.
+     ============================================================ */
+  var EXPA_VERSION="0.2-a";
+  var EXPA_DB="doha-exp-a", EXPA_DBVER=1, EXPA_TAKES="takes", EXPA_SEGS="segs";
+  var EXPA_MAX_MS=30000;                 /* 녹음 최대 30초(자동 정지) */
+  /* demo: 예시 음성(합성)에서 그 마디를 표시하는 높이. 실제 목소리가 아니라 '어느 마디인지' 확인용 삐- 소리다 */
+  var EXPA_SCRIPT=[
+    {id:"l1", who:"아이", text:"달이 치즈야",           key:"space", pitch:585, demo:440},
+    {id:"l2", who:"아빠", text:"그럼 한입 먹어도 돼?",   key:"space", pitch:330, demo:660},
+    {id:"l3", who:"아이", text:"안 돼, 그건 달의 귀야!", key:"space", pitch:615, demo:880}
+  ];
+  var EXPA={
+    ready:false, late:false, takes:[], segIndex:{}, db:null, log:[],
+    playing:false, cur:null, timers:[], urls:{},
+    session:null, recOn:false, recPending:false, recTimer:0, maxTimer:0, runStart:0,
+    rangeDone:null
+  };
+
+  function expaLog(msg){
+    var line=(EXPA.recOn ? "[녹음 "+(Math.max(0,(Date.now()-EXPA.recStartedAt)/1000)).toFixed(1)+"s] " : "[--] ")+msg;
+    EXPA.log.push(line);
+    if(EXPA.log.length>260) EXPA.log.shift();
+    var box=$("#expaLog");
+    if(box){ box.textContent=EXPA.log.join("\n"); box.scrollTop=box.scrollHeight; }
+  }
+  function expaStateText(t){ var s=$("#expaState"); if(s) s.textContent=t; }
+  function expaTimerText(t){ var s=$("#expaTimer"); if(s) s.textContent=mmss(t); }
+  function expaWhen(ts){
+    try{
+      var d=new Date(ts||Date.now());
+      return String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")+" "+
+        String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+    }catch(e){ return ""; }
+  }
+  function expaRetry(show,msg){
+    var box=$("#expaRetry");
+    if(box){ box.hidden=!show; if(msg) box.textContent=msg; }
+  }
+
+  /* ---------------- 저장: 별도 DB (아이의 기존 기록과 섞이지 않게) ---------------- */
+  function expaOpenDB(){
+    if(EXPA.db) return Promise.resolve(EXPA.db);
+    return new Promise(function(res){
+      try{
+        if(!window.indexedDB) return res(null);
+        var rq=indexedDB.open(EXPA_DB,EXPA_DBVER);
+        rq.onupgradeneeded=function(){
+          var db=rq.result;
+          if(!db.objectStoreNames.contains(EXPA_TAKES)){
+            var t=db.createObjectStore(EXPA_TAKES,{keyPath:"id"});
+            t.createIndex("createdAt","createdAt");
+          }
+          if(!db.objectStoreNames.contains(EXPA_SEGS)){
+            var s=db.createObjectStore(EXPA_SEGS,{keyPath:"id"});
+            s.createIndex("takeId","takeId");
+          }
+        };
+        rq.onsuccess=function(){ EXPA.db=rq.result; res(rq.result); };
+        rq.onerror=function(){ res(null); };
+        rq.onblocked=function(){ res(null); };
+      }catch(e){ res(null); }
+    });
+  }
+  /* 원본(take)과 마디 사본(segs)을 한 트랜잭션으로 넣고, 다시 읽어 확인한 뒤에만 성공으로 본다 */
+  function expaPutTake(take,segs){
+    return expaOpenDB().then(function(db){
+      if(!db) return {ok:false, reason:"idb_unavailable"};
+      var t=db.transaction([EXPA_TAKES,EXPA_SEGS],"readwrite");
+      try{
+        t.objectStore(EXPA_TAKES).put(take);
+        (segs||[]).forEach(function(s){ t.objectStore(EXPA_SEGS).put(s); });
+      }catch(e){
+        try{ t.abort(); }catch(abortError){}
+        return {ok:false, reason:"write_error", error:String((e&&e.name)||e)};
+      }
+      return commitP(t).then(function(){
+        return reqP(db.transaction(EXPA_TAKES,"readonly").objectStore(EXPA_TAKES).get(take.id));
+      }).then(function(back){
+        if(!back || back.id!==take.id) return {ok:false, reason:"verify_missing"};
+        var want=(take.segs||[]).length;
+        if(!want) return {ok:true, reason:""};
+        return reqP(db.transaction(EXPA_SEGS,"readonly").objectStore(EXPA_SEGS).getAll()).then(function(all){
+          var got=(all||[]).filter(function(s){ return s.takeId===take.id && s.blob && s.blob.size; }).length;
+          return {ok:got>=want, reason:got>=want?"":"verify_segs", got:got, want:want};
+        });
+      });
+    }).catch(function(e){ return {ok:false, reason:"open_error", error:String((e&&e.name)||e)}; });
+  }
+  function expaReadAll(){
+    return expaOpenDB().then(function(db){
+      if(!db) return {takes:[], segs:[]};
+      return Promise.all([
+        reqP(db.transaction(EXPA_TAKES,"readonly").objectStore(EXPA_TAKES).getAll()),
+        reqP(db.transaction(EXPA_SEGS,"readonly").objectStore(EXPA_SEGS).getAll())
+      ]).then(function(r){ return {takes:r[0]||[], segs:r[1]||[]}; });
+    }).catch(function(){ return {takes:[], segs:[]}; });
+  }
+  function expaLoad(){
+    return expaReadAll().then(function(r){
+      EXPA.segIndex={};
+      r.segs.forEach(function(s){ EXPA.segIndex[s.takeId+"|"+s.lineId]=s; });
+      EXPA.takes=r.takes.sort(function(a,b){ return (b.createdAt||0)-(a.createdAt||0); });
+      expaRenderTakes();
+      return EXPA.takes;
+    });
+  }
+  function expaTake(id){
+    for(var i=0;i<EXPA.takes.length;i++) if(EXPA.takes[i].id===id) return EXPA.takes[i];
+    return null;
+  }
+  function expaDelete(id){
+    return expaOpenDB().then(function(db){
+      if(!db) return false;
+      var t=db.transaction([EXPA_TAKES,EXPA_SEGS],"readwrite");
+      t.objectStore(EXPA_TAKES).delete(id);
+      var st=t.objectStore(EXPA_SEGS);
+      st.openCursor().onsuccess=function(e){
+        var cur=e.target.result; if(!cur) return;
+        if(cur.value && cur.value.takeId===id) cur.delete();
+        cur.continue();
+      };
+      return commitP(t).then(function(){
+        Object.keys(EXPA.urls).forEach(function(k){
+          if(k.indexOf(id)>=0){ try{ URL.revokeObjectURL(EXPA.urls[k]); }catch(e){} delete EXPA.urls[k]; }
+        });
+        expaLog("녹음 삭제 · "+id+" (원본·마디 함께 삭제)");
+        return expaLoad().then(function(){ return true; });
+      });
+    }).catch(function(){ return false; });
+  }
+
+  /* ---------------- 오디오: 해석·나누기·사본 만들기 ---------------- */
+  function expaUrl(key,blob){
+    if(!blob) return "";
+    if(EXPA.urls[key]) return EXPA.urls[key];
+    var u="";
+    try{ u=URL.createObjectURL(blob); EXPA.urls[key]=u; }catch(e){ u=""; }
+    return u;
+  }
+  /* Blob을 브라우저에서 직접 해석한다(외부 요청 없음). FileReader → decodeAudioData */
+  function expaDecode(blob){
+    return new Promise(function(res,rej){
+      var AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC) return rej(new Error("no_audio_context"));
+      var ac=null;
+      try{ ac=new AC(); }catch(e){ return rej(new Error("no_audio_context")); }
+      var done=false;
+      function finish(err,audio){
+        if(done) return; done=true;
+        try{ if(ac && ac.close) ac.close(); }catch(e){}
+        if(err) rej(err); else res(audio);
+      }
+      setTimeout(function(){ finish(new Error("decode_timeout")); },9000);
+      var fr=new FileReader();
+      fr.onerror=function(){ finish(new Error("read_error")); };
+      fr.onload=function(){
+        try{
+          ac.decodeAudioData(fr.result,function(audio){
+            try{
+              finish(null,{pcm:audio.getChannelData(0), sr:audio.sampleRate,
+                dur:Math.round(audio.duration*1000)/1000, ch:audio.numberOfChannels});
+            }catch(e){ finish(new Error("decode_error")); }
+          },function(){ finish(new Error("decode_failed")); });
+        }catch(e){ finish(new Error("decode_throw"));
+        }
+      };
+      fr.readAsArrayBuffer(blob);
+    });
+  }
+  /* 20ms 창의 음량(RMS). 목소리/조용함을 가르는 데 쓴다 */
+  function expaRms(pcm,sr){
+    var win=Math.max(1,Math.round(sr*0.02)), frames=[];
+    for(var i=0;i+win<=pcm.length;i+=win){
+      var s=0;
+      for(var j=0;j<win;j++){ var v=pcm[i+j]; s+=v*v; }
+      frames.push(Math.sqrt(s/win));
+    }
+    return {frames:frames, win:win};
+  }
+  /* 조용한 구간 두 곳을 찾아 [시작, 경계1, 경계2, 끝] 을 만든다. 못 찾으면 null */
+  function expaFindBounds(pcm,sr){
+    var r=expaRms(pcm,sr), f=r.frames, step=r.win/sr, n=f.length;
+    if(n<8) return null;
+    var peak=0;
+    for(var i=0;i<n;i++) if(f[i]>peak) peak=f[i];
+    if(peak<=0.0008) return null;                       /* 사실상 무음 */
+    var th=Math.max(0.006, peak*0.12);
+    var first=-1,last=-1;
+    for(i=0;i<n;i++){ if(f[i]>=th){ if(first<0) first=i; last=i; } }
+    if(first<0 || last-first<5) return null;
+    var runs=[], k=first;
+    while(k<=last){
+      if(f[k]<th){
+        var a=k;
+        while(k<=last && f[k]<th) k++;
+        runs.push({a:a, b:k});
+      } else k++;
+    }
+    var minGap=Math.max(2,Math.round(0.24/step)), minSeg=Math.max(3,Math.round(0.34/step));
+    var cand=[];
+    runs.forEach(function(run){
+      if(run.b-run.a<minGap) return;
+      if(run.a-first<minSeg) return;
+      if(last-run.b<minSeg) return;
+      cand.push({mid:((run.a+run.b)/2)*step, len:(run.b-run.a)*step});
+    });
+    if(cand.length<2) return null;
+    cand.sort(function(a,b){ return b.len-a.len; });
+    var g1=cand[0], g2=null;
+    for(i=1;i<cand.length;i++){
+      if(Math.abs(cand[i].mid-g1.mid)>=0.7){ g2=cand[i]; break; }
+    }
+    if(!g2) return null;
+    var gaps=[g1,g2].sort(function(a,b){ return a.mid-b.mid; });
+    return {
+      bounds:[Math.max(0,first*step-0.10), gaps[0].mid, gaps[1].mid, Math.min(pcm.length/sr,(last+1)*step+0.12)],
+      gaps:gaps
+    };
+  }
+  /* 조용한 구간을 못 찾았을 때: 대본 길이 비율로 나눈다(경계는 추정값) */
+  function expaEstimateBounds(dur){
+    var w=EXPA_SCRIPT.map(function(l){ return tikiSynth(l).dur; });
+    var sum=w.reduce(function(a,b){ return a+b; },0), span=dur>0?dur:sum;
+    var b1=span*w[0]/sum, b2=b1+span*w[1]/sum;
+    return {bounds:[0,b1,b2,span], gaps:null};
+  }
+
+  /* 녹음(또는 예시 음성) 한 덩어리를 받아 세 마디로 나누고 저장한다.
+     원본 Blob은 손대지 않고 그대로 take.origBlob 에 넣는다. */
+  function expaIngest(blob,opts){
+    opts=opts||{};
+    var srcLabel=(opts.source==="demo")?"예시 합성 음성":"성인 녹음";
+    var take={
+      id:"tk-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,6),
+      no:0, createdAt:Date.now(), source:opts.source||"mic",
+      mime:blob.type||"", bytes:blob.size||0, dur:0, sr:0, mode:"", lines:[],
+      origBlob:blob, note:opts.note||""
+    };
+    return expaLoad().then(function(list){
+      var max=0;
+      (list||[]).forEach(function(t){ if(+(t.no||0)>max) max=+t.no||0; });
+      take.no=max+1;
+      expaLog(srcLabel+" 1개("+Math.round((blob.size||0)/1024)+"KB · "+(blob.type||"형식 미상")+") 분석 시작 · 원본은 자르지 않음");
+      return expaDecode(blob);
+    }).then(function(audio){
+      var found=expaFindBounds(audio.pcm,audio.sr);
+      var plan=found||expaEstimateBounds(audio.dur);
+      var method=found?"silence":"estimate";
+      var bounds=plan.bounds, segs=[];
+      take.dur=audio.dur; take.sr=audio.sr; take.mode="wav";
+      take.lines=EXPA_SCRIPT.map(function(l,i){
+        var s=Math.max(0,bounds[i]), e=Math.min(audio.dur,bounds[i+1]);
+        if(e<=s) e=Math.min(audio.dur,s+0.15);
+        var from=Math.max(0,Math.round(s*audio.sr)), to=Math.min(audio.pcm.length,Math.round(e*audio.sr));
+        var wav=tikiWav(audio.pcm.subarray(from,to),audio.sr);
+        var segId=take.id+"-"+l.id;
+        segs.push({id:segId, takeId:take.id, lineId:l.id, type:wav.type, bytes:wav.size, sr:audio.sr, blob:wav});
+        return {id:l.id, who:l.who, text:l.text,
+          start:Math.round(s*1000)/1000, end:Math.round(e*1000)/1000,
+          dur:Math.round((to-from)/audio.sr*1000)/1000, method:method, segId:segId,
+          sub:{text:l.text, status:"pending", during:null, at:0}};
+      });
+      take.segs=segs.map(function(s){ return s.id; });
+      expaLog("나누기 "+(found?"조용한 구간 2곳":"대본 비율(경계 자동 추정)")+" · "+
+        take.lines.map(function(l){ return l.id+" "+l.start.toFixed(2)+"–"+l.end.toFixed(2)+"초"; }).join(" / ")+
+        " · 원본 "+audio.dur.toFixed(2)+"초 그대로");
+      return expaPutTake(take,segs).then(function(r){ return {take:take, res:r, method:method}; });
+    }).catch(function(err){
+      /* 해석 실패: 원본은 그대로 두고, 길이만 재서 비율로 나눈다(마디는 원본에서 잘라 재생) */
+      var why=String((err&&err.message)||err);
+      expaLog("오디오 해석 실패("+why+") — 길이만 재서 비율로 나눕니다(원본은 그대로)");
+      return measureAudio(blob).then(function(measured){
+        var dur=measured>0?measured:(opts.wallDur||0);
+        var plan=expaEstimateBounds(dur);
+        take.dur=dur>0?Math.round(dur*1000)/1000:0; take.mode="seek";
+        take.lines=EXPA_SCRIPT.map(function(l,i){
+          return {id:l.id, who:l.who, text:l.text,
+            start:Math.round(plan.bounds[i]*1000)/1000, end:Math.round(plan.bounds[i+1]*1000)/1000,
+            dur:Math.round((plan.bounds[i+1]-plan.bounds[i])*1000)/1000, method:"estimate", segId:null,
+            sub:{text:l.text, status:"pending", during:null, at:0}};
+        });
+        take.segs=[];
+        return expaPutTake(take,[]).then(function(r){ return {take:take, res:r, method:"seek"}; });
+      });
+    }).then(function(done){
+      var res=done.res, savedTake=done.take;
+      if(res.ok){
+        expaStateText("저장 완료");
+        expaRetry(false);
+        expaLog("저장 확인 · No."+String(savedTake.no).padStart(3,"0")+" · 원본 "+
+          Math.round((savedTake.bytes||0)/1024)+"KB + 마디 "+savedTake.lines.length+"개"+(savedTake.mode==="seek"?"(원본에서 잘라 재생)":""));
+      } else {
+        expaStateText("저장 실패");
+        expaRetry(true,"저장하지 못했어요("+(res.reason||"unknown")+"). 원본은 화면에 남아 있으니 ‘다시 시도’를 눌러 주세요.");
+        expaLog("저장 실패 · "+(res.reason||"unknown")+" — 성공으로 표시하지 않습니다");
+      }
+      return expaLoad().then(function(){
+        var newest=EXPA.takes[0];
+        if(newest && newest.id===savedTake.id){
+          EXPA.cur={takeId:newest.id, idx:-1};
+          expaRenderTakes();
+        }
+        return res.ok;
+      });
+    }).catch(function(err){
+      expaStateText("저장 실패");
+      expaRetry(true,"녹음을 저장하지 못했어요("+String((err&&err.name)||err)+").");
+      expaLog("저장 실패 · "+String((err&&err.name)||err));
+      return false;
+    });
+  }
+
+  /* 예시 음성: 세 문장을 '한 번에 이어 말한 것처럼' 만든 합성 WAV 1개(성인 녹음 대신 흐름 확인용) */
+  /* 예시 음성 한 마디: 마디마다 다른 높이의 짧은 삐- 소리(실제 목소리 아님).
+     높이를 멀리 떨어뜨려 두어, 나눈 구간이 어느 문장인지 기계적으로도 확인할 수 있다. */
+  function expaToneLine(line){
+    var syl=Math.max(2,tikiSyllables(line.text)), per=0.25, dur=0.2+syl*per+0.14;
+    var n=Math.round(dur*TIKI_SR), pcm=new Float32Array(n);
+    var f=line.demo||line.pitch;
+    for(var s=0;s<syl;s++){
+      var st=Math.round((0.2+s*per)*TIKI_SR), len=Math.round(per*TIKI_SR);
+      for(var i=0;i<len && st+i<n;i++){
+        var t=i/TIKI_SR;
+        var env=Math.min(1,i/(0.012*TIKI_SR))*Math.exp(-t*3.0);
+        pcm[st+i]=Math.sin(2*Math.PI*f*t)*env*0.32;
+      }
+    }
+    return {pcm:pcm, sr:TIKI_SR, dur:Math.round(n/TIKI_SR*1000)/1000};
+  }
+  function expaDemoBlob(){
+    var sr=TIKI_SR, gap=Math.round(0.55*sr);
+    var parts=EXPA_SCRIPT.map(function(l){ return expaToneLine(l); });
+    var n=parts.reduce(function(a,p){ return a+p.pcm.length; },0)+gap*2;
+    var out=new Float32Array(n), o=0;
+    parts.forEach(function(p,i){
+      out.set(p.pcm,o); o+=p.pcm.length;
+      if(i<parts.length-1) o+=gap;
+    });
+    return tikiWav(out,sr);
+  }
+  function expaDemo(){
+    if(state.screen!=="expa") return Promise.resolve(false);
+    var blob=expaDemoBlob();
+    expaStateText("예시 음성 분석 중…");
+    expaLog("예시 합성 음성 1개를 만들어 같은 경로로 넣습니다(실제 녹음 아님)");
+    return expaIngest(blob,{source:"demo", note:"합성 음성 — 성인 녹음 대신 흐름 확인"}).then(function(ok){
+      if(ok){
+        expaStateText("예시 음성 저장 완료");
+        var newest=EXPA.takes[0];
+        if(newest) expaTimerText(newest.dur||0);
+      }
+      return ok;
+    });
+  }
+
+  /* ---------------- 녹음 (성인 1회 · 세 문장 이어 읽기) ---------------- */
+  function expaRecStart(){
+    if(EXPA.recPending || EXPA.recOn) return Promise.resolve(false);
+    if(state.screen!=="expa") return Promise.resolve(false);
+    expaRetry(false);
+    var md=navigator.mediaDevices;
+    if(!md || !md.getUserMedia || !window.MediaRecorder){
+      expaStateText("녹음할 수 없음");
+      expaRetry(true,"이 브라우저에서는 마이크 녹음을 쓸 수 없어요 — ‘예시 음성으로 흐름 보기’로 화면을 확인할 수 있습니다.");
+      expaLog("마이크 녹음 불가 · MediaRecorder 또는 getUserMedia 없음");
+      return Promise.resolve(false);
+    }
+    EXPA.recPending=true;
+    expaStateText("마이크를 여는 중 · 허용해 주세요");
+    expaLog("마이크 열기 시도");
+    return md.getUserMedia({audio:true}).then(function(stream){
+      if(!EXPA.recPending || state.screen!=="expa"){
+        try{ stream.getTracks().forEach(function(t){ t.stop(); }); }catch(e){}
+        EXPA.recPending=false;
+        return false;
+      }
+      var types=["audio/mp4","audio/webm;codecs=opus","audio/webm"], mime="";
+      for(var i=0;i<types.length;i++){ if(MediaRecorder.isTypeSupported(types[i])){ mime=types[i]; break; } }
+      var rec;
+      try{ rec=new MediaRecorder(stream, mime?{mimeType:mime}:undefined); }
+      catch(e){
+        try{ stream.getTracks().forEach(function(t){ t.stop(); }); }catch(e2){}
+        EXPA.recPending=false; expaStateText("녹음할 수 없음");
+        expaRetry(true,"이 브라우저의 녹음 형식을 열지 못했어요 — ‘예시 음성으로 흐름 보기’로 확인해 주세요.");
+        return false;
+      }
+      var sess={rec:rec, stream:stream, chunks:[], mime:rec.mimeType||mime,
+        startedAt:Date.now(), stopping:false, collected:false, reason:""};
+      rec.ondataavailable=function(e){ if(e.data && e.data.size) sess.chunks.push(e.data); };
+      rec.onerror=function(){ sess.reason="recorder_error"; expaRecFinish("recorder_error"); };
+      rec.onstop=function(){ expaCollect(sess, sess.reason||"stopped"); };
+      stream.getAudioTracks().forEach(function(t){
+        t.addEventListener("ended",function(){ if(EXPA.session===sess) expaRecFinish("track_ended"); });
+      });
+      try{ rec.start(); }catch(e){
+        try{ stream.getTracks().forEach(function(t){ t.stop(); }); }catch(e2){}
+        EXPA.recPending=false; expaStateText("녹음할 수 없음");
+        expaRetry(true,"녹음을 시작하지 못했어요 — 다시 시도해 주세요.");
+        return false;
+      }
+      EXPA.session=sess;
+      EXPA.recOn=true; EXPA.recPending=false; EXPA.recStartedAt=sess.startedAt;
+      var dot=$("#expaDot"); if(dot) dot.classList.add("on");
+      var rb=$("#expaRecBtn"); if(rb){ rb.classList.add("on"); rb.textContent="● 녹음 중…"; rb.disabled=true; }
+      var sb=$("#expaStopRecBtn"); if(sb) sb.disabled=false;
+      expaStateText("녹음 중");
+      expaLog("녹음 시작 · 형식 "+(sess.mime||"브라우저 기본")+" · 원본은 자르지 않습니다");
+      clearInterval(EXPA.recTimer);
+      EXPA.recTimer=setInterval(expaRecTick,200);
+      expaRecTick();
+      clearTimeout(EXPA.maxTimer);
+      EXPA.maxTimer=setTimeout(function(){ expaLog("30초에 도달해 자동으로 멈춥니다"); expaRecFinish("max_length"); },EXPA_MAX_MS);
+      return true;
+    }).catch(function(err){
+      EXPA.recPending=false; EXPA.recOn=false;
+      expaStateText("마이크 권한 없음");
+      expaRetry(true,"마이크 권한이 없으면 녹음할 수 없어요("+String((err&&err.name)||err)+"). ‘예시 음성으로 흐름 보기’로 화면을 확인할 수 있습니다.");
+      expaLog("마이크 실패 · "+String((err&&err.name)||err));
+      return false;
+    });
+  }
+  function expaRecTick(){
+    if(!EXPA.recOn || !EXPA.recStartedAt) return;
+    expaTimerText(Math.max(0,(Date.now()-EXPA.recStartedAt)/1000));
+  }
+  function expaRecFinish(reason){
+    var sess=EXPA.session;
+    if(!sess || sess.stopping) return Promise.resolve(false);
+    sess.stopping=true; sess.reason=reason||"manual";
+    clearInterval(EXPA.recTimer); EXPA.recTimer=0;
+    clearTimeout(EXPA.maxTimer); EXPA.maxTimer=0;
+    EXPA.recOn=false; EXPA.session=null;
+    var dot=$("#expaDot"); if(dot) dot.classList.remove("on");
+    var rb=$("#expaRecBtn"); if(rb){ rb.classList.remove("on"); rb.textContent="● 녹음 시작 (성인)"; rb.disabled=false; }
+    var sb=$("#expaStopRecBtn"); if(sb) sb.disabled=true;
+    expaStateText("녹음 정리 중…");
+    sess.donePromise=new Promise(function(res){ sess.resolve=res; });
+    try{ if(sess.rec.state!=="inactive") sess.rec.stop(); }
+    catch(e){ expaCollect(sess,"stop_error"); }
+    setTimeout(function(){ expaCollect(sess,"stop_timeout"); },4000);   /* onstop 이 오지 않으면 이 경로 */
+    return sess.donePromise;
+  }
+  /* 녹음 조각을 모아 하나의 원본 Blob으로 만든 뒤 같은 분석 경로로 넘긴다 */
+  function expaCollect(sess,reason){
+    if(!sess || sess.collected) return;
+    sess.collected=true;
+    var chunks=sess.chunks; sess.chunks=[];
+    var blob=null;
+    try{ if(chunks.length) blob=new Blob(chunks,{type:(chunks[0]&&chunks[0].type)||sess.mime||""}); }catch(e){ blob=null; }
+    var wall=Math.round((Date.now()-sess.startedAt)/100)/10;
+    try{ sess.stream.getTracks().forEach(function(t){ t.stop(); }); }catch(e){}
+    function done(ok){ if(sess.resolve) sess.resolve(ok); }
+    if(!blob || !blob.size){
+      expaStateText("녹음 없음");
+      expaRetry(true,"녹음이 비어 있어요 — ‘● 녹음 시작’을 다시 눌러 주세요.");
+      expaLog("녹음 결과 비어 있음("+reason+") · 저장하지 않았습니다");
+      done(false);
+      return;
+    }
+    expaLog("녹음 끝("+reason+") · "+expaKB(blob.size)+" · "+wall.toFixed(1)+"초 · 하나의 원본으로 보관");
+    expaStateText("세 마디로 나누는 중…");
+    expaIngest(blob,{source:"mic", wallDur:wall, reason:reason}).then(function(ok){
+      expaTimerText(wall);
+      done(ok);
+    }).catch(function(){ done(false); });
+  }
+  function expaKB(bytes){ return Math.round((bytes||0)/1024)+"KB"; }
+
+  /* ---------------- 재생 ---------------- */
+  function expaPlayerEl(){ return $("#expaPlayer"); }
+  function expaPlayerState(){
+    var p=expaPlayerEl();
+    if(!p) return {ready:false};
+    return {src:(p.getAttribute("src")||""), paused:!!p.paused,
+      currentTime:Math.round((p.currentTime||0)*1000)/1000, duration:Math.round((p.duration||0)*1000)/1000,
+      seg:(EXPA.cur?EXPA.cur.idx:null), take:(EXPA.cur?EXPA.cur.takeId:null)};
+  }
+  function expaNow(t){ var n=$("#expaNow"); if(n) n.textContent=t; }
+  function expaStopPlay(){
+    (EXPA.timers||[]).forEach(function(t){ clearTimeout(t); });
+    EXPA.timers=[];
+    var f=EXPA.rangeDone; EXPA.rangeDone=null;
+    if(f){ try{ f(true); }catch(e){} }
+    var p=expaPlayerEl();
+    if(p){ try{ p.pause(); }catch(e){} }
+    EXPA.playing=false;
+    expaNow("멈춤");
+  }
+  /* src 의 start–end 초만 재생한다. 마디 사본이 있으면 그 WAV을, 없으면 원본에서 그 구간을 재생 */
+  function expaPlayRange(src,start,end){
+    return new Promise(function(res){
+      var p=expaPlayerEl();
+      if(!p || !src) return res(false);
+      var done=false, began=false;
+      function finish(stopped){
+        if(done) return; done=true;
+        p.removeEventListener("timeupdate",tick);
+        p.removeEventListener("ended",ended);
+        p.removeEventListener("loadedmetadata",seekTo);
+        try{ if(!p.paused) p.pause(); }catch(e){}
+        if(EXPA.rangeDone===finish) EXPA.rangeDone=null;
+        res(stopped!==true);
+      }
+      function ended(){ finish(false); }
+      function tick(){
+        if(end>0 && p.currentTime>=end-0.05) finish(false);
+      }
+      /* 사용자 손가락 안에서 바로 재생을 건다(iOS Safari 자동재생 제한) — 시작 위치는 준비된 뒤 옮긴다 */
+      function begin(){
+        if(began) return; began=true;
+        var pr=null;
+        try{ pr=p.play(); }catch(e){}
+        if(pr && pr.catch) pr.catch(function(){
+          if(!done){ expaLog("재생이 시작되지 않았어요 — 한 번 더 눌러 주세요"); finish(true); }
+        });
+      }
+      function seekTo(){
+        if(start>0.02){ try{ p.currentTime=start; }catch(e){} }
+        begin();
+      }
+      EXPA.rangeDone=finish;
+      p.addEventListener("timeupdate",tick);
+      p.addEventListener("ended",ended);
+      if(p.getAttribute("src")!==src){
+        p.addEventListener("loadedmetadata",seekTo);
+        p.setAttribute("src",src);
+        try{ p.load(); }catch(e){}
+      }
+      if(p.readyState>=1) seekTo(); else begin();
+    });
+  }
+  function expaLineSrc(take,ln){
+    var seg=EXPA.segIndex[take.id+"|"+ln.id];
+    if(seg && seg.blob && seg.blob.size){
+      return {src:expaUrl("seg:"+seg.id,seg.blob), start:0, end:0, from:"segment"};
+    }
+    return {src:expaUrl("orig:"+take.id,take.origBlob), start:ln.start, end:ln.end, from:"original"};
+  }
+  function expaPlayOne(takeId,idx){
+    var take=expaTake(takeId);
+    if(!take || !take.lines || !take.lines[idx]) return Promise.resolve(false);
+    expaStopPlay();
+    var ln=take.lines[idx], s=expaLineSrc(take,ln);
+    EXPA.cur={takeId:take.id, idx:idx};
+    expaRenderTakes();
+    expaNow("장면 "+(idx+1)+" · "+ln.start.toFixed(2)+"–"+ln.end.toFixed(2)+"초 ("+ln.dur.toFixed(2)+"초) · "+
+      (s.from==="segment"?"마디 WAV 재생":"원본에서 그 구간 재생"));
+    expaLog("장면 "+(idx+1)+" 다시 듣기 · "+take.id+" "+ln.id+" · "+(s.from==="segment"?"마디 사본":"원본 구간")+
+      " · 자막 상태는 바꾸지 않음(현재 "+ln.sub.status+")");
+    return expaPlayRange(s.src,s.start,s.end).then(function(ok){
+      if(ok) expaNow("장면 "+(idx+1)+" 재생 완료 · 자막 상태 그대로("+ln.sub.status+")");
+      return ok;
+    });
+  }
+  function expaSubText(sub){
+    if(sub.status==="shown") return {text:sub.text, label:"자막 도착", cls:"ok"};
+    if(sub.status==="late") return {text:sub.text, label:"늦게 도착", cls:"late"};
+    return {text:"자막 대기 중", label:"대기", cls:"pending"};
+  }
+  /* 모의 자막 한 줄을 '자기 자리'에만 기록한다. 늦게 와도 지금 흐르는 마디를 덮지 않는다 */
+  function expaSub(take,idx,opts){
+    opts=opts||{};
+    var ln=take.lines[idx];
+    if(!ln) return false;
+    var during=opts.during||(EXPA.cur? (take.lines[EXPA.cur.idx]||{}).id : null);
+    ln.sub={text:ln.text, status:opts.late?"late":"shown", during:during||null,
+      at:EXPA.runStart?Math.round((Date.now()-EXPA.runStart)/10)/100:0};
+    expaLog("모의 자막 "+(opts.late?"늦게 도착":"도착")+" · "+ln.id+" → "+ln.id+" 마디에만 붙임"+
+      (opts.late?" (지금 재생: "+(during||"없음")+")":""));
+    expaRenderTakes();
+    return true;
+  }
+  /* 전체 이어 듣기 — 마디 순서대로 재생하고, '두 번째 자막만 늦게'가 켜져 있으면 3번째가 시작된 뒤에 보낸다 */
+  function expaPlayAll(takeId){
+    var take=expaTake(takeId||((EXPA.takes[0]||{}).id));
+    if(!take || !take.lines || !take.lines.length) return Promise.resolve(false);
+    expaStopPlay();
+    EXPA.playing=true; EXPA.runStart=Date.now();
+    take.lines.forEach(function(l){ l.sub={text:l.text, status:"pending", during:null, at:0}; });
+    expaRenderTakes();
+    expaLog("전체 이어 듣기 시작 · "+take.id+" · 마디 "+take.lines.length+
+      " · 늦은 자막 "+(EXPA.late?"켜짐(두 번째만)":"꺼짐"));
+    var chain=Promise.resolve(true);
+    take.lines.forEach(function(ln,i){
+      chain=chain.then(function(){
+        if(!EXPA.playing) return false;
+        EXPA.cur={takeId:take.id, idx:i};
+        if(!(EXPA.late && i===1)) expaSub(take,i,{late:false});
+        if(i===2 && EXPA.late){
+          EXPA.timers.push(setTimeout(function(){
+            if(EXPA.playing && take.lines[2]) expaSub(take,1,{late:true, during:"l3"});
+          },300));
+        }
+        var s=expaLineSrc(take,ln);
+        expaNow("전체 이어 듣기 · 장면 "+(i+1)+"/"+take.lines.length+" ("+ln.dur.toFixed(2)+"초) · 자막 "+
+          (EXPA.late&&i===1?"늦게 보낼 예정":(ln.sub.status==="shown"?"도착":"대기")));
+        return expaPlayRange(s.src,s.start,s.end);
+      });
+    });
+    return chain.then(function(){
+      (EXPA.timers||[]).forEach(function(t){ clearTimeout(t); });
+      EXPA.timers=[];
+      EXPA.playing=false; EXPA.cur=null;
+      expaNow("전체 재생 완료 · 자막 상태를 저장했어요");
+      var subs=take.lines.map(function(l){ return l.id+":"+l.sub.status; }).join(" ");
+      return expaPutTake(take,[]).then(function(r){
+        expaLog("자막 상태 저장 · "+subs+(r.ok?" · 저장 확인":" · 저장 실패("+(r.reason||"")+")"));
+        return expaLoad();
+      }).then(function(){ return true; });
+    });
+  }
+  function expaSetLate(on){
+    EXPA.late=!!on;
+    var b=$("#expaLateBtn");
+    if(b){
+      b.setAttribute("data-late",EXPA.late?"on":"off");
+      b.classList.toggle("on",EXPA.late);
+      b.textContent="2번째 자막만 늦게 보내기: "+(EXPA.late?"켜짐":"꺼짐");
+    }
+    expaLog("늦은 자막 실험 · "+(EXPA.late?"켜짐(두 번째 자막을 세 번째 마디가 시작된 뒤에 보냄)":"꺼짐"));
+    return EXPA.late;
+  }
+
+  /* ---------------- 화면 ---------------- */
+  function expaRenderScript(){
+    var box=$("#expaScript"); if(!box) return;
+    box.innerHTML="";
+    EXPA_SCRIPT.forEach(function(l,i){
+      var li=el("li","");
+      li.innerHTML='<span class="n">'+String(i+1).padStart(2,"0")+'</span>'+
+        '<span class="t">'+esc(l.text)+'</span>'+
+        '<span class="m">'+esc(l.who)+' · 약 '+tikiSynth(l).dur.toFixed(1)+'초</span>';
+      box.appendChild(li);
+    });
+  }
+  function expaRenderTakes(){
+    var box=$("#expaTakes"); if(!box) return;
+    box.innerHTML="";
+    var empty=$("#expaEmpty");
+    if(empty) empty.hidden=EXPA.takes.length>0;
+    EXPA.takes.forEach(function(take){
+      var card=el("div","expa-take");
+      card.setAttribute("data-take",take.id);
+      card.setAttribute("data-source",take.source||"mic");
+      card.setAttribute("data-cur",(EXPA.cur && EXPA.cur.takeId===take.id)?"1":"0");
+      var head=el("div","expa-take-head");
+      head.innerHTML='<b>녹음 No.'+String(take.no||0).padStart(3,"0")+'</b>'+
+        '<span>'+expaWhen(take.createdAt)+' · '+(+take.dur||0).toFixed(2)+'초 · 마디 '+(take.lines||[]).length+'개</span>'+
+        '<span class="src">'+(take.source==="demo"?"예시 합성 음성":"성인 실제 녹음")+'</span>'+
+        '<span class="src">'+(take.mode==="wav"?"마디 WAV 사본":"원본에서 구간 재생")+'</span>';
+      card.appendChild(head);
+      var acts=el("div","expa-acts");
+      var bAll=el("button",""); bAll.type="button"; bAll.setAttribute("data-act","playall");
+      bAll.textContent="▶ 전체 이어 듣기";
+      bAll.addEventListener("click",function(){ expaPlayAll(take.id); });
+      acts.appendChild(bAll);
+      (take.lines||[]).forEach(function(ln,i){
+        var b=el("button",""); b.type="button"; b.setAttribute("data-act","play"+(i+1));
+        b.textContent="▶ 장면 "+(i+1);
+        b.addEventListener("click",function(){ expaPlayOne(take.id,i); });
+        acts.appendChild(b);
+      });
+      var dl=el("a",""); dl.setAttribute("data-act","dl"); dl.textContent="원본 전체 저장";
+      var ext=(take.mime&&take.mime.indexOf("wav")>=0)?".wav":".webm";
+      dl.setAttribute("download","doha-v02a-no"+String(take.no||0).padStart(3,"0")+"-original"+ext);
+      dl.href=expaUrl("orig:"+take.id,take.origBlob);
+      acts.appendChild(dl);
+      var del=el("button",""); del.type="button"; del.setAttribute("data-act","delete"); del.textContent="지우기";
+      del.addEventListener("click",function(){
+        if(window.confirm("이 녹음과 세 마디를 이 브라우저에서 지울까요? 원본도 함께 지워집니다.")) expaDelete(take.id);
+      });
+      acts.appendChild(del);
+      card.appendChild(acts);
+      var ol=el("ol","exp-lines");
+      (take.lines||[]).forEach(function(ln,i){
+        var li=el("li","expa-line");
+        li.setAttribute("data-line",ln.id);
+        var cur=(EXPA.cur && EXPA.cur.takeId===take.id && EXPA.cur.idx===i);
+        if(cur) li.classList.add("on");
+        var st=expaSubText(ln.sub||{status:"pending",text:ln.text});
+        var seg=EXPA.segIndex[take.id+"|"+ln.id];
+        var segUrl=(seg && seg.blob && seg.blob.size)?expaUrl("seg:"+seg.id,seg.blob):"";
+        li.innerHTML='<span class="idx">'+String(i+1).padStart(2,"0")+'</span>'+
+          '<div><span class="txt'+(st.cls==="pending"?" muted":"")+'">'+esc(st.text)+'</span></div>'+
+          '<span class="st '+st.cls+'">'+esc(st.label)+'</span>'+
+          '<div class="meta">'+
+            '<span class="expa-seg'+(ln.method==="estimate"?" est":"")+'">'+
+              (ln.method==="estimate"?"경계 자동 추정":"조용한 구간 경계")+'</span>'+
+            '<span>'+(+ln.start||0).toFixed(2)+'–'+(+ln.end||0).toFixed(2)+'초 · '+(+ln.dur||0).toFixed(2)+'초</span>'+
+            '<span>모의 자막</span>'+
+            (segUrl? '<span>'+(seg.bytes?Math.round(seg.bytes/1024)+'KB':'')+'</span>':"")+
+            '<span>'+(ln.sub&&ln.sub.status==="late"?"이 마디에만 붙임":"자막은 모의 · 음성과 따로 보관")+'</span>'+
+          '</div>'+
+          '<div class="exp-audio"><audio controls preload="metadata" aria-label="'+(i+1)+'번째 마디 다시 듣기"></audio>'+
+          (segUrl? '<a class="exp-dl" download="doha-v02a-'+take.id+'-'+ln.id+'.wav">이 마디 WAV</a>':"")+
+          '</div>';
+        var au=$("audio",li);
+        if(au){
+          var s=expaLineSrc(take,ln);
+          if(s.src) au.src=s.src;
+        }
+        var segDl=$(".exp-dl",li);
+        if(segDl && segUrl) segDl.href=segUrl;
+        ol.appendChild(li);
+      });
+      card.appendChild(ol);
+      box.appendChild(card);
+    });
+  }
+  function expaOpen(){
+    if(state.screen!=="expa"){
+      expaStopPlay();
+    }
+    expaRenderScript();
+    expaSetLate(EXPA.late);
+    expaStateText("대기");
+    expaTimerText(0);
+    expaRetry(false);
+    expaRenderTakes();
+    go("expa");
+    var sc=$("#s-expa .exp-scroll"); if(sc) sc.scrollTop=0;
+    expaLoad();
+    expaLog("v0.2-A 실험 화면 · 한 번에 이어 녹음(세 문장) · 이 브라우저에만 저장");
+  }
+  /* 화면을 떠날 때: 재생을 멈추고, 녹음 중이면 원본을 살리기 위해 정리한다(저장은 계속 시도) */
+  function expaLeave(){
+    expaStopPlay();
+    if(EXPA.session){
+      expaLog("화면을 떠나 녹음을 멈춥니다 — 지금까지의 원본을 저장합니다");
+      expaRecFinish("screen_left");
+    }
+    EXPA.recPending=false;
   }
 
   /* ---------------- wiring ---------------- */
@@ -3304,6 +4237,18 @@ img{display:block}
   $$("#expMoodRow button").forEach(function(b){
     b.addEventListener("click",function(){ tikiPickMood(b.getAttribute("data-mood")); });
   });
+
+  /* v0.2-A 실험 — 한 번에 이어 녹음 (검토용) */
+  $("#expABtn").addEventListener("click",expaOpen);
+  $("#expaBack").addEventListener("click",function(){ expaLeave(); go("home"); });
+  $("#expaRecBtn").addEventListener("click",function(){
+    if(window.confirm("성인(보호자)이 세 문장을 직접 읽어 이 브라우저에 녹음합니다. 보호자와 아이 모두 녹음에 동의하나요?")) expaRecStart();
+  });
+  $("#expaStopRecBtn").addEventListener("click",function(){ expaRecFinish("manual"); });
+  $("#expaDemoBtn").addEventListener("click",function(){ expaDemo(); });
+  $("#expaLateBtn").addEventListener("click",function(){ expaSetLate(!EXPA.late); });
+  $("#expaStopPlayBtn").addEventListener("click",function(){ expaStopPlay(); });
+
   $("#expSayForm").addEventListener("submit",function(e){
     e.preventDefault();
     var v=$("#expSay").value.trim(); if(!v) return;
@@ -3318,10 +4263,10 @@ img{display:block}
   });
   /* 화면이 가려지거나 닫힐 때 마이크·녹음·재생을 반드시 놓아준다 */
   document.addEventListener("visibilitychange",function(){
-    if(document.hidden){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); tikiStop(true); }
+    if(document.hidden){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); tikiStop(true); expaLeave(); }
   });
-  window.addEventListener("pagehide",function(){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); tikiStop(true); });
-  window.addEventListener("beforeunload",function(){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); tikiStop(true); });
+  window.addEventListener("pagehide",function(){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); tikiStop(true); expaLeave(); });
+  window.addEventListener("beforeunload",function(){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); tikiStop(true); expaLeave(); });
 
   /* IndexedDB에서 내 기록을 불러온다(첫 로드·새로고침 뒤 복원) */
   var albumLoaded=initAlbum();
@@ -3375,6 +4320,10 @@ img{display:block}
       commitSub:function(id){ return tikiCommitSub(id,{late:true}); },
       state:function(){
         return {ready:TIKI.ready, playing:TIKI.playing, done:TIKI.done, sim:TIKI.sim,
+          phase:TIKI.phase, playError:TIKI.playError,
+          stateLabel:(($("#expState")||{}).textContent||""),
+          retryVisible:!!($("#expRetry") && !$("#expRetry").hidden),
+          retryText:(($("#expRetry")||{}).textContent||""),
           styleId:TIKI.styleId, mood:TIKI.mood, cur:TIKI.cur,
           curId:(TIKI.lines[TIKI.cur]||{}).id||null, curTime:Math.round((TIKI.curTime||0)*1000)/1000,
           total:Math.round((TIKI.total||0)*1000)/1000, screen:state.screen,
@@ -3394,6 +4343,49 @@ img{display:block}
           on:f.classList.contains("on"), src:(im && im.getAttribute("src")) || ""}; }); },
       ears:function(){ var e=$("#expEar"); return {on:!!(e && e.classList.contains("on"))}; },
       moodAttr:function(){ var s=$("#expStage"); return s?s.getAttribute("data-mood"):""; }
+    },
+    /* v0.2-A 실험 검토용 훅 — 화면을 바꾸지 않고 상태·저장·재생만 읽고 실행한다 */
+    expa:{
+      version:EXPA_VERSION,
+      open:expaOpen,
+      demo:expaDemo,
+      record:expaRecStart,
+      stopRec:function(){ return expaRecFinish("manual"); },
+      state:function(){
+        return {screen:state.screen, late:EXPA.late, playing:EXPA.playing, takes:EXPA.takes.length,
+          recOn:EXPA.recOn, recPending:EXPA.recPending, cur:EXPA.cur,
+          label:(($("#expaState")||{}).textContent||""), logEntries:EXPA.log.length,
+          retry:!!($("#expaRetry") && !$("#expaRetry").hidden),
+          retryText:(($("#expaRetry")||{}).textContent||""), player:expaPlayerState()};
+      },
+      takes:function(){
+        return EXPA.takes.map(function(t){
+          return {id:t.id, no:t.no, createdAt:t.createdAt, source:t.source, mime:t.mime, bytes:t.bytes,
+            dur:Math.round((+t.dur||0)*1000)/1000, mode:t.mode, segCount:(t.segs||[]).length,
+            origUrl:expaUrl("orig:"+t.id,t.origBlob),
+            lines:(t.lines||[]).map(function(l){
+              var sg=EXPA.segIndex[t.id+"|"+l.id];
+              return {id:l.id, who:l.who, text:l.text, start:l.start, end:l.end, dur:l.dur, method:l.method,
+                segBytes:(sg&&sg.blob)?sg.blob.size:0, segType:(sg&&sg.blob)?sg.blob.type:"",
+                segUrl:(sg&&sg.blob)?expaUrl("seg:"+sg.id,sg.blob):"", sub:l.sub};
+            })};
+        });
+      },
+      playLine:function(takeId,i){ return expaPlayOne(takeId,i); },
+      playAll:function(takeId){ return expaPlayAll(takeId); },
+      stop:expaStopPlay,
+      setLate:expaSetLate,
+      reload:expaLoad,
+      remove:expaDelete,
+      log:function(){ return EXPA.log.slice(); },
+      labels:function(){
+        return {notice:(($("#expaNotice")||{}).textContent||""), state:(($("#expaState")||{}).textContent||""),
+          flag:Array.prototype.map.call(document.querySelectorAll("#s-expa .exp-flag"),function(e){ return e.textContent; }),
+          now:(($("#expaNow")||{}).textContent||""),
+          emptyHidden:!!($("#expaEmpty") && $("#expaEmpty").hidden),
+          takeCards:document.querySelectorAll("#expaTakes .expa-take").length,
+          lineCards:document.querySelectorAll("#expaTakes .expa-line").length};
+      }
     }
   };
 
