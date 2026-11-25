@@ -9,7 +9,7 @@
   B. 세 해상도에서 가로 밀림이 없는가 (문서 폭 = 창 폭, #app.scrollLeft = 0)
   C. 크림 배경 위 본문 글자가 읽을 만한가 (WCAG 대비 4.5:1, 큰 글씨 3:1)
   D. 무대(캔버스)는 따뜻한 밤하늘 프레임을 유지하는가
-  E. 영화 화면 정지(제목 카드 .intro 표시) 상태에서 실제 사용자 클릭으로 ▶ 재생이 시작되는가
+  E. 영화 화면 정지(제목 카드 .intro 표시) 상태에서 ▶ 가 보이고(픽셀), 실제 사용자 클릭으로 재생이 시작되는가
   F. 미리보기 스크린샷 저장 (downloads/doha-v0.1.4-preview)
 
 사용:
@@ -20,6 +20,13 @@ import json
 import os
 import re
 import sys
+
+try:  # 컨트롤 바가 제목 카드에 가려지는지 픽셀로 확인할 때만 쓴다
+    from PIL import Image, ImageStat
+    import io
+    HAVE_PIL = True
+except ImportError:  # pragma: no cover - Pillow가 없으면 이 항목만 건너뛴다
+    HAVE_PIL = False
 
 from playwright.sync_api import sync_playwright
 
@@ -211,6 +218,22 @@ def run_viewport(browser, name, w, h, dsf, mobile):
     }""")
     play["clicked"] = False
     play["click_error"] = ""
+    play["layers"] = page.evaluate(
+        "({chrome:+getComputedStyle(document.querySelector('.mv-chrome')).zIndex,"
+        " intro:+getComputedStyle(document.querySelector('#mvIntro')).zIndex,"
+        " ended:+getComputedStyle(document.querySelector('#mvEnded')).zIndex})")
+    # "보이는가"는 픽셀로 본다 — 재생 버튼 한가운데(▶ 삼각형은 단색 #FFF4E1)를 4×4 픽셀로
+    # 찍어 크림색이 실제로 칠해졌는지 확인한다. 제목 카드가 위에 덮여 있으면 그 자리는
+    # 카드 배경(보라)이 되고, 컨트롤 바가 위에 있으면 ▶ 색이 그대로 남는다.
+    play["icon_pixel"] = None
+    if HAVE_PIL:
+        r = page.locator("#playBtn").bounding_box()
+        cx, cy = r["x"] + r["width"] / 2, r["y"] + r["height"] / 2
+        px = Image.open(io.BytesIO(page.screenshot(clip={"x": cx - 2, "y": cy - 2,
+                                                        "width": 4, "height": 4}))).convert("RGB")
+        mean = tuple(round(v, 1) for v in ImageStat.Stat(px).mean)
+        play["icon_pixel"] = {"rgb": mean,
+                            "dist_from_icon_cream": round(sum((a - b) ** 2 for a, b in zip(mean, (255, 244, 225))) ** .5, 1)}
     try:
         # Playwright의 click 은 실제 마우스 좌표로 누르고, 가로채는 요소가 있으면 실패한다.
         page.locator("#playBtn").click(timeout=5000)
@@ -366,6 +389,14 @@ def main():
             al = info["overflow_album"]
             check("[%s] 앨범 가로 밀림 없음" % name, al["sw"] == al["cw"] and al["appSL"] == 0, al)
             mp = info["movie_play"]
+            check("[%s] 영화 정지 상태에서 ▶ 가 제목 카드보다 위에 그려짐" % name,
+                  mp["layers"]["chrome"] > mp["layers"]["intro"]
+                  and mp["layers"]["ended"] > mp["layers"]["chrome"], mp["layers"])
+            if mp["icon_pixel"] is None:
+                print("SKIP [%s] ▶ 가 실제로 보이는지(픽셀) — Pillow 없음" % name)
+            else:
+                check("[%s] 제목 카드가 떠 있어도 ▶ 가 실제로 보임(픽셀)" % name,
+                      mp["icon_pixel"]["dist_from_icon_cream"] <= 45, mp["icon_pixel"])
             check("[%s] 영화 정지 상태에서 제목 카드가 ▶를 덮지 않음" % name,
                   mp["intro_shown"] and mp["cover"]["onPlayBtn"]
                   and mp["cover"]["introPointerEvents"] == "none", mp["cover"])
