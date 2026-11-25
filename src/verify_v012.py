@@ -145,8 +145,8 @@ def main():
         page.wait_for_timeout(900)
         REPORT["data"]["url"] = url
 
-        check("버전 meta = 0.1.3", page.eval_on_selector("meta[name=doha-version]", "e=>e.content") == "0.1.3")
-        check("홈 표기에 v0.1.3", "v0.1.3" in page.inner_text(".brand-sub"), page.inner_text(".brand-sub"))
+        check("버전 meta = 0.1.4", page.eval_on_selector("meta[name=doha-version]", "e=>e.content") == "0.1.4")
+        check("홈 표기에 v0.1.4", "v0.1.4" in page.inner_text(".brand-sub"), page.inner_text(".brand-sub"))
         check("음성 자막 변환 토글 기본 OFF", page.get_attribute("#sttBtn", "aria-checked") == "false",
               page.get_attribute("#sttBtn", "aria-checked"))
         check("초기 런타임·콘솔 에러 0건", not errs and not cerrs, errs or cerrs)
@@ -265,7 +265,7 @@ def main():
         rec0 = data["works"][0]["record"]
         check("개별 내보내기 파일명 규칙", d.suggested_filename.startswith("PROJECT-DOHA_No") and d.suggested_filename.endswith(".json"),
               d.suggested_filename)
-        check("내보내기 형식/버전 표기", data.get("app") == "PROJECT DOHA" and data.get("formatVersion") == "0.1.3", data.get("formatVersion"))
+        check("내보내기 형식/버전 표기", data.get("app") == "PROJECT DOHA" and data.get("formatVersion") == "0.1.4", data.get("formatVersion"))
         check("내보내기에 장면·자막 포함", len(rec0["scenes"]) == 1 and all(s["caption"] for s in rec0["scenes"]),
               rec0["scenes"][0]["caption"] if rec0["scenes"] else None)
         check("내보내기에 원본 음성 데이터 포함(data:audio)",

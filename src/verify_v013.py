@@ -164,7 +164,7 @@ def main():
         page.wait_for_timeout(800)
         REPORT["data"]["url"] = url
 
-        check("버전 meta = 0.1.3", page.eval_on_selector("meta[name=doha-version]", "e=>e.content") == "0.1.3")
+        check("버전 meta = 0.1.4", page.eval_on_selector("meta[name=doha-version]", "e=>e.content") == "0.1.4")
         check("초기 런타임·콘솔 에러 0건", not errs and not cerrs, errs or cerrs)
 
         start_story(page)
