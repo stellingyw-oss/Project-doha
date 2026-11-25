@@ -1,2 +1,5 @@
 # 인쇄용 원본 PNG(수 MB)만 제외 — 빌드 입력(assets/web/*.jpg)과 src/는 함께 관리한다
 assets/*.png
+
+# 테스트가 만드는 v0.1.4 비교용 추출본(검토용)
+.legacy-v014/

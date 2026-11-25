@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="theme-color" content="#FEF8EC">
 <meta name="doha-version" content="0.1.4">
+<!-- v0.2 첫 실험(검토용) 표식 — 앱 기준 버전은 v0.1.4 그대로, 실험 기능만 덧붙임 -->
+<meta name="doha-experiment" content="0.2-exp">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>PROJECT DOHA · 아이는 자라고, 상상은 남습니다</title>
@@ -343,6 +345,111 @@ img{display:block}
 .sheet-head h3{margin:0;font-size:14px;font-weight:850;color:var(--ink)}
 .sheet-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 
+/* ---------- v0.2 첫 실험 · 가상 티키타카 (검토용) ---------- */
+#s-exp{z-index:6}
+.home-expnote{margin:10px 0 0;font-size:11px;line-height:1.55;color:#7A6244;max-width:52ch}
+.home-expnote b{color:#8A3F12}
+.exp-scroll{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.exp{padding:calc(10px + var(--safe-t)) clamp(10px,2vw,26px) calc(30px + var(--safe-b));min-height:100%;
+  display:flex;flex-direction:column;gap:12px;max-width:1080px;margin:0 auto}
+.exp-top{display:flex;align-items:center;gap:10px}
+.exp-top .k{display:block;font-size:9px;letter-spacing:.18em;color:var(--amber-ink);font-weight:900}
+.exp-top strong{font-size:clamp(14px,1.5vw,17px);color:var(--ink);letter-spacing:-.02em}
+.exp-top .spacer{flex:1}
+.exp-flag{font-size:9.5px;font-weight:900;color:#8A3F12;background:#FFE7C6;border:1px solid rgba(235,158,66,.6);
+  border-radius:999px;padding:5px 10px;white-space:nowrap}
+.exp-notice{margin:0;font-size:11.5px;line-height:1.65;color:#6B4A22;background:#FFF4E0;
+  border:1px dashed rgba(196,116,33,.5);border-radius:14px;padding:10px 12px}
+.exp-notice b{color:#8A3F12}
+.exp-stage{position:relative;aspect-ratio:16/9;max-height:46vh;border-radius:24px;overflow:hidden;
+  border:6px solid #FFFDF8;background:#2B2138;
+  box-shadow:0 22px 44px -24px rgba(96,54,74,.55),0 0 0 1px rgba(150,110,66,.18)}
+.exp-frame{position:absolute;inset:0;opacity:0;transition:opacity .5s cubic-bezier(.2,.7,.2,1)}
+.exp-frame.on{opacity:1;z-index:2}
+.exp-frame img{width:100%;height:100%;object-fit:cover;display:block;transition:filter .5s ease}
+.exp-stage[data-mood="dusk"] .exp-frame img{filter:sepia(.24) saturate(1.12) hue-rotate(-10deg) brightness(.99)}
+.exp-stage[data-mood="night"] .exp-frame img{filter:brightness(.82) saturate(.94) hue-rotate(6deg)}
+.exp-frame .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(24,15,26,.28),rgba(24,15,26,0) 34%,rgba(24,15,26,.62))}
+.exp-frame .tag{position:absolute;left:10px;top:10px;z-index:4;font-size:8.5px;font-weight:900;letter-spacing:.04em;
+  color:#4A2C05;background:rgba(255,226,180,.94);border-radius:6px;padding:3px 7px}
+.exp-frame .no{position:absolute;right:10px;top:10px;z-index:4;font-size:8.5px;font-weight:900;color:#FFF4E1;
+  background:rgba(36,22,38,.55);border-radius:6px;padding:3px 7px;letter-spacing:.1em}
+/* '달의 귀' — 마지막 마디에서 바뀐 설정이 그림에 반영된 표시(예시 그림 위에 얹는 표찰) */
+.exp-ear{position:absolute;z-index:6;right:10px;top:44px;display:flex;align-items:center;gap:7px;
+  background:rgba(24,15,26,.68);border:1px solid rgba(255,226,180,.55);border-radius:12px;padding:6px 10px 7px;
+  opacity:0;transform:translateY(-5px);transition:opacity .45s ease,transform .5s cubic-bezier(.2,.7,.2,1);pointer-events:none}
+.exp-ear.on{opacity:1;transform:none}
+.exp-ear i{display:block;position:relative;width:11px;height:20px;
+  border-radius:52% 52% 50% 50% / 72% 72% 28% 28%;
+  background:linear-gradient(180deg,#FFF8EA 0%,#F1D5A9 100%);border:1.5px solid rgba(255,246,228,.92);
+  box-shadow:inset 0 -2px 4px rgba(170,120,70,.5)}
+.exp-ear i::after{content:"";position:absolute;left:24%;top:22%;width:52%;height:54%;border-radius:50%;
+  background:radial-gradient(circle at 40% 30%,#F9CFBB,#E39F84)}
+.exp-ear i:first-child{transform:rotate(-13deg)}
+.exp-ear i:last-of-type{transform:rotate(13deg)}
+.exp-ear b{position:static;font-size:9.5px;font-weight:900;color:#FFE9C4;letter-spacing:.02em;white-space:nowrap}
+.exp-cap{position:absolute;left:12px;right:12px;bottom:10px;z-index:6;background:rgba(24,15,26,.66);
+  border-radius:14px;padding:9px 12px;color:#FFF8EC}
+.exp-cap .who{font-size:9px;font-weight:900;letter-spacing:.1em;color:#FFD79B}
+.exp-cap p{margin:2px 0 0;font-size:clamp(13px,1.6vw,18px);font-weight:800;line-height:1.4;letter-spacing:-.01em}
+.exp-cap p.muted{color:#F0D6C4;font-weight:700}
+.exp-cap small{display:block;margin-top:3px;font-size:9px;color:#F2D6B2}
+.exp-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.exp-btn{font-size:12.5px;font-weight:800;padding:11px 16px;border-radius:999px;border:1px solid var(--line-strong);
+  background:#FFFDF8;color:#5E4A33;transition:transform .16s,background .25s,border-color .25s}
+.exp-btn:active{transform:scale(.97)}
+.exp-btn.main{background:linear-gradient(180deg,#FFD69B 0%,#F3A94F 56%,#E4922F 100%);color:#3A2205;border-color:rgba(192,116,33,.7);
+  font-weight:900;box-shadow:0 3px 0 -1px #C07421,0 10px 20px -12px rgba(192,116,33,.8)}
+.exp-statinfo{display:flex;gap:10px;align-items:baseline;font-size:10.5px;font-weight:800;color:var(--muted)}
+.exp-statinfo b{color:var(--amber-ink);font-weight:900}
+.exp-sim{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.exp-sim span{font-size:10.5px;font-weight:800;color:var(--muted-2)}
+.exp-sim button{font-size:10.5px;font-weight:800;padding:6px 11px;border-radius:999px;border:1px solid var(--line-strong);
+  background:#FFFDF8;color:#6B563C;transition:background .25s,border-color .25s,color .25s}
+.exp-sim button.on{background:#FFE2B4;border-color:rgba(235,158,66,.85);color:#8A3F12}
+.exp-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px;box-shadow:var(--shadow-sm)}
+.exp-card h3{margin:0 0 9px;font-size:9.5px;letter-spacing:.16em;color:var(--amber-ink);font-weight:900}
+.exp-styles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.exp-lines{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.exp-line{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;border:1px solid var(--line);
+  border-radius:12px;padding:8px 10px;background:#FFFDF8;transition:border-color .3s,box-shadow .3s}
+.exp-line.on{border-color:rgba(235,158,66,.85);box-shadow:0 0 0 3px rgba(235,158,66,.16)}
+.exp-line .idx{font-size:9px;font-weight:900;color:var(--amber-ink)}
+.exp-line .who{font-size:9.5px;font-weight:900;color:var(--muted);margin-right:4px}
+.exp-line .txt{font-size:12.5px;font-weight:800;color:var(--ink)}
+.exp-line .txt.muted{color:var(--muted-2);font-weight:700}
+.exp-line .st{font-size:9px;font-weight:900;padding:3px 7px;border-radius:999px;white-space:nowrap}
+.st.ok{background:#DCEFE0;color:#1F4A2C}
+.st.late{background:#FFE2B4;color:#8A3F12}
+.st.missing{background:#F6D7D2;color:#8E2F1B}
+.st.pending{background:#EFE7D9;color:#6B563C}
+.exp-audio{grid-column:1/-1;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.exp-audio audio{flex:1 1 180px;min-width:0;height:30px}
+.exp-dl{font-size:9.5px;font-weight:800;color:#6B563C;background:#FBF2E2;border:1px solid var(--line);
+  border-radius:9px;padding:5px 8px;text-decoration:none;white-space:nowrap}
+.exp-say{display:flex;gap:7px}
+.exp-say input{flex:1 1 auto;min-width:0;background:rgba(255,253,248,.96);border:1px solid var(--line-strong);
+  border-radius:999px;padding:11px 16px;color:var(--ink);font-size:15px;outline:none}
+.exp-say input::placeholder{color:var(--muted-2);font-size:12.5px}
+.exp-say button{flex:0 0 auto;font-size:12px;font-weight:900;padding:0 16px;border-radius:999px;color:#3A2205;
+  background:linear-gradient(180deg,#FFD69B,#F3A94F 60%,#E4922F);box-shadow:0 3px 0 -1px #C07421}
+.exp-extras{list-style:none;margin:9px 0 0;padding:0;display:flex;flex-direction:column;gap:5px}
+.exp-extras li{font-size:11.5px;color:var(--ink-2);background:#FBF2E2;border-radius:10px;padding:6px 9px}
+.exp-log{margin:0;max-height:150px;overflow:auto;font-family:ui-monospace,Menlo,monospace;font-size:10px;line-height:1.6;
+  background:#2B2138;color:#F3E2C8;border-radius:12px;padding:9px 10px;white-space:pre-wrap}
+.exp-hint{font-size:10.5px;color:var(--muted-2);line-height:1.6;margin:7px 0 0}
+@media (max-width:560px){
+  .exp{padding-left:10px;padding-right:10px;gap:10px}
+  .exp-sim span{flex:1 0 100%}
+  .exp-sim button{font-size:10px;padding:5px 9px}
+  .exp-btn{font-size:11.5px;padding:10px 13px}
+  .exp-statinfo{font-size:10px}
+  .exp-flag{font-size:8.5px;padding:4px 8px}
+  .exp-ear{top:34px;right:6px;padding:5px 8px 6px}
+  .exp-ear b{font-size:8.5px}
+  .exp-audio audio{flex:1 1 100%}
+}
+
 /* ---------- movie ---------- */
 #s-movie{z-index:5}
 .mv-scroll{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}
@@ -644,8 +751,10 @@ img{display:block}
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
               </button>
               <button class="btn btn-ghost" id="albumBtn">지난 상상 보기</button>
+              <button class="btn btn-ghost" id="expBtn">🧪 v0.2 티키타카 실험 (검토용)</button>
             </div>
             <p class="home-note"><span class="dot"></span>[[NAME]]가 이야기하는 동안 아빠는 옆에서 같이 웃기만 하면 돼요.</p>
+            <p class="home-expnote"><b>v0.2 첫 실험 · 검토용</b> — 실제 아이 목소리·외부 API·유료 호출 없이, 합성 음성과 모의 자막으로만 대화가 이어지는지 확인해요.</p>
           </div>
 
           <figure class="hero-card" id="heroCard">
@@ -864,6 +973,85 @@ img{display:block}
           <div class="caps" id="capsList"></div>
           <p class="cap-note">타임캡슐은 이 브라우저에서 다시 열 수 있어요. 미리보기 · 날짜 알림은 준비 중이에요.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ v0.2 첫 실험 · 가상 티키타카 (검토용) ============ -->
+  <section class="screen" id="s-exp" aria-label="v0.2 첫 실험 · 가상 티키타카 대화">
+    <div class="exp-scroll">
+      <div class="exp">
+        <header class="exp-top">
+          <button class="icon-btn cv-back" id="expBack" aria-label="홈으로">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <div>
+            <span class="k">v0.2 첫 실험 · 검토용</span>
+            <strong>가상 티키타카 대화 한 장면</strong>
+          </div>
+          <span class="spacer"></span>
+          <span class="exp-flag">모의 자막 · 예시 그림</span>
+        </header>
+
+        <p class="exp-notice" id="expNotice">
+          <b>검토용 실험입니다.</b> 목소리는 브라우저가 그 자리에서 만든 <b>합성 음성(삐- 소리)</b>이고, 자막은 <b>모의 자막</b>,
+          그림은 <b>예시 그림</b>이에요. 실제 아이 목소리·실제 대화·외부 API·유료 호출 없이 이 브라우저 안에서만 돌아갑니다.
+        </p>
+
+        <div class="exp-stage" id="expStage" data-mood="night">
+          <div id="expFrames"></div>
+          <div class="exp-ear" id="expEar" aria-hidden="true"><i></i><i></i><b>달의 귀</b></div>
+          <div class="exp-cap" id="expCap">
+            <span class="who" id="expCapWho">아이</span>
+            <p id="expCapText">▶ 시연 재생을 누르면 세 마디가 원래 순서로 들려요</p>
+            <small id="expCapTag">모의 자막 · 예시 그림 · 합성 음성</small>
+          </div>
+        </div>
+
+        <div class="exp-bar">
+          <button class="exp-btn main" id="expPlay" type="button">▶ 시연 재생 (합성 음성)</button>
+          <button class="exp-btn" id="expStop" type="button">■ 멈춤</button>
+          <span class="exp-statinfo"><b id="expState">대기</b><span id="expTime">0:00 / 0:00</span></span>
+        </div>
+
+        <div class="exp-sim" id="expSimRow" role="group" aria-label="자막 지연·누락 시뮬레이션">
+          <span>자막 시뮬레이션</span>
+          <button type="button" data-sim="normal" class="on">정상</button>
+          <button type="button" data-sim="late">2번째 마디 늦게 도착</button>
+          <button type="button" data-sim="missing">3번째 마디 자막 누락</button>
+        </div>
+
+        <section class="exp-card">
+          <h3>마지막에 바꾼 설정 — 그림체</h3>
+          <div class="exp-styles" id="expStyleRow" role="radiogroup" aria-label="실험 장면 그림체"></div>
+          <p class="exp-hint" id="expStyleNow">지금 장면: 예시 필터 · 3D 애니메이션</p>
+          <div class="exp-sim" id="expMoodRow" role="group" aria-label="장면 분위기">
+            <span>분위기</span>
+            <button type="button" data-mood="night" class="on">밤</button>
+            <button type="button" data-mood="dusk">노을</button>
+          </div>
+        </section>
+
+        <section class="exp-card">
+          <h3>세 마디 · 모의 자막 (합성 음성 보관)</h3>
+          <ol class="exp-lines" id="expLines"></ol>
+          <p class="exp-hint">마디마다 합성 음성을 WAV로 남겨 두었어요. 자막이 늦거나 빠져도 음성은 지워지지 않습니다.</p>
+        </section>
+
+        <section class="exp-card">
+          <h3>재생 중에도 계속 말할 수 있어요</h3>
+          <form class="exp-say" id="expSayForm" autocomplete="off">
+            <input id="expSay" type="text" placeholder="예: 그럼 귀는 누가 달아 준 거야?" aria-label="이어 말한 마디 (모의 입력)" enterkeyhint="send">
+            <button type="submit">추가</button>
+          </form>
+          <ul class="exp-extras" id="expExtras"></ul>
+          <p class="exp-hint">시연이 도는 동안에도 입력·추가가 됩니다. 추가한 마디는 세 마디 재생 순서에 끼어들지 않아요.</p>
+        </section>
+
+        <section class="exp-card">
+          <h3>검증 로그</h3>
+          <pre class="exp-log" id="expLog"></pre>
+        </section>
       </div>
     </div>
   </section>
@@ -1295,6 +1483,7 @@ img{display:block}
       /* 화면을 떠나면 마이크·녹음·재생을 반드시 정리한다(브라우저 녹음 아이콘 즉시 꺼짐) */
       if(state.screen==="canvas"){ stopListen(); releaseMicOnExit(); }
       if(state.screen==="movie"){ pauseMovie(); pauseOriginalAudio(); }
+      if(state.screen==="exp"){ tikiStop(true); }
     }
     $$(".screen").forEach(function(s){ s.classList.remove("on"); });
     var t=$("#s-"+name); if(t) t.classList.add("on");
@@ -2680,6 +2869,343 @@ img{display:block}
       '</article>';
   }
 
+  /* ============================================================
+     v0.2 첫 실험 — 가상 티키타카 대화 (검토용 · 이 브라우저 안에서만)
+       · 음성: Web Audio 로 만든 합성 PCM → WAV Blob 으로도 보관(원본 보존)
+       · 자막: 모의 자막. 늦거나 빠져도 자기 마디에만 붙는다
+       · 그림: 준비된 예시 그림 + 마지막에 고른 그림체·분위기
+     실제 아동 데이터·외부 API·유료 호출 없음. 실제 아이 목소리가 아닙니다.
+     ============================================================ */
+  var EXP_VERSION="0.2-exp";
+  var TIKI_GAP=0.12, TIKI_SR=22050;
+  var TIKI_DEF=[
+    {id:"l1", who:"아이", text:"달이 치즈야",          key:"space", ears:false, pitch:585},
+    {id:"l2", who:"아빠", text:"그럼 한입 먹어도 돼?",   key:"space", ears:false, pitch:330},
+    {id:"l3", who:"아이", text:"안 돼, 그건 달의 귀야!", key:"space", ears:true,  pitch:615}
+  ];
+  var TIKI={
+    ready:false, sim:"normal", styleId:"3d", mood:"night",
+    lines:[], extras:[], playing:false, done:false, cur:-1, curTime:0, total:0,
+    timeline:[], events:[], evI:0, log:[], ac:null, srcs:[], raf:0, urls:[]
+  };
+
+  function tikiSyllables(s){ return String(s||"").replace(/[\s,.!?~·"']/g,"").length; }
+  /* 글자 수만큼 짧은 음절을 이어 붙인 합성 파형. 실제 목소리가 아니라 '말소리 자리'를 채우는 삐- 소리다. */
+  function tikiSynth(line){
+    var syl=Math.max(2,tikiSyllables(line.text));
+    var per=0.25, dur=0.2+syl*per+0.14;
+    var n=Math.round(dur*TIKI_SR), pcm=new Float32Array(n);
+    for(var s=0;s<syl;s++){
+      var st=Math.round((0.2+s*per)*TIKI_SR), len=Math.round(per*TIKI_SR);
+      var f=line.pitch*(1+0.05*Math.sin(s*1.9)+0.02*(s%3));
+      for(var i=0;i<len && st+i<n;i++){
+        var t=i/TIKI_SR;
+        var env=Math.min(1,i/(0.014*TIKI_SR))*Math.exp(-t*2.6);
+        var vib=1+0.025*Math.sin(2*Math.PI*5.2*t);
+        var w=2*Math.PI*f*vib*t;
+        pcm[st+i]+=(Math.sin(w)*0.62+Math.sin(w*2)*0.16+Math.sin(w*3)*0.06)*env*0.3;
+      }
+    }
+    return {pcm:pcm, sr:TIKI_SR, dur:Math.round(n/TIKI_SR*1000)/1000};
+  }
+  function tikiWav(pcm,sr){
+    var n=pcm.length, buf=new ArrayBuffer(44+n*2), v=new DataView(buf);
+    function ws(o,s){ for(var i=0;i<s.length;i++) v.setUint8(o+i,s.charCodeAt(i)); }
+    ws(0,"RIFF"); v.setUint32(4,36+n*2,true); ws(8,"WAVE"); ws(12,"fmt ");
+    v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+    v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true);
+    ws(36,"data"); v.setUint32(40,n*2,true);
+    for(var i=0;i<n;i++){ var s=Math.max(-1,Math.min(1,pcm[i])); v.setInt16(44+i*2, s<0?s*0x8000:s*0x7FFF, true); }
+    return new Blob([buf],{type:"audio/wav"});
+  }
+  function tikiLine(id){ for(var i=0;i<TIKI.lines.length;i++) if(TIKI.lines[i].id===id) return TIKI.lines[i]; return null; }
+  function tikiStyleExists(id){ return STYLES.some(function(s){ return s.id===id; }); }
+  function tikiLog(msg){
+    var t=(TIKI.playing && TIKI.ac)? Math.max(0,TIKI.ac.currentTime-TIKI.t0) : 0;
+    TIKI.log.push((t>0?"["+t.toFixed(2)+"s] ":"[--] ")+msg);
+    if(TIKI.log.length>240) TIKI.log.shift();
+    var box=$("#expLog");
+    if(box){ box.textContent=TIKI.log.join("\n"); box.scrollTop=box.scrollHeight; }
+  }
+  function tikiBuild(){
+    TIKI.lines=TIKI_DEF.map(function(d){
+      var py=tikiSynth(d);
+      var ln={id:d.id, who:d.who, text:d.text, key:d.key, ears:!!d.ears,
+        pcm:py.pcm, sr:py.sr, dur:py.dur, blob:null, url:"",
+        sub:{text:d.text, status:"pending", late:false, during:null, at:0},
+        startAt:0, endAt:0};
+      ln.blob=tikiWav(py.pcm,py.sr);
+      try{ ln.url=URL.createObjectURL(ln.blob); TIKI.urls.push(ln.url); }catch(e){ ln.url=""; }
+      return ln;
+    });
+    TIKI.ready=true;
+    TIKI.total=TIKI.lines.reduce(function(a,l){ return a+l.dur; },0)+TIKI_GAP*(TIKI.lines.length-1);
+    tikiRenderLines(); tikiRenderFrames();
+    tikiLog("실험 준비 · 합성 음성 "+TIKI.lines.length+"마디("+TIKI.total.toFixed(2)+"초) · 모의 자막 · 예시 그림");
+  }
+  function tikiRenderFrames(){
+    var box=$("#expFrames"); if(!box) return;
+    if(box.children.length!==TIKI.lines.length){
+      box.innerHTML="";
+      TIKI.lines.forEach(function(ln,i){
+        var f=el("div","exp-frame");
+        f.setAttribute("data-line",ln.id);
+        f.innerHTML='<img alt="예시 그림"><div class="veil"></div><div class="stage-tex"></div>'+
+          '<span class="tag">예시 그림</span><span class="no">'+String(i+1).padStart(2,"0")+'</span>';
+        box.appendChild(f);
+      });
+    }
+    Array.prototype.forEach.call(box.children,function(f,i){
+      var ln=TIKI.lines[i]; if(!ln) return;
+      f.setAttribute("data-style",TIKI.styleId);
+      var im=$("img",f);
+      if(im){ var src=srcFor(ln.key,TIKI.styleId); if(im.getAttribute("src")!==src) im.src=src; }
+      var tex=$(".stage-tex",f); if(tex) tex.className="stage-tex tex-"+TIKI.styleId;
+    });
+    var stg=$("#expStage"); if(stg) stg.setAttribute("data-mood",TIKI.mood);
+  }
+  function tikiStatus(sub){
+    if(sub.status==="shown") return {text:sub.text, label:"자막 도착", cls:"ok", muted:false};
+    if(sub.status==="late") return {text:sub.text, label:"늦게 도착", cls:"late", muted:false};
+    if(sub.status==="missing") return {text:"(자막 없음 · 음성은 그대로)", label:"자막 누락", cls:"missing", muted:true};
+    return {text:sub.text, label:"대기", cls:"pending", muted:false};
+  }
+  function tikiRenderLines(){
+    var box=$("#expLines"); if(!box) return;
+    if(box.children.length!==TIKI.lines.length){
+      box.innerHTML="";
+      TIKI.lines.forEach(function(ln,i){
+        var li=el("li","exp-line");
+        li.setAttribute("data-line",ln.id);
+        li.innerHTML='<span class="idx">'+String(i+1).padStart(2,"0")+'</span>'+
+          '<div><span class="who">'+esc(ln.who)+'</span><span class="txt"></span></div>'+
+          '<span class="st"></span>'+
+          '<div class="exp-audio"><audio controls preload="metadata" aria-label="'+(i+1)+'번째 마디 합성 음성"></audio>'+
+          '<a class="exp-dl" download="doha-v02-'+ln.id+'-synth.wav">합성 음성 WAV</a></div>';
+        if(ln.url){ $("audio",li).src=ln.url; $(".exp-dl",li).href=ln.url; }
+        box.appendChild(li);
+      });
+    }
+    Array.prototype.forEach.call(box.children,function(li,i){
+      var ln=TIKI.lines[i]; if(!ln) return;
+      var st=tikiStatus(ln.sub);
+      li.classList.toggle("on", i===TIKI.cur);
+      var txt=$(".txt",li); txt.textContent=st.text; txt.classList.toggle("muted",!!st.muted);
+      var badge=$(".st",li); badge.textContent=st.label; badge.className="st "+st.cls;
+    });
+  }
+  function tikiCapFor(ln){
+    if(ln.sub.status==="missing") return {text:"자막이 오지 않았어요 · 음성은 그대로 있어요", muted:true,
+      tag:"모의 자막 누락 · 합성 음성 보관"};
+    if(ln.sub.status==="late") return {text:ln.sub.text, muted:false,
+      tag:"모의 자막 · 늦게 도착 — "+ln.id+" 마디에만 붙임 (지금 화면에는 붙이지 않음)"};
+    if(ln.sub.status==="shown") return {text:ln.sub.text, muted:false, tag:"모의 자막 · 합성 음성"};
+    return {text:"자막 대기 중 · ▶ 재생을 눌러 주세요", muted:true, tag:"모의 자막 도착 전 · 예시 그림 · 합성 음성"};
+  }
+  function tikiShow(i, force){
+    if(!force && i===TIKI.cur) return;
+    TIKI.cur=i;
+    var frames=$$("#expFrames .exp-frame");
+    frames.forEach(function(f,k){ f.classList.toggle("on",k===i); });
+    var ln=TIKI.lines[i];
+    var ear=$("#expEar"); if(ear) ear.classList.toggle("on", !!(ln && ln.ears));
+    if(ln){
+      var cap=tikiCapFor(ln);
+      var who=$("#expCapWho"), p=$("#expCapText"), tag=$("#expCapTag");
+      if(who) who.textContent=ln.who+" · "+String(i+1).padStart(2,"0")+"/"+String(TIKI.lines.length).padStart(2,"0");
+      if(p){ p.textContent=cap.text; p.classList.toggle("muted",!!cap.muted); }
+      if(tag) tag.textContent=cap.tag;
+    }
+    tikiRenderLines();
+  }
+  function tikiUpdateTime(){
+    var el1=$("#expTime");
+    if(el1) el1.textContent=mmss(TIKI.curTime||0)+" / "+mmss(TIKI.total||0);
+  }
+  function tikiReset(){
+    TIKI.cur=-1; TIKI.curTime=0; TIKI.done=false; TIKI.log=[];
+    TIKI.lines.forEach(function(ln){
+      ln.sub={text:ln.text, status:"pending", late:false, during:null, at:0};
+    });
+    TIKI.extras=[];
+    tikiRenderExtras(); tikiRenderLines(); tikiUpdateTime();
+    var box=$("#expLog"); if(box) box.textContent="";
+  }
+  function tikiPlan(){
+    var ev=[], acc=0;
+    TIKI.timeline=[];
+    TIKI.lines.forEach(function(ln){
+      ln.startAt=acc; ln.endAt=acc+ln.dur;
+      TIKI.timeline.push({id:ln.id, start:ln.startAt, end:ln.endAt});
+      ev.push({at:ln.startAt, kind:"start", id:ln.id});
+      ev.push({at:ln.endAt, kind:"end", id:ln.id});
+      acc=ln.endAt+TIKI_GAP;
+    });
+    TIKI.total=Math.max(0,acc-TIKI_GAP);
+    ev.push({at:0.02, kind:"sub", id:"l1"});
+    if(TIKI.sim==="late") ev.push({at:TIKI.timeline[2].start+0.25, kind:"sub", id:"l2"});
+    else ev.push({at:TIKI.timeline[1].start+0.02, kind:"sub", id:"l2"});
+    if(TIKI.sim==="missing") ev.push({at:TIKI.timeline[2].start+0.02, kind:"sub_missing", id:"l3"});
+    else ev.push({at:TIKI.timeline[2].start+0.02, kind:"sub", id:"l3"});
+    ev.sort(function(a,b){ return a.at-b.at; });
+    TIKI.events=ev; TIKI.evI=0;
+  }
+  function tikiCtx(){
+    if(!TIKI.ac){
+      var AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC) return null;
+      try{ TIKI.ac=new AC(); }catch(e){ return null; }
+    }
+    return TIKI.ac;
+  }
+  function tikiPlay(){
+    if(!TIKI.ready) tikiBuild();
+    tikiStop(true);
+    if(state.screen!=="exp") return false;
+    var ctx=tikiCtx();
+    if(!ctx){ tikiLog("합성 음성을 시작하지 못했어요 — 이 브라우저에 Web Audio가 없어요"); return false; }
+    try{ if(ctx.state==="suspended") ctx.resume(); }catch(e){}
+    tikiReset();
+    tikiPlan();
+    var at=ctx.currentTime+0.16;
+    TIKI.t0=at; TIKI.playing=true;
+    TIKI.srcs=[];
+    TIKI.lines.forEach(function(ln,i){
+      var buf=ctx.createBuffer(1,ln.pcm.length,ln.sr);
+      if(buf.copyToChannel) buf.copyToChannel(ln.pcm,0); else buf.getChannelData(0).set(ln.pcm);
+      var src=ctx.createBufferSource(); src.buffer=buf; src.connect(ctx.destination);
+      try{ src.start(at+ln.startAt); }catch(e){ tikiLog("재생 예약 실패("+ln.id+"): "+e.message); }
+      if(i===TIKI.lines.length-1) src.onended=function(){ if(TIKI.playing) tikiFinish("마지막 마디 종료"); };
+      TIKI.srcs.push(src);
+      tikiLog("예약 "+ln.id+" · "+ln.startAt.toFixed(2)+"–"+ln.endAt.toFixed(2)+"초 (합성 음성 "+Math.round(ln.dur*1000)+"ms)");
+    });
+    var st=$("#expState"); if(st) st.textContent="재생 중";
+    TIKI.raf=requestAnimationFrame(tikiTick);
+    return true;
+  }
+  function tikiTick(){
+    if(!TIKI.playing || !TIKI.ac) return;
+    var t=TIKI.ac.currentTime-TIKI.t0;
+    while(TIKI.evI<TIKI.events.length && TIKI.events[TIKI.evI].at<=t){
+      var e=TIKI.events[TIKI.evI++]; tikiFire(e);
+    }
+    var cur=-1;
+    for(var i=0;i<TIKI.timeline.length;i++){
+      if(t>=TIKI.timeline[i].start && t<TIKI.timeline[i].end) cur=i;
+    }
+    if(cur<0 && t>=TIKI.timeline[TIKI.timeline.length-1].end) cur=TIKI.timeline.length-1;
+    if(cur>=0) tikiShow(cur);
+    TIKI.curTime=Math.max(0,Math.min(t,TIKI.total));
+    tikiUpdateTime();
+    if(t>TIKI.total+0.25){ tikiFinish("시간 종료"); return; }
+    TIKI.raf=requestAnimationFrame(tikiTick);
+  }
+  function tikiFire(e){
+    if(e.kind==="sub"){
+      tikiCommitSub(e.id,{late:(TIKI.sim==="late" && e.id==="l2")});
+    } else if(e.kind==="sub_missing"){
+      var ln=tikiLine(e.id);
+      if(ln){ ln.sub.status="missing"; ln.sub.late=false; ln.sub.during=(TIKI.lines[TIKI.cur]||{}).id||null; ln.sub.text=""; }
+      tikiLog("자막 누락 시뮬레이션 · "+e.id+" 자막이 오지 않음 (음성은 그대로 재생)");
+      tikiRenderLines(); tikiShow(TIKI.cur,true);
+    } else if(e.kind==="start"){
+      tikiLog("재생 시작 "+e.id);
+    } else if(e.kind==="end"){
+      tikiLog("재생 끝 "+e.id);
+    }
+  }
+  /* 자막 한 마디를 '자기 자리'에만 기록한다. 늦게 와도 지금 흐르는 마디를 덮지 않는다. */
+  function tikiCommitSub(id, opts){
+    var ln=tikiLine(id);
+    if(!ln){ tikiLog("알 수 없는 자막 무시 · "+id); return false; }
+    opts=opts||{};
+    var cur=TIKI.cur>=0? TIKI.lines[TIKI.cur] : null;
+    ln.sub.text=ln.text;
+    ln.sub.during=cur? cur.id : null;
+    ln.sub.late=!!opts.late || !!(cur && cur.id!==id);
+    ln.sub.status=ln.sub.late? "late" : "shown";
+    ln.sub.at=(TIKI.ac && TIKI.playing)? Math.max(0,TIKI.ac.currentTime-TIKI.t0):0;
+    if(ln.sub.late) tikiLog("자막 늦게 도착 · "+id+" → "+id+" 마디에만 붙임 (지금 재생 중: "+(cur?cur.id:"없음")+")");
+    else tikiLog("자막 도착 · "+id);
+    tikiRenderLines(); tikiShow(TIKI.cur,true);
+    return true;
+  }
+  function tikiFinish(why){
+    if(TIKI.done) return;
+    /* 마지막 마디의 '재생 끝' 이벤트가 완료 처리보다 먼저 기록되도록 남은 이벤트를 마저 처리한다 */
+    while(TIKI.evI<TIKI.events.length && TIKI.events[TIKI.evI].at<=TIKI.total+0.001){
+      tikiFire(TIKI.events[TIKI.evI++]);
+    }
+    TIKI.done=true; TIKI.playing=false;
+    if(TIKI.raf){ cancelAnimationFrame(TIKI.raf); TIKI.raf=0; }
+    TIKI.curTime=TIKI.total;
+    tikiShow(TIKI.lines.length-1,true);
+    tikiUpdateTime();
+    var st=$("#expState"); if(st) st.textContent="재생 완료";
+    tikiLog("세 마디 재생 완료("+why+") · 합성 음성 "+TIKI.lines.length+"마디 보관 · 자막 상태 "+
+      TIKI.lines.map(function(l){ return l.id+":"+l.sub.status; }).join(" "));
+  }
+  function tikiStop(silent){
+    if(TIKI.raf){ cancelAnimationFrame(TIKI.raf); TIKI.raf=0; }
+    TIKI.playing=false;
+    (TIKI.srcs||[]).forEach(function(s){ try{ s.stop(); }catch(e){} });
+    TIKI.srcs=[];
+    if(!silent){
+      var st=$("#expState"); if(st) st.textContent="멈춤";
+      tikiLog("멈춤");
+    }
+  }
+  function tikiRenderExtras(){
+    var box=$("#expExtras"); if(!box) return;
+    box.innerHTML="";
+    TIKI.extras.forEach(function(x,i){
+      var li=el("li","",esc(String(i+1)+". "+x.text)+" · "+esc(x.when));
+      box.appendChild(li);
+    });
+  }
+  function tikiSetSim(mode){
+    if(mode!=="normal" && mode!=="late" && mode!=="missing") return false;
+    TIKI.sim=mode;
+    $$("#expSimRow button").forEach(function(b){
+      b.classList.toggle("on", b.getAttribute("data-sim")===mode);
+    });
+    tikiLog("자막 시뮬레이션 · "+({normal:"정상",late:"2번째 마디 늦게 도착",missing:"3번째 마디 자막 누락"})[mode]);
+    return true;
+  }
+  function tikiPickStyle(id){
+    if(!tikiStyleExists(id)) return false;
+    TIKI.styleId=id;
+    setStyle(id,{silent:true});
+    markStyleCards($("#expStyleRow"));
+    var now=$("#expStyleNow");
+    if(now) now.textContent="지금 장면: 예시 필터 · "+styleById(id).ko+" (세 마디에 함께 반영)";
+    tikiRenderFrames();
+    tikiLog("그림체 변경 · "+styleById(id).ko+" → 세 장면에 반영 (재생은 그대로)");
+    return true;
+  }
+  function tikiPickMood(m){
+    if(m!=="night" && m!=="dusk") return false;
+    TIKI.mood=m;
+    $$("#expMoodRow button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-mood")===m); });
+    tikiRenderFrames();
+    tikiLog("분위기 변경 · "+(m==="night"?"밤":"노을")+" → 장면에 반영");
+    return true;
+  }
+  function tikiOpen(){
+    if(!TIKI.ready) tikiBuild();
+    TIKI.styleId=state.style;
+    markStyleCards($("#expStyleRow"));
+    var now=$("#expStyleNow");
+    if(now) now.textContent="지금 장면: 예시 필터 · "+styleById(TIKI.styleId).ko+" (세 마디에 함께 반영)";
+    $$("#expMoodRow button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-mood")===TIKI.mood); });
+    $$("#expSimRow button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-sim")===TIKI.sim); });
+    var st0=$("#expState"); if(st0) st0.textContent="대기";
+    tikiRenderFrames(); tikiRenderLines(); tikiRenderExtras(); tikiUpdateTime();
+    tikiShow(TIKI.lines.length-1,true);
+    var sc=$("#s-exp .exp-scroll"); if(sc) sc.scrollTop=0;
+    go("exp");
+  }
+
   /* ---------------- wiring ---------------- */
   applyChildName();
   buildStyleCards($("#styleRow"),function(id){ setStyle(id); tone(587,0.15,"triangle",0.02); });
@@ -2766,15 +3292,36 @@ img{display:block}
   });
   $("#ybBtn").addEventListener("click",function(){ toast("실물 YEAR BOOK 제작은 v0.5에서 열려요"); });
 
+  /* v0.2 첫 실험 — 가상 티키타카 (검토용) */
+  $("#expBtn").addEventListener("click",tikiOpen);
+  $("#expBack").addEventListener("click",function(){ tikiStop(true); go("home"); });
+  $("#expPlay").addEventListener("click",function(){ tikiPlay(); });
+  $("#expStop").addEventListener("click",function(){ tikiStop(false); });
+  buildStyleCards($("#expStyleRow"),function(id){ tikiPickStyle(id); });
+  $$("#expSimRow button").forEach(function(b){
+    b.addEventListener("click",function(){ tikiSetSim(b.getAttribute("data-sim")); });
+  });
+  $$("#expMoodRow button").forEach(function(b){
+    b.addEventListener("click",function(){ tikiPickMood(b.getAttribute("data-mood")); });
+  });
+  $("#expSayForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    var v=$("#expSay").value.trim(); if(!v) return;
+    $("#expSay").value="";
+    TIKI.extras.push({text:v, when:TIKI.playing?"재생 중에 추가":(TIKI.done?"재생 끝난 뒤 추가":"재생 전 추가")});
+    tikiRenderExtras();
+    tikiLog("이어 말한 마디 · "+v+" (재생 "+(TIKI.playing?"계속":"멈춤")+")");
+  });
+
   document.addEventListener("keydown",function(e){
     if(e.key==="Escape"){ closeSheet(); }
   });
   /* 화면이 가려지거나 닫힐 때 마이크·녹음·재생을 반드시 놓아준다 */
   document.addEventListener("visibilitychange",function(){
-    if(document.hidden){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); }
+    if(document.hidden){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); tikiStop(true); }
   });
-  window.addEventListener("pagehide",function(){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); });
-  window.addEventListener("beforeunload",function(){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); });
+  window.addEventListener("pagehide",function(){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); tikiStop(true); });
+  window.addEventListener("beforeunload",function(){ releaseMicOnExit(); pauseMovie(); pauseOriginalAudio(); tikiStop(true); });
 
   /* IndexedDB에서 내 기록을 불러온다(첫 로드·새로고침 뒤 복원) */
   var albumLoaded=initAlbum();
@@ -2814,7 +3361,40 @@ img{display:block}
     finishStory:finishStory,
     stopMic:stopMic,
     startStory:startStory,
-    nameOf:NM
+    nameOf:NM,
+    experimentVersion:function(){ return EXP_VERSION; },
+    /* v0.2 첫 실험 검토용 훅 — 화면을 바꾸지 않고 상태·순서만 읽는다 */
+    tiki:{
+      version:EXP_VERSION,
+      open:tikiOpen,
+      play:tikiPlay,
+      stop:function(){ tikiStop(false); },
+      setSim:tikiSetSim,
+      setStyle:tikiPickStyle,
+      setMood:tikiPickMood,
+      commitSub:function(id){ return tikiCommitSub(id,{late:true}); },
+      state:function(){
+        return {ready:TIKI.ready, playing:TIKI.playing, done:TIKI.done, sim:TIKI.sim,
+          styleId:TIKI.styleId, mood:TIKI.mood, cur:TIKI.cur,
+          curId:(TIKI.lines[TIKI.cur]||{}).id||null, curTime:Math.round((TIKI.curTime||0)*1000)/1000,
+          total:Math.round((TIKI.total||0)*1000)/1000, screen:state.screen,
+          extras:TIKI.extras.length, logEntries:TIKI.log.length, simMode:TIKI.sim};
+      },
+      timeline:function(){ return TIKI.timeline.map(function(t){ return {id:t.id, start:Math.round(t.start*1000)/1000, end:Math.round(t.end*1000)/1000}; }); },
+      lines:function(){ return TIKI.lines.map(function(l){
+        return {id:l.id, who:l.who, text:l.text, key:l.key, ears:!!l.ears, dur:l.dur,
+          bytes:l.blob?l.blob.size:0, type:l.blob?l.blob.type:"", wav:l.url}; }); },
+      subs:function(){ return TIKI.lines.map(function(l){
+        return {id:l.id, text:l.text, status:l.sub.status, late:!!l.sub.late, during:l.sub.during, shown:l.sub.text, at:l.sub.at}; }); },
+      extras:function(){ return TIKI.extras.slice(); },
+      log:function(){ return TIKI.log.slice(); },
+      frames:function(){ return $$("#expFrames .exp-frame").map(function(f){
+        var im=$("img",f);
+        return {line:f.getAttribute("data-line"), style:f.getAttribute("data-style"),
+          on:f.classList.contains("on"), src:(im && im.getAttribute("src")) || ""}; }); },
+      ears:function(){ var e=$("#expEar"); return {on:!!(e && e.classList.contains("on"))}; },
+      moodAttr:function(){ var s=$("#expStage"); return s?s.getAttribute("data-mood"):""; }
+    }
   };
 
   /* dev-only error collector so the prototype can be checked for console errors */
